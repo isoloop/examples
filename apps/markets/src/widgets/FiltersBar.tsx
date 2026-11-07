@@ -1,5 +1,6 @@
 import { usePublish } from '#env';
 import { useEffect, useRef } from 'react';
+import { symbolCount } from '../sizes/sizes';
 import { EXCHANGES, SYMBOLS, type Filters } from '../core/schemas';
 import { useFilters } from './useFilters';
 
@@ -10,7 +11,7 @@ const WINDOWS = [
 ] as const;
 
 /** Symbol, exchanges and window: filters.v1, shared by every widget. */
-export function FiltersBar() {
+export function FiltersBar({ config }: { config?: unknown }) {
   const f = useFilters();
   const publish = usePublish('filters');
   // Each change builds on the last value, ours or one that arrived: two quick
@@ -43,7 +44,7 @@ export function FiltersBar() {
             if (s) set({ symbols: [s] });
           }}
         >
-          {SYMBOLS.map((s) => (
+          {SYMBOLS.slice(0, symbolCount(config)).map((s) => (
             <option key={s} value={s}>
               {s}
             </option>

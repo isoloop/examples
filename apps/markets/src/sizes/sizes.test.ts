@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CATEGORY } from './categories';
-import { countByCategory, sizeHref, sizeOf, SPECS, specFrom } from './sizes';
+import { countByCategory, replayFor, sizeHref, sizeOf, SPECS, specFrom } from './sizes';
 
 describe('sizes', () => {
   it('reads ?size=, with normal as the default', () => {
@@ -33,5 +33,22 @@ describe('sizes', () => {
 
   it('builds the URL for another size, dropping the replay position', () => {
     expect(sizeHref('heavy', '?size=lite&speed=10&at=500')).toBe('?size=heavy&speed=10');
+  });
+});
+
+describe('replayFor', () => {
+  it('synthesizes the size’s symbols at its rate', () => {
+    expect(replayFor(new URLSearchParams('size=lite'))).toMatchObject({
+      symbols: 3,
+      tradesPerSecond: 2,
+    });
+    expect(replayFor(new URLSearchParams('size=normal'))).toMatchObject({
+      symbols: 20,
+      tradesPerSecond: 2,
+    });
+    expect(replayFor(new URLSearchParams('size=heavy&tps=4'))).toMatchObject({
+      symbols: 20,
+      tradesPerSecond: 20,
+    });
   });
 });

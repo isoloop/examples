@@ -18,15 +18,55 @@ export function rng(seed: number): () => number {
   };
 }
 
-const BASE: Record<Sym, { price: number; tick: number; size: number }> = {
-  'BTC-USD': { price: 100_000, tick: 0.01, size: 0.05 },
-  'ETH-USD': { price: 3_200, tick: 0.01, size: 0.8 },
-  'SOL-USD': { price: 180, tick: 0.001, size: 12 },
+/**
+ * Per symbol: a starting price, its tick (at most a quarter of the synthesized spread) and typical trade size, its sector
+ * (symbols in one sector move together), how strongly it follows the market,
+ * and how busy it is relative to BTC (trades per second scale by `activity`).
+ */
+interface Profile {
+  price: number;
+  tick: number;
+  size: number;
+  sector: number;
+  beta: number;
+  activity: number;
+}
+const p = (
+  price: number,
+  tick: number,
+  size: number,
+  sector: number,
+  beta: number,
+  activity: number,
+): Profile => ({ price, tick, size, sector, beta, activity });
+
+export const PROFILES: Record<Sym, Profile> = {
+  'BTC-USD': p(100_000, 0.01, 0.05, 0, 1, 1),
+  'ETH-USD': p(3_200, 0.01, 0.8, 0, 1.1, 0.8),
+  'SOL-USD': p(180, 0.001, 12, 1, 1.4, 0.6),
+  'XRP-USD': p(2.4, 0.00001, 900, 2, 1.2, 0.5),
+  'ADA-USD': p(0.9, 0.00001, 2_000, 1, 1.3, 0.3),
+  'DOGE-USD': p(0.35, 0.000001, 6_000, 3, 1.6, 0.5),
+  'AVAX-USD': p(38, 0.0001, 50, 1, 1.4, 0.3),
+  'DOT-USD': p(7.5, 0.0001, 250, 1, 1.3, 0.25),
+  'LINK-USD': p(22, 0.0001, 90, 2, 1.2, 0.3),
+  'LTC-USD': p(110, 0.001, 18, 0, 0.9, 0.3),
+  'BCH-USD': p(480, 0.01, 4, 0, 0.9, 0.2),
+  'UNI-USD': p(12, 0.0001, 160, 2, 1.3, 0.2),
+  'ATOM-USD': p(9, 0.0001, 220, 1, 1.2, 0.2),
+  'XLM-USD': p(0.45, 0.000001, 4_500, 2, 1.1, 0.2),
+  'NEAR-USD': p(6, 0.0001, 330, 1, 1.4, 0.2),
+  'APT-USD': p(11, 0.0001, 180, 1, 1.5, 0.2),
+  'ARB-USD': p(1.1, 0.00001, 1_800, 2, 1.4, 0.2),
+  'OP-USD': p(2.3, 0.00001, 900, 2, 1.4, 0.2),
+  'FIL-USD': p(5.5, 0.0001, 360, 3, 1.3, 0.15),
+  'AAVE-USD': p(260, 0.001, 8, 2, 1.2, 0.15),
 };
+const SECTORS = 4;
 
 export interface SynthOptions {
   seed?: number;
-  /** Trades per second per exchange and symbol, on average. */
+  /** Trades per second per exchange for BTC, on average; other symbols scale by their activity. */
   tradesPerSecond?: number;
   /** Stop after this long; endless by default. */
   durationMs?: number;
@@ -46,14 +86,21 @@ export function* synth(o: SynthOptions = {}): Generator<Tick> {
   const symbols = o.symbols ?? SYMBOLS;
   const exchanges = o.exchanges ?? EXCHANGES;
 
-  const mid = new Map(symbols.map((s) => [s, BASE[s].price]));
+  const mid = new Map(symbols.map((s) => [s, PROFILES[s].price]));
   const offset = new Map<string, number>();
-  type Stream = { exchange: Exchange; symbol: Sym; kind: 'trade' | 'book'; next: number };
+  type Stream = {
+    exchange: Exchange;
+    symbol: Sym;
+    kind: 'trade' | 'book';
+    rate?: number;
+    next: number;
+  };
   const streams: Stream[] = [];
   for (const exchange of exchanges) {
     for (const symbol of symbols) {
       offset.set(`${exchange}:${symbol}`, (random() - 0.5) * 4e-4);
-      streams.push({ exchange, symbol, kind: 'trade', next: random() * (1000 / rate) });
+      const r = rate * PROFILES[symbol].activity;
+      streams.push({ exchange, symbol, kind: 'trade', rate: r, next: random() * (1000 / r) });
       streams.push({ exchange, symbol, kind: 'book', next: random() * 500 });
     }
   }
@@ -66,12 +113,20 @@ export function* synth(o: SynthOptions = {}): Generator<Tick> {
     if (s === undefined || s.next > end) return;
     const t = Math.round(s.next);
 
-    // The common price walks once per 100 ms of recording time.
+    // Prices walk once per 100 ms of recording time: a market move, a move per
+    // sector, and each symbol's own, so symbols in a sector are correlated.
     while (walkedTo + 100 <= t) {
       walkedTo += 100;
-      for (const [sym, p] of mid) mid.set(sym, p * (1 + (random() - 0.5) * 6e-4));
+      const market = random() - 0.5;
+      const sector = Array.from({ length: SECTORS }, () => random() - 0.5);
+      for (const [sym, price] of mid) {
+        const pr = PROFILES[sym];
+        const move =
+          pr.beta * (0.5 * market + 0.8 * (sector[pr.sector] ?? 0)) + 0.6 * (random() - 0.5);
+        mid.set(sym, price * (1 + move * 4e-4));
+      }
     }
-    const base = BASE[s.symbol];
+    const base = PROFILES[s.symbol];
     const m =
       (mid.get(s.symbol) ?? base.price) * (1 + (offset.get(`${s.exchange}:${s.symbol}`) ?? 0));
     const half = m * 5e-5;
@@ -89,7 +144,7 @@ export function* synth(o: SynthOptions = {}): Generator<Tick> {
       };
       yield { t, kind: 'trade', rec };
       // Exponential gaps: a Poisson stream at `rate` per second.
-      s.next += (-Math.log(1 - random()) * 1000) / rate;
+      s.next += (-Math.log(1 - random()) * 1000) / (s.rate ?? rate);
     } else {
       const levels = 10;
       const bids: Book['bids'] = [];

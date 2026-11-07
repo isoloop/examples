@@ -1,6 +1,6 @@
 // Kraken's WebSocket v2: `trade` and `book` (depth 25; a snapshot, then
 // updates where qty 0 removes a level). Symbols are `BTC/USD`.
-import { SYMBOLS, type Sym } from '../schemas';
+import { LIVE_SYMBOLS as SYMBOLS, type Sym } from '../schemas';
 import { isObj, json, num, time, type Feed, type FeedEvent } from './feed';
 
 const sym = (v: unknown): Sym | null =>

@@ -9,7 +9,8 @@ import replay from './isolates/replay?isolate';
 import { filters as filtersTopic } from './isoloop/contracts';
 import { kernel } from './isoloop/kernel';
 import { Page } from './page';
-import { filtersFrom, replayConfig, startReplayClock, writeFilters } from './url';
+import { replayFor } from './sizes/sizes';
+import { filtersFrom, startReplayClock, writeFilters } from './url';
 import './page.css';
 
 declare global {
@@ -29,7 +30,7 @@ if (params.get('source') === 'live') {
     kernel.spawn({ id: `feed-${name}`, src, grants: feedGrants });
   }
 } else {
-  const config = replayConfig(params);
+  const config = replayFor(params);
   kernel.spawn({ id: 'replay', src: replay, config, grants: feedGrants });
   startReplayClock(config);
 }

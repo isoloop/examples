@@ -1,6 +1,6 @@
 // Coinbase Advanced Trade's public market data WebSocket: `market_trades`
 // and `level2` (snapshot, then updates), products named like ours.
-import { SYMBOLS, type Sym } from '../schemas';
+import { LIVE_SYMBOLS as SYMBOLS, type Sym } from '../schemas';
 import { isObj, json, num, time, type Feed, type FeedEvent } from './feed';
 
 const sym = (v: unknown): Sym | null => SYMBOLS.find((s) => s === v) ?? null;
