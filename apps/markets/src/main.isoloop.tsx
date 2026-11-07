@@ -7,9 +7,10 @@ import kraken from './isolates/feeds/kraken?isolate';
 import okx from './isolates/feeds/okx?isolate';
 import replay from './isolates/replay?isolate';
 import { filters as filtersTopic } from './isoloop/contracts';
+import { ENGINE_ISOLATES } from './isoloop/engines';
 import { kernel } from './isoloop/kernel';
 import { Page } from './page';
-import { replayFor } from './sizes/sizes';
+import { replayFor, specFrom } from './sizes/sizes';
 import { filtersFrom, startReplayClock, writeFilters } from './url';
 import './page.css';
 
@@ -57,6 +58,12 @@ kernel.spawn({
     subscribe: ['alert-rules.v1', 'alerts.v1', 'prices.v1', 'aggregates.v1'],
   },
 });
+
+// The size's shared engines, as headless isolates (M3c decision 6).
+for (const name of specFrom(params).engines) {
+  const { src, grants } = ENGINE_ISOLATES[name];
+  kernel.spawn({ id: `engine-${name}`, src, grants });
+}
 
 const root = document.getElementById('root');
 if (!root) throw new Error('#root missing');

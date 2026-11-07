@@ -46,6 +46,20 @@ const samples = {
   ],
   'noise.v1': [{ widget: 'price', n: 0, ts }],
   'filters.v1': [{ symbols: ['BTC-USD'], exchanges: ['coinbase', 'kraken'], windowMs: 60_000 }],
+  'stats.v1': [
+    {
+      symbol: 'ETH-USD',
+      vwap: 3_201.2,
+      volatility: 0.0004,
+      volume: 120.5,
+      trades: 340,
+      lo: 3_190,
+      hi: 3_210,
+      profile: [1, 2, 3],
+      windowMs: 60_000,
+      ts,
+    },
+  ],
 };
 
 describe('contracts', () => {

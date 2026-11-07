@@ -1,9 +1,10 @@
 import { createRoot } from 'react-dom/client';
+import { ENGINES } from './core/engines';
 import { feeds } from './core/feeds';
 import { runAggregator, runAlerts, runLiveFeed, runReplay } from './core/services';
 import { store } from './native/store';
 import { Page } from './page';
-import { replayFor } from './sizes/sizes';
+import { replayFor, specFrom } from './sizes/sizes';
 import { filtersFrom, startReplayClock, writeFilters } from './url';
 import './page.css';
 import './widgets/widgets.css';
@@ -37,6 +38,8 @@ store.subscribe(
 );
 runAggregator(store);
 runAlerts(store);
+// The size's shared engines, as main-thread services (M3c decision 6).
+for (const name of specFrom(params).engines) ENGINES[name](store);
 
 const root = document.getElementById('root');
 if (!root) throw new Error('#root missing');
