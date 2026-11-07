@@ -16,6 +16,7 @@ const TOPICS: Record<StreamName, TopicRef<unknown, unknown, unknown, unknown>> =
   stats: T.stats,
   correlations: T.correlations,
   depth: T.depth,
+  timings: T.timings,
 };
 
 export function busSource(bus: BusClient): Source {

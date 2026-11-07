@@ -6,7 +6,7 @@ export interface Grants {
   subscribe: string[];
 }
 
-export const GRANTS: Record<WidgetName, Grants> = {
+const LISTED: Record<WidgetName, Grants> = {
   filters: { publish: ['filters.v1', 'noise.v1'], subscribe: ['filters.v1'] },
   price: { publish: ['noise.v1'], subscribe: ['prices.v1', 'filters.v1'] },
   spread: { publish: ['noise.v1'], subscribe: ['aggregates.v1', 'filters.v1'] },
@@ -28,3 +28,13 @@ export const GRANTS: Record<WidgetName, Grants> = {
   tape: { publish: ['noise.v1'], subscribe: ['trades.v1', 'filters.v1'] },
   summary: { publish: ['noise.v1'], subscribe: ['stats.v1'] },
 };
+
+/** Every widget also publishes the time it spends (M3c task 10). */
+export function withTimings(g: Grants): Grants {
+  return { publish: [...g.publish, 'timings.v1'], subscribe: g.subscribe };
+}
+
+for (const [name, g] of Object.entries(LISTED)) {
+  Object.assign(LISTED, { [name]: withTimings(g) });
+}
+export const GRANTS: Record<WidgetName, Grants> = LISTED;

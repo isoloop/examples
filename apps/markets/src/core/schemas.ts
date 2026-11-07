@@ -136,6 +136,16 @@ export const depth = z.object({
   ts,
 });
 
+/** Time a widget or engine spent on its work in the last second, on its own thread (M3c task 10). */
+export const timing = z.object({
+  /** The slot, or `engine-<name>`. */
+  slot: z.string().min(1),
+  /** The widget's name, or `engine`. */
+  widget: z.string().min(1),
+  ms: z.number().nonnegative(),
+  ts,
+});
+
 /** Load from a widget's flood control (M3b task 14); nothing reads it. */
 export const noise = z.object({ widget: z.string().min(1), n: z.number().int().nonnegative(), ts });
 
@@ -160,3 +170,4 @@ export type Noise = z.infer<typeof noise>;
 export type Stats = z.infer<typeof stats>;
 export type Correlations = z.infer<typeof correlations>;
 export type Depth = z.infer<typeof depth>;
+export type Timing = z.infer<typeof timing>;

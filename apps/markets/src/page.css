@@ -143,3 +143,24 @@ body {
   gap: 10px;
   font-variant-numeric: tabular-nums;
 }
+
+/* Time per category (M3c task 10). */
+.categories {
+  padding: 4px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 12px;
+}
+.categories table {
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+.categories td,
+.categories th {
+  padding: 1px 10px 1px 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.categories td:first-child,
+.categories th:first-child {
+  text-align: left;
+}

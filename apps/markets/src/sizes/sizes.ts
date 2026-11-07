@@ -112,10 +112,16 @@ export function specFrom(params: URLSearchParams): SizeSpec & { size: Size } {
     size,
     symbols,
     // The controls list the symbols the replay synthesizes.
+    // Every widget knows its slot (for its timings); the controls also list the symbols.
     widgets: placed.map((p) =>
-      SYMBOL_PICKERS.has(p.widget)
-        ? Object.assign({}, p, { config: Object.assign({}, p.config, { symbols }) })
-        : p,
+      Object.assign({}, p, {
+        config: Object.assign(
+          {},
+          p.config,
+          { slot: p.id },
+          SYMBOL_PICKERS.has(p.widget) ? { symbols } : {},
+        ),
+      }),
     ),
   };
 }

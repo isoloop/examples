@@ -68,6 +68,12 @@ export const depth = topic('depth.v1', {
   retention: { kind: 'last-n', n: 2_400 },
 });
 
+/** Time per widget and engine, once a second each (M3c task 10). */
+export const timings = topic('timings.v1', {
+  schema: s.timing,
+  retention: { kind: 'last-n', n: 600 },
+});
+
 export default contracts(
   trades,
   book,
@@ -80,4 +86,5 @@ export default contracts(
   stats,
   correlations,
   depth,
+  timings,
 );

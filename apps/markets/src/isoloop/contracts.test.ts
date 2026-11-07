@@ -52,6 +52,7 @@ const samples = {
   'depth.v1': [
     { symbol: 'BTC-USD', mid: 100_000, step: 0.0001, bids: [1.5, 2], asks: [1.25, 3], ts },
   ],
+  'timings.v1': [{ slot: 'price', widget: 'price', ms: 1.5, ts }],
   'stats.v1': [
     {
       symbol: 'ETH-USD',

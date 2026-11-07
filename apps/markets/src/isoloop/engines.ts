@@ -3,9 +3,9 @@ import correlations from '../isolates/engines/correlations?isolate';
 import depth from '../isolates/engines/depth?isolate';
 import stats from '../isolates/engines/stats?isolate';
 import type { EngineName } from '../core/engines';
-import type { Grants } from './grants';
+import { withTimings, type Grants } from './grants';
 
-export const ENGINE_ISOLATES: Record<EngineName, { src: string; grants: Grants }> = {
+const LISTED: Record<EngineName, { src: string; grants: Grants }> = {
   stats: { src: stats, grants: { publish: ['stats.v1'], subscribe: ['trades.v1'] } },
   correlations: {
     src: correlations,
@@ -13,3 +13,8 @@ export const ENGINE_ISOLATES: Record<EngineName, { src: string; grants: Grants }
   },
   depth: { src: depth, grants: { publish: ['depth.v1'], subscribe: ['book.v1'] } },
 };
+
+for (const [name, e] of Object.entries(LISTED)) {
+  Object.assign(LISTED, { [name]: { src: e.src, grants: withTimings(e.grants) } });
+}
+export const ENGINE_ISOLATES: Record<EngineName, { src: string; grants: Grants }> = LISTED;

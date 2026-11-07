@@ -11,6 +11,7 @@ import type {
   Noise,
   Quote,
   Stats,
+  Timing,
   Trade,
 } from './schemas';
 
@@ -26,6 +27,7 @@ export interface Streams {
   stats: Stats;
   correlations: Correlations;
   depth: Depth;
+  timings: Timing;
 }
 export type StreamName = keyof Streams;
 
