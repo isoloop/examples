@@ -18,6 +18,8 @@ export type FeedEvent =
 export interface Feed {
   exchange: Exchange;
   url: string;
+  /** Sent every `everyMs` while open, for exchanges that drop quiet sockets. */
+  keepalive?: { everyMs: number; message: string };
   /** Messages to send once open, already serialized. */
   subscribe(symbols: readonly Sym[]): string[];
   /** Events in one message; [] for heartbeats, acks and anything unknown. */

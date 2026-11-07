@@ -1,8 +1,10 @@
 import { createKernel, type Kernel } from '@isoloop/host';
 import workers from 'virtual:isoloop/workers';
 import hello from '../isolates/hello?isolate';
+import bitstamp from '../isolates/feeds/bitstamp?isolate';
 import coinbase from '../isolates/feeds/coinbase?isolate';
 import kraken from '../isolates/feeds/kraken?isolate';
+import okx from '../isolates/feeds/okx?isolate';
 import replay from '../isolates/replay?isolate';
 import list from './contracts';
 import contractsUrl from './contracts?isolate';
@@ -18,8 +20,9 @@ const kernel = createKernel({ contracts: { url: contractsUrl, list }, workers })
 const params = new URLSearchParams(location.search);
 const feedGrants = { publish: ['trades.v1', 'book.v1', 'prices.v1'], subscribe: [] };
 if (params.get('source') === 'live') {
-  kernel.spawn({ id: 'feed-coinbase', src: coinbase, grants: feedGrants });
-  kernel.spawn({ id: 'feed-kraken', src: kraken, grants: feedGrants });
+  for (const [name, src] of Object.entries({ coinbase, kraken, bitstamp, okx })) {
+    kernel.spawn({ id: `feed-${name}`, src, grants: feedGrants });
+  }
 } else {
   kernel.spawn({
     id: 'replay',
