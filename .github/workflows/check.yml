@@ -1,0 +1,50 @@
+name: Check
+
+# Format, lint, types, unit tests and every app's build, including its bundle
+# checks (no Isoloop code in native bundles, no React DOM in Preact ones).
+# `apps` lists the apps a pull request touches (all of them otherwise).
+on:
+  workflow_call:
+    outputs:
+      apps:
+        value: ${{ jobs.check.outputs.apps }}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.apps.outputs.apps }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - id: apps
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          all=$(ls apps)
+          if [ -z "$BASE" ]; then
+            apps="$all"
+          else
+            changed=$(git diff --name-only "$BASE" HEAD)
+            if echo "$changed" | grep -qvE '^apps/'; then
+              apps="$all"
+            else
+              apps=$(echo "$changed" | cut -d/ -f2 | sort -u)
+            fi
+          fi
+          echo "apps=$(printf '%s\n' $apps | jq -Rnc '[inputs | select(length > 0)]')" >> "$GITHUB_OUTPUT"

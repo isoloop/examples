@@ -6,13 +6,13 @@ import { expect, test } from '@playwright/test';
 const any = { '~standard': {} };
 
 test('the root sends visitors to the Isoloop build', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('./');
   await expect(page).toHaveURL(/\/isoloop\/$/);
   await expect(page.locator('.build')).toHaveAttribute('data-build', 'isoloop');
 });
 
 test('the replay source publishes trades to the bus', async ({ page }) => {
-  await page.goto('/isoloop/?speed=10');
+  await page.goto('./isoloop/?speed=10');
   const n = await page.evaluate(
     (schema) =>
       new Promise<number>((resolve) => {
@@ -27,7 +27,7 @@ test('the replay source publishes trades to the bus', async ({ page }) => {
 });
 
 test('the native build runs the same pipeline on its store', async ({ page }) => {
-  await page.goto('/native/?speed=10');
+  await page.goto('./native/?speed=10');
   await expect(page.locator('.build')).toHaveAttribute('data-build', 'native');
   const symbols = await page.evaluate(
     () =>

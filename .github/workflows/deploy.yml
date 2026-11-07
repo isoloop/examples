@@ -1,0 +1,75 @@
+name: Deploy
+
+# The markets dashboard to GitHub Pages, at <pages url>/markets/ (M3b task 19),
+# then the smoke test against the live URL. Only from a `markets-v*` tag
+# (release.yml) or by hand: the public demo changes when someone decides it should.
+#
+# GitHub Pages can't set COOP/COEP headers, so the metrics panel's memory figure
+# shows "unavailable" there; everything else works.
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter ./apps/markets build
+      - name: Assemble the site
+        run: |
+          mkdir -p site
+          cp -r apps/markets/dist site/markets
+          printf '%s\n' '<!doctype html><meta charset="utf-8"><title>Isoloop examples</title>' \
+            '<meta http-equiv="refresh" content="0; url=./markets/">' \
+            '<a href="./markets/">Markets dashboard</a>' > site/index.html
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # In the job, not the workflow: this one is also called from release.yml.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}markets/
+    outputs:
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/install-browsers
+        with:
+          browsers: chromium
+      - run: pnpm --filter ./apps/markets e2e --project=live
+        env:
+          LIVE_URL: ${{ needs.deploy.outputs.url }}markets/

@@ -1,8 +1,11 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { FULL } from './scope';
 
 // `/mixed` (M3b task 16b): the filters and the alerts panel run on Preact,
 // built apart and loaded by URL; the charts and the table on React. One
 // framework per isolate, so a crash on one side leaves the other working.
+test.skip(!FULL, '/mixed runs on Chromium only in pull requests');
+
 const slot = (page: Page, name: string): Locator => page.locator(`[data-slot="${name}"]`);
 
 async function draws(page: Page, name: string): Promise<void> {
