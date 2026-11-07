@@ -8,7 +8,7 @@ import { runFeed } from './feeds/run';
 import { play } from './replay/player';
 import { synth } from './replay/synth';
 import { restamp } from './replay/tick';
-import { SYMBOLS, type Sym } from './schemas';
+import { LIVE_SYMBOLS, SYMBOLS, type Sym } from './schemas';
 import type { Source } from './streams';
 
 export interface Stoppable {
@@ -24,6 +24,8 @@ export interface ReplayConfig {
   durationMs?: number;
   /** Start this far into the recording (ms), as after a switch between builds. */
   from?: number;
+  /** How many of `SYMBOLS` to synthesize (the size's count); all by default. */
+  symbols?: number;
 }
 
 /**
@@ -39,6 +41,7 @@ export function runReplay(src: Source, c: ReplayConfig = {}): Stoppable {
       seed: c.seed ?? 1,
       startTs: Date.now(),
       tradesPerSecond: c.tradesPerSecond ?? 2,
+      symbols: SYMBOLS.slice(0, c.symbols ?? SYMBOLS.length),
       ...(c.durationMs === undefined ? {} : { durationMs: c.durationMs }),
     }),
     (played) => {
@@ -66,7 +69,11 @@ export function runReplay(src: Source, c: ReplayConfig = {}): Stoppable {
 }
 
 /** One exchange's live feed into `trades`, `book` and `prices`. */
-export function runLiveFeed(src: Source, feed: Feed, symbols: readonly Sym[] = SYMBOLS): Stoppable {
+export function runLiveFeed(
+  src: Source,
+  feed: Feed,
+  symbols: readonly Sym[] = LIVE_SYMBOLS,
+): Stoppable {
   return runFeed(feed, symbols, {
     trade: (t) => {
       src.publish('trades', t);

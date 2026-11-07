@@ -125,3 +125,65 @@ describe('play', () => {
     expect(n).toBe(seen);
   });
 });
+
+/** 500 ms returns of one exchange's book mid, per symbol. */
+function returns(symbols: readonly string[]): Map<string, number[]> {
+  const last = new Map<string, number>();
+  const out = new Map<string, number[]>();
+  for (const tick of synth({ seed: 11, durationMs: 600_000 })) {
+    if (tick.kind !== 'book' || tick.rec.exchange !== 'coinbase') continue;
+    const { symbol, bids, asks } = tick.rec;
+    if (!symbols.includes(symbol)) continue;
+    const mid = ((bids[0]?.[0] ?? 0) + (asks[0]?.[0] ?? 0)) / 2;
+    const prev = last.get(symbol);
+    if (prev !== undefined) out.set(symbol, [...(out.get(symbol) ?? []), Math.log(mid / prev)]);
+    last.set(symbol, mid);
+  }
+  return out;
+}
+const corr = (a: number[], b: number[]): number => {
+  const n = Math.min(a.length, b.length);
+  const ma = a.slice(0, n).reduce((x, y) => x + y, 0) / n;
+  const mb = b.slice(0, n).reduce((x, y) => x + y, 0) / n;
+  let num = 0;
+  let da = 0;
+  let db = 0;
+  for (let i = 0; i < n; i++) {
+    const x = (a[i] ?? 0) - ma;
+    const y = (b[i] ?? 0) - mb;
+    num += x * y;
+    da += x * x;
+    db += y * y;
+  }
+  return num / Math.sqrt(da * db);
+};
+
+describe('synth, twenty symbols', () => {
+  it('synthesizes all twenty, valid', () => {
+    const seen = new Set<string>();
+    for (const tick of synth({ seed: 2, durationMs: 2_000 })) {
+      seen.add(tick.rec.symbol);
+      const ok = tick.kind === 'trade' ? trade.safeParse(tick.rec) : book.safeParse(tick.rec);
+      expect(ok.success).toBe(true);
+    }
+    expect(seen.size).toBe(20);
+  });
+
+  it('moves symbols in one sector together more than across sectors', () => {
+    const r = returns(['SOL-USD', 'AVAX-USD', 'XRP-USD']);
+    const same = corr(r.get('SOL-USD') ?? [], r.get('AVAX-USD') ?? []);
+    const across = corr(r.get('SOL-USD') ?? [], r.get('XRP-USD') ?? []);
+    expect(same).toBeGreaterThan(0.5);
+    expect(same).toBeLessThan(0.95);
+    expect(across).toBeGreaterThan(0);
+    expect(across).toBeLessThan(same);
+  });
+
+  it('trades busier symbols more often', () => {
+    const count = new Map<string, number>();
+    for (const tick of synth({ seed: 4, durationMs: 60_000 })) {
+      if (tick.kind === 'trade') count.set(tick.rec.symbol, (count.get(tick.rec.symbol) ?? 0) + 1);
+    }
+    expect(count.get('BTC-USD') ?? 0).toBeGreaterThan(3 * (count.get('AAVE-USD') ?? 0));
+  });
+});

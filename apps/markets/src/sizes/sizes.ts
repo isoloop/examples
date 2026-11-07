@@ -1,5 +1,7 @@
 // The dashboard's sizes (M3c decision 3): which widgets the page holds, how
 // many symbols the replay synthesizes, and how fast. The same in every build.
+import type { ReplayConfig } from '../core/services';
+import { replayConfig } from '../url';
 import type { WidgetName } from '../widgets';
 import { CATEGORY, type Category } from './categories';
 
@@ -53,12 +55,35 @@ export function specFrom(params: URLSearchParams): SizeSpec & { size: Size } {
   const base = SPECS[size];
   const n = Number(params.get('symbols'));
   const only = params.get('widgets')?.split(',');
+  const symbols = Number.isInteger(n) && n > 0 ? Math.min(n, 20) : base.symbols;
+  const placed = only ? base.widgets.filter((p) => only.includes(p.id)) : base.widgets;
   return {
     ...base,
     size,
-    symbols: Number.isInteger(n) && n > 0 ? n : base.symbols,
-    widgets: only ? base.widgets.filter((p) => only.includes(p.id)) : base.widgets,
+    symbols,
+    // The controls list the symbols the replay synthesizes.
+    widgets: placed.map((p) =>
+      SYMBOL_PICKERS.has(p.widget)
+        ? Object.assign({}, p, { config: Object.assign({}, p.config, { symbols }) })
+        : p,
+    ),
   };
+}
+
+const SYMBOL_PICKERS: ReadonlySet<WidgetName> = new Set(['filters', 'alerts-panel']);
+
+/** The replay's settings for the page's size: its symbols, and its rate times `?tps=`. */
+export function replayFor(params: URLSearchParams): ReplayConfig {
+  const spec = specFrom(params);
+  const c = replayConfig(params);
+  return { ...c, symbols: spec.symbols, tradesPerSecond: (c.tradesPerSecond ?? 2) * spec.rate };
+}
+
+/** How many symbols a control lists, from its placement's config. */
+export function symbolCount(config: unknown): number {
+  const n: unknown =
+    typeof config === 'object' && config !== null ? Reflect.get(config, 'symbols') : undefined;
+  return typeof n === 'number' ? n : 3;
 }
 
 /** Placements per category, `data/output` → count. */

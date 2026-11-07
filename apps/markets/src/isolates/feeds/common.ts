@@ -1,6 +1,6 @@
 import { defineIsolate, type IsolateDefinition } from '@isoloop/runtime';
 import type { Feed } from '../../core/feeds/feed';
-import { SYMBOLS, type Sym } from '../../core/schemas';
+import { LIVE_SYMBOLS as SYMBOLS, type Sym } from '../../core/schemas';
 import { runLiveFeed } from '../../core/services';
 import { busSource } from '../../isoloop/source';
 

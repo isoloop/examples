@@ -1,6 +1,6 @@
 // Bitstamp's WebSocket v2: `live_trades_<pair>` and `order_book_<pair>`, which
 // sends the top 100 levels a side on every change (a snapshot each time).
-import { SYMBOLS, type Sym } from '../schemas';
+import { LIVE_SYMBOLS as SYMBOLS, type Sym } from '../schemas';
 import { isObj, json, num, type Feed, type FeedEvent } from './feed';
 
 const pair = (s: Sym): string => s.replace('-', '').toLowerCase();

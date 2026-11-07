@@ -3,7 +3,7 @@
 // prices carry the USDT premium; the dashboard shows them as USD, and the
 // cross-market spread includes it. It closes a socket that's quiet for 30 s,
 // so the feed sends "ping" every 20 s.
-import { SYMBOLS, type Sym } from '../schemas';
+import { LIVE_SYMBOLS as SYMBOLS, type Sym } from '../schemas';
 import { isObj, json, num, type Feed, type FeedEvent } from './feed';
 
 const inst = (s: Sym): string => s.replace('-USD', '-USDT');

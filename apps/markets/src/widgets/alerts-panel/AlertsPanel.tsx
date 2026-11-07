@@ -1,5 +1,6 @@
 import { useKeyed, usePublish, useRecent } from '#env';
 import { useState } from 'react';
+import { symbolCount } from '../../sizes/sizes';
 import { SYMBOLS, type AlertRule, type Metric, type Sym } from '../../core/schemas';
 
 const METRICS: readonly Metric[] = ['price', 'vwap', 'spread'];
@@ -12,7 +13,7 @@ type Rule = Extract<AlertRule, { removed: false }>;
 const time = (ts: number): string => new Date(ts).toISOString().slice(11, 19);
 
 /** The rule editor (alert-rules.v1) and the alerts that fired (alerts.v1). */
-export function AlertsPanel() {
+export function AlertsPanel({ config }: { config?: unknown }) {
   const rules = useKeyed('alertRules');
   const alerts = useRecent('alerts', SHOWN, 'earliest');
   const publish = usePublish('alertRules');
@@ -46,7 +47,7 @@ export function AlertsPanel() {
             if (s) setSymbol(s);
           }}
         >
-          {SYMBOLS.map((s) => (
+          {SYMBOLS.slice(0, symbolCount(config)).map((s) => (
             <option key={s} value={s}>
               {s}
             </option>

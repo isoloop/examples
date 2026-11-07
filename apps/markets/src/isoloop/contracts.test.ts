@@ -57,7 +57,7 @@ describe('contracts', () => {
     const t = samples['trades.v1'][0];
     expect(s.trade.safeParse({ ...t, price: 0 }).success).toBe(false);
     expect(s.trade.safeParse({ ...t, price: Number.NaN }).success).toBe(false);
-    expect(s.trade.safeParse({ ...t, symbol: 'DOGE-USD' }).success).toBe(false);
+    expect(s.trade.safeParse({ ...t, symbol: 'PEPE-USD' }).success).toBe(false);
     expect(s.filters.safeParse({ symbols: [], exchanges: ['okx'], windowMs: 1 }).success).toBe(
       false,
     );

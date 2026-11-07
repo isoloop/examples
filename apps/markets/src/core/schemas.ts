@@ -8,7 +8,31 @@ import { z } from 'zod';
 z.config({ jitless: true });
 
 export const EXCHANGES = ['coinbase', 'kraken', 'bitstamp', 'okx'] as const;
-export const SYMBOLS = ['BTC-USD', 'ETH-USD', 'SOL-USD'] as const;
+/** Every symbol the replay can synthesize (M3c decision 5: 20 at Normal and Heavy). */
+export const SYMBOLS = [
+  'BTC-USD',
+  'ETH-USD',
+  'SOL-USD',
+  'XRP-USD',
+  'ADA-USD',
+  'DOGE-USD',
+  'AVAX-USD',
+  'DOT-USD',
+  'LINK-USD',
+  'LTC-USD',
+  'BCH-USD',
+  'UNI-USD',
+  'ATOM-USD',
+  'XLM-USD',
+  'NEAR-USD',
+  'APT-USD',
+  'ARB-USD',
+  'OP-USD',
+  'FIL-USD',
+  'AAVE-USD',
+] as const;
+/** The symbols the live feeds subscribe to, and the replay's first `n` at Lite. */
+export const LIVE_SYMBOLS = ['BTC-USD', 'ETH-USD', 'SOL-USD'] as const;
 
 export const exchange = z.enum(EXCHANGES);
 export const symbol = z.enum(SYMBOLS);

@@ -1,4 +1,4 @@
-import { SYMBOLS } from '../schemas';
+import { LIVE_SYMBOLS as SYMBOLS } from '../schemas';
 import { bitstamp } from './bitstamp';
 import { coinbase } from './coinbase';
 import type { Feed } from './feed';

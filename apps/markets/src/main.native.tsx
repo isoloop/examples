@@ -3,7 +3,8 @@ import { feeds } from './core/feeds';
 import { runAggregator, runAlerts, runLiveFeed, runReplay } from './core/services';
 import { store } from './native/store';
 import { Page } from './page';
-import { filtersFrom, replayConfig, startReplayClock, writeFilters } from './url';
+import { replayFor } from './sizes/sizes';
+import { filtersFrom, startReplayClock, writeFilters } from './url';
 import './page.css';
 import './widgets/widgets.css';
 
@@ -20,7 +21,7 @@ const params = new URLSearchParams(location.search);
 if (params.get('source') === 'live') {
   for (const feed of feeds) runLiveFeed(store, feed);
 } else {
-  const config = replayConfig(params);
+  const config = replayFor(params);
   runReplay(store, config);
   startReplayClock(config);
 }
