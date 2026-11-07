@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// The built app, served by `vite preview`, in all three engines.
+// Both builds, served by `vite preview` from dist/ (/isoloop/ and /native/), in
+// all three engines.
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: true,
@@ -10,6 +11,7 @@ export default defineConfig({
   use: { baseURL: 'http://localhost:4791' },
   webServer: {
     command: 'pnpm build && pnpm preview --port 4791 --strictPort',
+    timeout: 120_000,
     url: 'http://localhost:4791',
     reuseExistingServer: !process.env['CI'],
   },
