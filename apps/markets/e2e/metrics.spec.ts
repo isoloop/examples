@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { inScope } from './scope';
 
 // The metrics panel (M3b task 17): every figure shows a value within 2 s of
 // start, Isoloop-only ones say "n/a" on native, and memory says "unavailable"
@@ -8,7 +9,7 @@ const metric = (page: Page, key: string) => page.locator(`[data-metric="${key}"]
 const ISOLOOP = ['isoloop', 'isoloop-preact', 'mixed'] as const;
 const NATIVE = ['native', 'native-preact'] as const;
 
-for (const build of [...ISOLOOP, ...NATIVE]) {
+for (const build of inScope([...ISOLOOP, ...NATIVE])) {
   test(`${build}: every metric shows a value within 2 s of start`, async ({ page }) => {
     await page.goto(`/${build}/?speed=10`);
     // An input, so input latency has something to measure.

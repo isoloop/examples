@@ -9,6 +9,7 @@ const ENGINES = [
 ] as const;
 const LOAD = /(stress|table)\.spec\.ts$/;
 const COMPARISON = /comparison\.spec\.ts$/;
+const LIVE = process.env['LIVE_URL'];
 
 export default defineConfig({
   testDir: 'e2e',
@@ -16,13 +17,19 @@ export default defineConfig({
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 1 : 0,
   reporter: process.env['CI'] ? [['list'], ['html', { open: 'never' }]] : 'list',
-  use: { baseURL: 'http://localhost:4791' },
-  webServer: {
-    command: 'pnpm build && pnpm preview --port 4791 --strictPort',
-    timeout: 120_000,
-    url: 'http://localhost:4791',
-    reuseExistingServer: !process.env['CI'],
-  },
+  // LIVE_URL runs the smoke test against a deployed copy (after each deploy)
+  // instead of the local build.
+  use: { baseURL: LIVE ?? 'http://localhost:4791' },
+  ...(LIVE
+    ? {}
+    : {
+        webServer: {
+          command: 'pnpm build && pnpm preview --port 4791 --strictPort',
+          timeout: 120_000,
+          url: 'http://localhost:4791',
+          reuseExistingServer: !process.env['CI'],
+        },
+      }),
   // Each engine has two projects. `<engine>-load` holds the tests that measure
   // timing under load (input latency within the 200 ms budget, the table at
   // 3,000 trades/s). CI runs it alone with --workers=1 after the rest, so those
@@ -35,5 +42,6 @@ export default defineConfig({
       { name: `${name}-load`, use: { ...devices[device] }, testMatch: LOAD },
     ]),
     { name: 'comparison', use: { ...devices['Desktop Chrome'] }, testMatch: COMPARISON },
+    { name: 'live', use: { ...devices['Desktop Chrome'] }, testMatch: /smoke\.spec\.ts$/ },
   ],
 });

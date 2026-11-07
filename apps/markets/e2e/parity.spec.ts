@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { inScope } from './scope';
 
 const ROW = 22;
 /** Recording time to replay: at 10× it plays in 2 s, then the table stops growing. */
@@ -55,7 +56,7 @@ async function settledTable(
 }
 
 // Every build renders what native React renders (M3b tasks 15 and 16b).
-for (const build of ['isoloop', 'isoloop-preact', 'native-preact', 'mixed'] as const) {
+for (const build of inScope(['isoloop', 'isoloop-preact', 'native-preact', 'mixed'] as const)) {
   test(`${build} renders the same data as native from the replay source`, async ({ browser }) => {
     const [native, other] = await Promise.all([browser.newPage(), browser.newPage()]);
     const q = `?speed=10&seed=7&for=${FOR_MS}`;

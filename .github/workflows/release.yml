@@ -1,0 +1,33 @@
+name: Release
+
+# A `markets-v*` tag ships the public demo: check, every E2E test on every build
+# and engine, deploy (and its live smoke test), then the recorded comparison.
+on:
+  push:
+    tags: ['markets-v*']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    uses: ./.github/workflows/check.yml
+
+  e2e:
+    needs: check
+    uses: ./.github/workflows/e2e.yml
+    with:
+      apps: '["markets"]'
+      scope: full
+
+  deploy:
+    needs: e2e
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy.yml
+
+  compare:
+    needs: deploy
+    uses: ./.github/workflows/comparison.yml
