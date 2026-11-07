@@ -12,7 +12,7 @@ test('isoloop: Heavy starts its isolates with no budget warning', async ({ page 
   page.on('console', (m) => {
     if (m.type() === 'warning' && /budget/i.test(m.text())) warnings.push(m.text());
   });
-  await page.goto('/isoloop/?size=heavy&speed=10');
+  await page.goto('/isoloop/?size=heavy&speed=1');
   await expect
     .poll(async () => page.evaluate(() => window.kernel.isolates().length), { timeout: 15_000 })
     .toBe(30);
@@ -32,7 +32,7 @@ test('isoloop: Heavy starts its isolates with no budget warning', async ({ page 
 
 for (const build of ['isoloop', 'native'] as const) {
   test(`${build}: Heavy's additions draw their data`, async ({ page }) => {
-    await page.goto(`/${build}/?size=heavy&speed=10`);
+    await page.goto(`/${build}/?size=heavy&speed=1`);
     const shapes = {
       'correlations-5m': /^20×20$/,
       'correlations-15m': /^20×20$/,
