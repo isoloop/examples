@@ -16,10 +16,10 @@ for (const [from, to] of builds) {
     const filters = page.locator('[data-slot="filters"]');
     await filters.locator('select[name="symbol"]').selectOption('ETH-USD');
     await filters.locator('input[name="exchange-okx"]').click();
-    // The URL mirrors the filters as they change. (On Isoloop the clicked
-    // checkbox can stay drawn as checked although the filters dropped okx: a
-    // render-bridge bug with controlled checkboxes, reported separately; so
-    // this checks the published state.)
+    // Drawn as the filters say, in both builds: a controlled checkbox whose
+    // state comes back from a topic (isoloop/isoloop#127).
+    await expect(filters.locator('input[name="exchange-okx"]')).not.toBeChecked();
+    // The URL mirrors the filters as they change.
     const url = (k: string) => () => new URL(page.url()).searchParams.get(k);
     await expect.poll(url('symbol')).toBe('ETH-USD');
     await expect.poll(url('ex')).toBe('coinbase,kraken,bitstamp');
