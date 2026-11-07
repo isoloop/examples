@@ -14,6 +14,7 @@ import {
   VwapChart,
 } from './derived';
 import { withStress } from './stress/withStress';
+import { ArbitrageScanner, ExchangeTape, MarketSummary, TopMovers } from './tables';
 
 /** Every widget by slot name. The same components render in both builds. */
 export const WIDGETS = {
@@ -29,6 +30,10 @@ export const WIDGETS = {
   'volume-profile': withStress('volume-profile', VolumeProfile),
   correlations: withStress('correlations', CorrelationHeatmap),
   depth: withStress('depth', DepthHeatmap),
+  'top-movers': withStress('top-movers', TopMovers),
+  arbitrage: withStress('arbitrage', ArbitrageScanner),
+  tape: withStress('tape', ExchangeTape),
+  summary: withStress('summary', MarketSummary),
 } as const satisfies Record<string, ComponentType>;
 
 export type WidgetName = keyof typeof WIDGETS;

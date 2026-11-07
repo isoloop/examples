@@ -103,3 +103,72 @@
   font-size: 11px;
   padding: 1px 4px;
 }
+/* M3c's DOM widgets (task 7). */
+.table-widget,
+.tape,
+.summary {
+  height: 100%;
+  overflow: hidden;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.table-widget h3,
+.tape h3 {
+  margin: 2px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.table-widget table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table-widget td,
+.table-widget th {
+  padding: 1px 4px;
+  text-align: right;
+}
+.table-widget td:first-child,
+.table-widget th:first-child {
+  text-align: left;
+}
+.up {
+  color: #59a14f;
+}
+.down {
+  color: #e15759;
+}
+.tape-cols {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 8px;
+}
+.tape ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
+}
+.tape .buy {
+  color: #59a14f;
+}
+.tape .sell {
+  color: #e15759;
+}
+.tape-head {
+  color: #888;
+}
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 4px;
+  align-content: start;
+}
+.summary .tile {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 4px;
+  background: #24282d;
+  border-radius: 4px;
+  font-size: 11px;
+}
