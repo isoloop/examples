@@ -55,3 +55,29 @@ export function useCanvas(ref: RefObject<HTMLCanvasElement | null>): CanvasState
   }, [host, ref]);
   return state;
 }
+
+/**
+ * The element's size, from the host's `measure` once it's rendered, and again
+ * when the page resizes (a surface's box changes with the page's layout).
+ */
+export function useBox(ref: RefObject<HTMLElement | null>): { width: number; height: number } {
+  const host = useHost();
+  const [box, setBox] = useState({ width: 0, height: 0 });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    let live = true;
+    const read = (): void => {
+      void host.measure(el).then((r) => {
+        if (live) setBox({ width: r.width, height: r.height });
+      });
+    };
+    read();
+    const timer = setInterval(read, 1_000);
+    return () => {
+      live = false;
+      clearInterval(timer);
+    };
+  }, [host, ref]);
+  return box;
+}

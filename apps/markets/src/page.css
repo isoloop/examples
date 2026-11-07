@@ -32,10 +32,15 @@ body {
   padding: 12px;
 }
 .grid .slot {
+  position: relative;
   height: 220px;
   background: #1d2024;
   border-radius: 6px;
   overflow: hidden;
+}
+/* The Isoloop build's surface element sits between the slot and the widget. */
+.grid .slot > iso-surface {
+  height: 100%;
 }
 .widget-error {
   padding: 12px;

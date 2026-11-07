@@ -22,6 +22,7 @@ if (params.get('source') === 'live') {
   runReplay(store, {
     speed: Number(params.get('speed')) || 1,
     seed: Number(params.get('seed')) || 1,
+    tradesPerSecond: Number(params.get('tps')) || 2,
   });
 }
 runAggregator(store);
