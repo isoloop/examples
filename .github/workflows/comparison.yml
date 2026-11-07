@@ -1,0 +1,40 @@
+name: Comparison
+
+# The recorded comparison (M3b task 18): the same scenario on the native and
+# Isoloop builds, React and Preact, on Chromium, one test at a time. It runs on
+# demand; its numbers and the side-by-side video are uploaded as an artifact.
+# Adding a trigger (a tag, a schedule) is one line under `on:`.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: comparison
+  cancel-in-progress: false
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/install-browsers
+        with:
+          browsers: chromium
+      # For the side-by-side video; without it, compare.ts writes the table only.
+      - run: command -v ffmpeg || sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: pnpm --filter ./apps/markets compare
+      - run: cat apps/markets/comparison-results/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: comparison
+          path: apps/markets/comparison-results
+          retention-days: 90
