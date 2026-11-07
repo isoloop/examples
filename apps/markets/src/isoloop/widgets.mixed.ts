@@ -14,6 +14,10 @@ import volatility from '../isolates/widgets/volatility?isolate';
 import volumeProfile from '../isolates/widgets/volume-profile?isolate';
 import correlations from '../isolates/widgets/correlations?isolate';
 import depth from '../isolates/widgets/depth?isolate';
+import topMovers from '../isolates/widgets/top-movers?isolate';
+import arbitrage from '../isolates/widgets/arbitrage?isolate';
+import tape from '../isolates/widgets/tape?isolate';
+import summary from '../isolates/widgets/summary?isolate';
 import type { WidgetName } from '../widgets';
 import { GRANTS, type Grants } from './grants';
 
@@ -29,6 +33,10 @@ const REACT: Partial<Record<WidgetName, string>> = {
   'volume-profile': volumeProfile,
   correlations,
   depth,
+  'top-movers': topMovers,
+  arbitrage,
+  tape,
+  summary,
 };
 
 export const ISOLATES: Record<WidgetName, { grants: Grants }> = {
@@ -44,6 +52,10 @@ export const ISOLATES: Record<WidgetName, { grants: Grants }> = {
   'volume-profile': { grants: GRANTS['volume-profile'] },
   correlations: { grants: GRANTS['correlations'] },
   depth: { grants: GRANTS['depth'] },
+  'top-movers': { grants: GRANTS['top-movers'] },
+  arbitrage: { grants: GRANTS['arbitrage'] },
+  tape: { grants: GRANTS['tape'] },
+  summary: { grants: GRANTS['summary'] },
 };
 
 /** Which framework each widget runs on in `/mixed`. */
@@ -60,6 +72,10 @@ export const FRAMEWORK: Record<WidgetName, 'react' | 'preact'> = {
   'volume-profile': 'react',
   correlations: 'react',
   depth: 'react',
+  'top-movers': 'react',
+  arbitrage: 'react',
+  tape: 'react',
+  summary: 'react',
 };
 
 const Manifest = z.object({ isolates: z.record(z.string(), z.string()) });

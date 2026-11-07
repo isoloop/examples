@@ -27,4 +27,8 @@ export const CATEGORY: Record<WidgetName, Category> = {
   'volume-profile': { data: 'aggregated', output: 'canvas' },
   correlations: { data: 'combined', output: 'canvas' },
   depth: { data: 'combined', output: 'canvas' },
+  'top-movers': { data: 'combined', output: 'dom' },
+  arbitrage: { data: 'combined', output: 'dom' },
+  tape: { data: 'filtered', output: 'dom' },
+  summary: { data: 'aggregated', output: 'dom' },
 };

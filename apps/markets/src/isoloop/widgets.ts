@@ -11,6 +11,10 @@ import volatility from '../isolates/widgets/volatility?isolate';
 import volumeProfile from '../isolates/widgets/volume-profile?isolate';
 import correlations from '../isolates/widgets/correlations?isolate';
 import depth from '../isolates/widgets/depth?isolate';
+import topMovers from '../isolates/widgets/top-movers?isolate';
+import arbitrage from '../isolates/widgets/arbitrage?isolate';
+import tape from '../isolates/widgets/tape?isolate';
+import summary from '../isolates/widgets/summary?isolate';
 import type { WidgetName } from '../widgets';
 import { GRANTS, type Grants } from './grants';
 
@@ -27,6 +31,10 @@ export const ISOLATES: Record<WidgetName, { src: string; grants: Grants }> = {
   'volume-profile': { src: volumeProfile, grants: GRANTS['volume-profile'] },
   correlations: { src: correlations, grants: GRANTS['correlations'] },
   depth: { src: depth, grants: GRANTS['depth'] },
+  'top-movers': { src: topMovers, grants: GRANTS['top-movers'] },
+  arbitrage: { src: arbitrage, grants: GRANTS['arbitrage'] },
+  tape: { src: tape, grants: GRANTS['tape'] },
+  summary: { src: summary, grants: GRANTS['summary'] },
 };
 
 /** The module a slot's isolate runs. A promise, because `/mixed` reads some from a manifest. */

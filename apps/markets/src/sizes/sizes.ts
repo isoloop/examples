@@ -40,7 +40,7 @@ const LITE: readonly Placement[] = [
   one('alerts-panel'),
 ];
 
-/** Normal: Lite plus the canvas widgets on the shared engines (task 6). */
+/** Normal: Lite plus the canvas (task 6) and DOM (task 7) widgets on the shared engines: 16. */
 const NORMAL: readonly Placement[] = [
   ...LITE,
   one('sparklines'),
@@ -49,6 +49,10 @@ const NORMAL: readonly Placement[] = [
   one('volume-profile'),
   { id: 'correlations', widget: 'correlations', config: { horizonMs: 60_000 } },
   one('depth'),
+  one('top-movers'),
+  one('arbitrage'),
+  one('tape'),
+  one('summary'),
 ];
 
 export const SPECS: Record<Size, SizeSpec> = {

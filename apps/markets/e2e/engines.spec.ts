@@ -5,7 +5,7 @@ const any = { '~standard': {} };
 // The shared engines (M3c tasks 3 to 5) run at Normal: as headless isolates on
 // Isoloop, as main-thread services on native, publishing the same streams.
 test('isoloop: the stats engine publishes stats.v1 at Normal', async ({ page }) => {
-  await page.goto('/isoloop/?size=normal&speed=10');
+  await page.goto('/isoloop/?size=normal&speed=1');
   await expect
     .poll(
       async () =>
@@ -34,7 +34,7 @@ test('isoloop: the stats engine publishes stats.v1 at Normal', async ({ page }) 
 });
 
 test('native: the stats engine publishes stats at Normal', async ({ page }) => {
-  await page.goto('/native/?size=normal&speed=10');
+  await page.goto('/native/?size=normal&speed=1');
   await expect
     .poll(
       async () =>
@@ -63,7 +63,7 @@ test('isoloop: Lite runs no engines', async ({ page }) => {
 });
 
 test('both builds publish correlations at three horizons at Normal', async ({ page }) => {
-  await page.goto('/isoloop/?size=normal&speed=10');
+  await page.goto('/isoloop/?size=normal&speed=1');
   const horizons = await page.evaluate(
     (schema) =>
       new Promise<number[]>((resolve) => {
@@ -80,7 +80,7 @@ test('both builds publish correlations at three horizons at Normal', async ({ pa
   );
   expect(horizons).toEqual([60_000, 300_000, 900_000]);
 
-  await page.goto('/native/?size=normal&speed=10');
+  await page.goto('/native/?size=normal&speed=1');
   await expect
     .poll(
       async () =>
@@ -101,7 +101,7 @@ test('both builds publish correlations at three horizons at Normal', async ({ pa
 });
 
 test('both builds publish depth for every symbol at Normal', async ({ page }) => {
-  await page.goto('/isoloop/?size=normal&speed=10');
+  await page.goto('/isoloop/?size=normal&speed=1');
   const symbols = await page.evaluate(
     (schema) =>
       new Promise<number>((resolve) => {
@@ -118,7 +118,7 @@ test('both builds publish depth for every symbol at Normal', async ({ page }) =>
   );
   expect(symbols).toBe(20);
 
-  await page.goto('/native/?size=normal&speed=10');
+  await page.goto('/native/?size=normal&speed=1');
   await expect
     .poll(
       async () =>
