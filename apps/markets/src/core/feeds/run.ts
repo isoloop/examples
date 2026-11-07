@@ -47,6 +47,7 @@ export function runFeed(
   const state = { stopped: false, backoff: 1_000 };
   let socket: SocketLike | undefined;
   let retry: ReturnType<typeof setTimeout> | undefined;
+  let ping: ReturnType<typeof setInterval> | undefined;
 
   const flush = (): void => {
     const now = Date.now();
@@ -75,6 +76,13 @@ export function runFeed(
       state.backoff = 1_000;
       sink.status?.('open');
       for (const m of feed.subscribe(symbols)) ws.send(m);
+      if (feed.keepalive) {
+        const { everyMs, message } = feed.keepalive;
+        clearInterval(ping);
+        ping = setInterval(() => {
+          ws.send(message);
+        }, everyMs);
+      }
     });
     ws.addEventListener('message', (e) => {
       for (const ev of feed.parse(e.data)) {
@@ -101,6 +109,7 @@ export function runFeed(
     ws.addEventListener('close', () => {
       if (socket !== ws) return;
       socket = undefined;
+      clearInterval(ping);
       sink.status?.('closed', `retry in ${state.backoff} ms`);
       if (state.stopped) return;
       retry = setTimeout(open, state.backoff);
@@ -114,6 +123,7 @@ export function runFeed(
       state.stopped = true;
       clearInterval(timer);
       clearTimeout(retry);
+      clearInterval(ping);
       socket?.close();
     },
   };
