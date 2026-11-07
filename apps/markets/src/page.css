@@ -109,3 +109,37 @@ body {
 .about .state[data-state='failed'] {
   color: #e57373;
 }
+
+/* Responsiveness on the page (M3c task 9). */
+.responsiveness {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 4px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 12px;
+}
+.tape-strip {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #8ab4f8;
+}
+.tape-track {
+  display: inline-block;
+  will-change: transform;
+}
+.echo input {
+  width: 140px;
+}
+.echo output {
+  display: inline-block;
+  min-width: 80px;
+  margin-left: 6px;
+  color: #aaa;
+}
+.badge {
+  display: inline-flex;
+  gap: 10px;
+  font-variant-numeric: tabular-nums;
+}

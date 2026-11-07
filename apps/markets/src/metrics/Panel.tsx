@@ -4,10 +4,10 @@
 // memory) sits next to what it buys.
 import { buildMetrics } from '#metrics';
 import { useEffect, useState } from 'react';
-import { startMainThreadMetrics, type MainThreadMetrics } from './main-thread';
+import { mainThreadMetrics, type MainThreadMetrics } from './main-thread';
 import type { BuildMetrics } from './types';
 
-const read = startMainThreadMetrics();
+const read = mainThreadMetrics();
 
 type Stats = { jsGzipBytes: number };
 let stats: Stats | 'unavailable' | undefined;
