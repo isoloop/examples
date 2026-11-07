@@ -8,11 +8,28 @@ import price from '../isolates/widgets/price?isolate';
 import spread from '../isolates/widgets/spread?isolate';
 import trades from '../isolates/widgets/trades?isolate';
 import volume from '../isolates/widgets/volume?isolate';
+import sparklines from '../isolates/widgets/sparklines?isolate';
+import vwap from '../isolates/widgets/vwap?isolate';
+import volatility from '../isolates/widgets/volatility?isolate';
+import volumeProfile from '../isolates/widgets/volume-profile?isolate';
+import correlations from '../isolates/widgets/correlations?isolate';
+import depth from '../isolates/widgets/depth?isolate';
 import type { WidgetName } from '../widgets';
 import { GRANTS, type Grants } from './grants';
 
 // Only the React widgets are built here, so the page doesn't carry isolates it never runs.
-const REACT: Partial<Record<WidgetName, string>> = { price, spread, trades, volume };
+const REACT: Partial<Record<WidgetName, string>> = {
+  price,
+  spread,
+  trades,
+  volume,
+  sparklines,
+  vwap,
+  volatility,
+  'volume-profile': volumeProfile,
+  correlations,
+  depth,
+};
 
 export const ISOLATES: Record<WidgetName, { grants: Grants }> = {
   filters: { grants: GRANTS.filters },
@@ -21,6 +38,12 @@ export const ISOLATES: Record<WidgetName, { grants: Grants }> = {
   volume: { grants: GRANTS.volume },
   trades: { grants: GRANTS.trades },
   'alerts-panel': { grants: GRANTS['alerts-panel'] },
+  sparklines: { grants: GRANTS['sparklines'] },
+  vwap: { grants: GRANTS['vwap'] },
+  volatility: { grants: GRANTS['volatility'] },
+  'volume-profile': { grants: GRANTS['volume-profile'] },
+  correlations: { grants: GRANTS['correlations'] },
+  depth: { grants: GRANTS['depth'] },
 };
 
 /** Which framework each widget runs on in `/mixed`. */
@@ -31,6 +54,12 @@ export const FRAMEWORK: Record<WidgetName, 'react' | 'preact'> = {
   volume: 'react',
   trades: 'react',
   'alerts-panel': 'preact',
+  sparklines: 'react',
+  vwap: 'react',
+  volatility: 'react',
+  'volume-profile': 'react',
+  correlations: 'react',
+  depth: 'react',
 };
 
 const Manifest = z.object({ isolates: z.record(z.string(), z.string()) });
