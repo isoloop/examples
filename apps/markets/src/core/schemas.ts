@@ -3,6 +3,10 @@
 // native build uses the same types for its store.
 import { z } from 'zod';
 
+// No `new Function` fast path: the app's CSP has no 'unsafe-eval', and Zod
+// would otherwise probe for it and log a CSP violation in every worker.
+z.config({ jitless: true });
+
 export const EXCHANGES = ['coinbase', 'kraken', 'bitstamp', 'okx'] as const;
 export const SYMBOLS = ['BTC-USD', 'ETH-USD', 'SOL-USD'] as const;
 
