@@ -34,6 +34,7 @@ if (params.get('source') === 'live') {
       speed: Number(params.get('speed')) || 1,
       seed: Number(params.get('seed')) || 1,
       tradesPerSecond: Number(params.get('tps')) || 2,
+      ...(params.has('for') ? { durationMs: Number(params.get('for')) } : {}),
     },
     grants: feedGrants,
   });

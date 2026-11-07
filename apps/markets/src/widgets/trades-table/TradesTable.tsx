@@ -16,7 +16,8 @@ const time = (ts: number): string => new Date(ts).toISOString().slice(11, 23);
  */
 export function TradesTable() {
   const f = useFilters();
-  const trades = useRecent('trades', KEEP);
+  // From the retained history, so a table that mounts late (an isolate booting) shows the same rows.
+  const trades = useRecent('trades', KEEP, 'earliest');
   const viewport = useRef<HTMLDivElement>(null);
   const { height } = useBox(viewport);
   const [scrollTop, setScrollTop] = useState(0);
