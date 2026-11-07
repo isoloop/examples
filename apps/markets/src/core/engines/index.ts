@@ -5,9 +5,10 @@ import { SYMBOLS } from '../schemas';
 import type { Stoppable } from '../services';
 import type { Source } from '../streams';
 import { CorrelationEngine, HORIZONS } from './correlations';
+import { DepthEngine } from './depth';
 import { StatsEngine } from './stats';
 
-export const ENGINE_NAMES = ['stats', 'correlations'] as const;
+export const ENGINE_NAMES = ['stats', 'correlations', 'depth'] as const;
 export type EngineName = (typeof ENGINE_NAMES)[number];
 
 /** Rolling stats per symbol over the last minute, once a second, into `stats`. */
@@ -61,7 +62,33 @@ export function runCorrelations(src: Source, everyMs = 1_000): Stoppable {
   };
 }
 
+/** Consolidated depth per symbol, once a second, into `depth`. */
+export function runDepth(src: Source, everyMs = 1_000): Stoppable {
+  const engine = new DepthEngine();
+  const off = src.subscribe(
+    'book',
+    (r) => {
+      engine.setBook(r.value);
+    },
+    'latest',
+  );
+  const timer = setInterval(() => {
+    const now = Date.now();
+    for (const s of SYMBOLS) {
+      const value = engine.compute(s, now);
+      if (value) src.publish('depth', value);
+    }
+  }, everyMs);
+  return {
+    stop() {
+      clearInterval(timer);
+      off();
+    },
+  };
+}
+
 export const ENGINES: Record<EngineName, (src: Source) => Stoppable> = {
   stats: (src) => runStats(src),
   correlations: (src) => runCorrelations(src),
+  depth: (src) => runDepth(src),
 };

@@ -62,6 +62,12 @@ export const correlations = topic('correlations.v1', {
   retention: { kind: 'last-n', n: 30 },
 });
 
+/** The depth engine's output (M3c task 5): one record per symbol a second. */
+export const depth = topic('depth.v1', {
+  schema: s.depth,
+  retention: { kind: 'last-n', n: 2_400 },
+});
+
 export default contracts(
   trades,
   book,
@@ -73,4 +79,5 @@ export default contracts(
   noise,
   stats,
   correlations,
+  depth,
 );

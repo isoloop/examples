@@ -125,6 +125,17 @@ export const correlations = z.object({
   ts,
 });
 
+/** Consolidated book depth for one symbol: size per bucket out from the mid, best first (M3c task 5). */
+export const depth = z.object({
+  symbol,
+  mid: price,
+  /** Each bucket's width, as a fraction of the mid. */
+  step: z.number().positive(),
+  bids: z.array(size).max(64),
+  asks: z.array(size).max(64),
+  ts,
+});
+
 /** Load from a widget's flood control (M3b task 14); nothing reads it. */
 export const noise = z.object({ widget: z.string().min(1), n: z.number().int().nonnegative(), ts });
 
@@ -148,3 +159,4 @@ export type Filters = z.infer<typeof filters>;
 export type Noise = z.infer<typeof noise>;
 export type Stats = z.infer<typeof stats>;
 export type Correlations = z.infer<typeof correlations>;
+export type Depth = z.infer<typeof depth>;

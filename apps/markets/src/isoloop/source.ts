@@ -15,6 +15,7 @@ const TOPICS: Record<StreamName, TopicRef<unknown, unknown, unknown, unknown>> =
   noise: T.noise,
   stats: T.stats,
   correlations: T.correlations,
+  depth: T.depth,
 };
 
 export function busSource(bus: BusClient): Source {
