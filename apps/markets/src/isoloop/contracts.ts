@@ -44,4 +44,10 @@ export const filters = topic('filters.v1', {
   retention: { kind: 'compacted' },
 });
 
-export default contracts(trades, book, prices, aggregates, alertRules, alerts, filters);
+/** The stress controls' flood: memory, the last 100. */
+export const noise = topic('noise.v1', {
+  schema: s.noise,
+  retention: { kind: 'last-n', n: 100 },
+});
+
+export default contracts(trades, book, prices, aggregates, alertRules, alerts, filters, noise);

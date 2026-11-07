@@ -44,6 +44,7 @@ const samples = {
       ts,
     },
   ],
+  'noise.v1': [{ widget: 'price', n: 0, ts }],
   'filters.v1': [{ symbols: ['BTC-USD'], exchanges: ['coinbase', 'kraken'], windowMs: 60_000 }],
 };
 
