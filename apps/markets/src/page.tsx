@@ -20,6 +20,7 @@ export function Page() {
         <Slot name="price" />
         <Slot name="spread" />
         <Slot name="volume" />
+        <Slot name="trades" />
       </main>
     </div>
   );

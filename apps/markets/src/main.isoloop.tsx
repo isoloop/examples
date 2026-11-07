@@ -30,7 +30,11 @@ if (params.get('source') === 'live') {
   kernel.spawn({
     id: 'replay',
     src: replay,
-    config: { speed: Number(params.get('speed')) || 1, seed: Number(params.get('seed')) || 1 },
+    config: {
+      speed: Number(params.get('speed')) || 1,
+      seed: Number(params.get('seed')) || 1,
+      tradesPerSecond: Number(params.get('tps')) || 2,
+    },
     grants: feedGrants,
   });
 }

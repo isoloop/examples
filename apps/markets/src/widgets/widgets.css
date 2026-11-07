@@ -30,3 +30,33 @@
 .filters input {
   font: inherit;
 }
+/* Fills the slot's box in both builds: the slot on native, the surface (`position: relative`) on Isoloop. */
+.trades {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+}
+.trades-inner {
+  position: relative;
+}
+.trade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22px;
+  display: grid;
+  grid-template-columns: 100px 80px 40px 1fr 1fr;
+  gap: 8px;
+  padding: 0 8px;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+.trade.buy span:nth-child(3) {
+  color: #59a14f;
+}
+.trade.sell span:nth-child(3) {
+  color: #e15759;
+}
+.trade .num {
+  text-align: right;
+}

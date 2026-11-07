@@ -2,6 +2,7 @@
 import filters from '../isolates/widgets/filters?isolate';
 import price from '../isolates/widgets/price?isolate';
 import spread from '../isolates/widgets/spread?isolate';
+import trades from '../isolates/widgets/trades?isolate';
 import volume from '../isolates/widgets/volume?isolate';
 import type { WidgetName } from '../widgets';
 
@@ -15,4 +16,5 @@ export const ISOLATES: Record<WidgetName, { src: string; grants: Grants }> = {
   price: { src: price, grants: { publish: [], subscribe: ['prices.v1', 'filters.v1'] } },
   spread: { src: spread, grants: { publish: [], subscribe: ['aggregates.v1', 'filters.v1'] } },
   volume: { src: volume, grants: { publish: [], subscribe: ['aggregates.v1', 'filters.v1'] } },
+  trades: { src: trades, grants: { publish: [], subscribe: ['trades.v1', 'filters.v1'] } },
 };

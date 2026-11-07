@@ -36,3 +36,20 @@ export function useCanvas(ref: RefObject<HTMLCanvasElement | null>): CanvasState
   }, [ref]);
   return state;
 }
+
+/** The element's size, from a ResizeObserver. */
+export function useBox(ref: RefObject<HTMLElement | null>): { width: number; height: number } {
+  const [box, setBox] = useState({ width: 0, height: 0 });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const watch = new ResizeObserver(([entry]) => {
+      if (entry) setBox({ width: entry.contentRect.width, height: entry.contentRect.height });
+    });
+    watch.observe(el);
+    return () => {
+      watch.disconnect();
+    };
+  }, [ref]);
+  return box;
+}
