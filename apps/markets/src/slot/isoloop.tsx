@@ -1,12 +1,20 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { kernel } from '../isoloop/kernel';
-import { ISOLATES, srcOf } from '#widgets';
+import { FRAMEWORK, ISOLATES, srcOf } from '#widgets';
 import type { Placement } from '../sizes/sizes';
+import { Head } from './Head';
+
+/** Workers numbered in the order the page starts them, for the headers. */
+let started = 0;
+const LABEL = { react: 'React', preact: 'Preact' } as const;
 
 /** A slot in the Isoloop build: a surface the widget's isolate renders into. */
 export function Slot({ placement }: { placement: Placement }) {
   const ref = useRef<HTMLDivElement>(null);
   const { id, widget, config } = placement;
+  const [worker] = useState(() => ++started);
+  const framework = FRAMEWORK?.[widget];
+  const where = `worker ${worker}${framework ? ` · ${LABEL[framework]}` : ''}`;
   useEffect(() => {
     const surface = ref.current;
     if (!surface) return undefined;
@@ -29,5 +37,10 @@ export function Slot({ placement }: { placement: Placement }) {
       void stop?.();
     };
   }, [id, widget, config]);
-  return <div ref={ref} className="slot" data-slot={id} data-widget={widget} />;
+  return (
+    <div className="slot" data-slot={id} data-widget={widget}>
+      <Head slot={id} where={where} />
+      <div ref={ref} className="widget-body" />
+    </div>
+  );
 }

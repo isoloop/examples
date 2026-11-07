@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from 'react';
 import type { Placement } from '../sizes/sizes';
 import { WIDGETS } from '../widgets';
+import { Head } from './Head';
 
 /** The idiomatic defence a native app has: one error boundary per widget. */
 class Boundary extends Component<{ name: string; children: ReactNode }, { error: string | null }> {
@@ -25,9 +26,12 @@ export function Slot({ placement }: { placement: Placement }) {
   const W = WIDGETS[placement.widget];
   return (
     <div className="slot widget" data-slot={placement.id} data-widget={placement.widget}>
-      <Boundary name={placement.id}>
-        <W config={placement.config} />
-      </Boundary>
+      <Head slot={placement.id} where="main thread" />
+      <div className="widget-body">
+        <Boundary name={placement.id}>
+          <W config={placement.config} />
+        </Boundary>
+      </div>
     </div>
   );
 }

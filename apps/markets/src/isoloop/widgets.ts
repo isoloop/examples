@@ -43,3 +43,6 @@ export const ISOLATES: Record<WidgetName, { src: string; grants: Grants }> = {
 export function srcOf(name: WidgetName): Promise<string> {
   return Promise.resolve(ISOLATES[name].src);
 }
+
+/** Which framework each widget runs on, where builds differ (`/mixed`); one framework here. */
+export const FRAMEWORK: Partial<Record<WidgetName, 'react' | 'preact'>> | undefined = undefined;
