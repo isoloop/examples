@@ -20,8 +20,9 @@ for (const build of ['isoloop', 'native'] as const) {
     page,
   }) => {
     test.setTimeout(60_000);
-    // 60 trades a second per exchange and symbol at 10×: BTC-USD fills 10,000 rows in seconds.
-    await page.goto(`/${build}/?speed=10&tps=60`);
+    // 25 trades a second per exchange and symbol at 10× (3,000/s in all): BTC-USD fills
+    // 10,000 rows in about 10 s, without starving a 4-core CI runner shared with other tests.
+    await page.goto(`/${build}/?speed=10&tps=25`);
     const table = page.locator('[data-slot="trades"] .trades');
     const inner = table.locator('.trades-inner');
     await expect

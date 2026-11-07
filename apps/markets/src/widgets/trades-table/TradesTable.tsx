@@ -4,8 +4,8 @@ import { useFilters } from '../useFilters';
 import { rowWindow } from './window';
 
 const ROW = 22;
-/** Trades kept across symbols; one symbol gets about a third. */
-const KEEP = 30_000;
+/** Trades kept across symbols; one symbol gets about a third, over 10,000. */
+const KEEP = 40_000;
 
 const time = (ts: number): string => new Date(ts).toISOString().slice(11, 23);
 
