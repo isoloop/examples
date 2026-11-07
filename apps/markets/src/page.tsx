@@ -2,6 +2,7 @@ import { BUILD } from '#env';
 import { Slot } from '#slot';
 import { BUILDS, COUNTERPART, CURRENT } from './builds';
 import { About } from './about/About';
+import { CategoryPanel } from './metrics/Categories';
 import { MetricsPanel } from './metrics/Panel';
 import { Responsiveness } from './responsive/Responsiveness';
 import { SIZES, SPECS, specFrom, sizeHref } from './sizes/sizes';
@@ -65,6 +66,7 @@ export function Page() {
       </header>
       <Responsiveness />
       <MetricsPanel />
+      <CategoryPanel />
       <About />
       {filters && <Slot placement={filters} />}
       <main className="grid" data-size={spec.size}>

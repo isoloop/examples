@@ -1,7 +1,15 @@
 // Stress controls per widget (M3b task 14). They run in the widget's own code,
 // so on Isoloop they load that widget's isolate and on native the main thread.
 import { usePublish } from '#env';
-import { useEffect, useRef, useState, type ComponentType, type FunctionComponent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FunctionComponent,
+  type ReactNode,
+} from 'react';
+import { TimingContext } from '../../metrics/timing';
 
 /** How long `block` keeps the widget's loop busy. */
 export const BLOCK_MS = 3_000;
@@ -73,23 +81,62 @@ function StressBar({ name, onCrash }: { name: string; onCrash: () => void }) {
 /** Takes the isolate's `config` prop where there is one, so `defineIsolate` accepts it. */
 export function withStress(
   name: string,
-  W: ComponentType<{ config?: unknown }>,
+  W: (props: { config?: unknown }) => ReactNode,
 ): FunctionComponent<{ config?: unknown }> {
   function Stressed({ config }: { config?: unknown }) {
     const [crashed, setCrashed] = useState(false);
+    const slot = slotOf(config) ?? name;
+    const publish = usePublish('timings');
+    // The time this widget spends rendering and drawing, published once a
+    // second (M3c task 10). Measured on whichever thread runs it.
+    const spent = useRef(0);
+    const record = useCallback((ms: number) => {
+      spent.current += ms;
+    }, []);
+    useEffect(() => {
+      const id = setInterval(() => {
+        publish({ slot, widget: name, ms: spent.current, ts: Date.now() });
+        spent.current = 0;
+      }, 1_000);
+      return () => {
+        clearInterval(id);
+      };
+    }, [publish, slot]);
     if (crashed) throw new Error(`stress: ${name} crashed`);
     return (
-      <>
-        <W config={config} />
+      <TimingContext.Provider value={record}>
+        <Timed W={W} config={config} record={record} />
         <StressBar
           name={name}
           onCrash={() => {
             setCrashed(true);
           }}
         />
-      </>
+      </TimingContext.Provider>
     );
   }
   Stressed.displayName = `Stressed(${name})`;
   return Stressed;
+}
+
+/** Renders `W` by calling it, so its render (and the work in it) is timed as this component's. */
+function Timed({
+  W,
+  config,
+  record,
+}: {
+  W: (props: { config?: unknown }) => ReactNode;
+  config?: unknown;
+  record: (ms: number) => void;
+}) {
+  const t0 = performance.now();
+  const out = W({ config });
+  record(performance.now() - t0);
+  return out;
+}
+
+function slotOf(config: unknown): string | undefined {
+  const v: unknown =
+    typeof config === 'object' && config !== null ? Reflect.get(config, 'slot') : undefined;
+  return typeof v === 'string' ? v : undefined;
 }

@@ -5,6 +5,7 @@ import { SYMBOLS } from '../schemas';
 import type { Stoppable } from '../services';
 import type { Source } from '../streams';
 import { CorrelationEngine, HORIZONS } from './correlations';
+import { engineMeter, timed } from '../../metrics/timing';
 import { DepthEngine } from './depth';
 import { StatsEngine } from './stats';
 
@@ -13,20 +14,25 @@ export type EngineName = (typeof ENGINE_NAMES)[number];
 
 /** Rolling stats per symbol over the last minute, once a second, into `stats`. */
 export function runStats(src: Source, everyMs = 1_000, windowMs = 60_000): Stoppable {
+  const record = engineMeter(src, 'stats');
   const engine = new StatsEngine();
   const off = src.subscribe(
     'trades',
     (r) => {
-      engine.addTrade(r.value);
+      timed(record, () => {
+        engine.addTrade(r.value);
+      });
     },
     'latest',
   );
   const timer = setInterval(() => {
-    const now = Date.now();
-    for (const s of SYMBOLS) {
-      const value = engine.compute(s, now, windowMs);
-      if (value) src.publish('stats', value);
-    }
+    timed(record, () => {
+      const now = Date.now();
+      for (const s of SYMBOLS) {
+        const value = engine.compute(s, now, windowMs);
+        if (value) src.publish('stats', value);
+      }
+    });
   }, everyMs);
   return {
     stop() {
@@ -38,21 +44,26 @@ export function runStats(src: Source, everyMs = 1_000, windowMs = 60_000): Stopp
 
 /** Correlations across symbols at each horizon, once a second, into `correlations`. */
 export function runCorrelations(src: Source, everyMs = 1_000): Stoppable {
+  const record = engineMeter(src, 'correlations');
   const engine = new CorrelationEngine();
   const off = src.subscribe(
     'trades',
     (r) => {
-      engine.addTrade(r.value);
+      timed(record, () => {
+        engine.addTrade(r.value);
+      });
     },
     'latest',
   );
   const timer = setInterval(() => {
-    engine.sample();
-    const now = Date.now();
-    for (const h of HORIZONS) {
-      const value = engine.compute(h, now);
-      if (value) src.publish('correlations', value);
-    }
+    timed(record, () => {
+      engine.sample();
+      const now = Date.now();
+      for (const h of HORIZONS) {
+        const value = engine.compute(h, now);
+        if (value) src.publish('correlations', value);
+      }
+    });
   }, everyMs);
   return {
     stop() {
@@ -64,20 +75,25 @@ export function runCorrelations(src: Source, everyMs = 1_000): Stoppable {
 
 /** Consolidated depth per symbol, once a second, into `depth`. */
 export function runDepth(src: Source, everyMs = 1_000): Stoppable {
+  const record = engineMeter(src, 'depth');
   const engine = new DepthEngine();
   const off = src.subscribe(
     'book',
     (r) => {
-      engine.setBook(r.value);
+      timed(record, () => {
+        engine.setBook(r.value);
+      });
     },
     'latest',
   );
   const timer = setInterval(() => {
-    const now = Date.now();
-    for (const s of SYMBOLS) {
-      const value = engine.compute(s, now);
-      if (value) src.publish('depth', value);
-    }
+    timed(record, () => {
+      const now = Date.now();
+      for (const s of SYMBOLS) {
+        const value = engine.compute(s, now);
+        if (value) src.publish('depth', value);
+      }
+    });
   }, everyMs);
   return {
     stop() {
