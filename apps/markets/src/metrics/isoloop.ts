@@ -13,4 +13,5 @@ export const buildMetrics: BuildMetricsSource = {
     workerLagMs: Math.max(0, ...kernel.isolates().map((i) => i.lagMs)),
     busRecordsPerSec,
   }),
+  states: () => Object.fromEntries(kernel.isolates().map((i) => [i.id, i.state])),
 };

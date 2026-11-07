@@ -3,4 +3,5 @@ import type { BuildMetricsSource } from './types';
 
 export const buildMetrics: BuildMetricsSource = {
   read: () => ({ workerLagMs: null, busRecordsPerSec: null }),
+  states: () => null,
 };

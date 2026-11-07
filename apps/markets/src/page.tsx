@@ -1,6 +1,7 @@
 import { BUILD } from '#env';
 import { Slot } from '#slot';
 import { BUILDS, COUNTERPART, CURRENT } from './builds';
+import { About } from './about/About';
 import { MetricsPanel } from './metrics/Panel';
 import { switchHref } from './url';
 
@@ -45,6 +46,7 @@ export function Page() {
         </nav>
       </header>
       <MetricsPanel />
+      <About />
       <Slot name="filters" />
       <main className="grid">
         <Slot name="price" />
