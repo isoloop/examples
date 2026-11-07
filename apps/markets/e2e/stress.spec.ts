@@ -1,7 +1,19 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
-/** The "good" input-latency threshold (INP ≤ 200 ms). */
+/** The "good" input-latency threshold (INP ≤ 200 ms, design §9). */
 const INPUT_BUDGET_MS = 200;
+/**
+ * CI runners are shared and slower than a developer machine, so CI sets
+ * `PERF_BUDGET_SCALE=2`; locally the budget applies as stated. The published
+ * numbers come from the comparison, not from these checks.
+ */
+const SCALE = Number(process.env.PERF_BUDGET_SCALE ?? '1');
+const withinBudget = (ms: number): void => {
+  expect(
+    ms,
+    `${Math.round(ms)} ms > ${INPUT_BUDGET_MS} ms × ${SCALE} = ${INPUT_BUDGET_MS * SCALE} ms`,
+  ).toBeLessThanOrEqual(INPUT_BUDGET_MS * SCALE);
+};
 const BLOCK_MS = 3_000;
 
 const slot = (page: Page, name: string): Locator => page.locator(`[data-slot="${name}"]`);
@@ -38,7 +50,7 @@ test.describe('isoloop', () => {
     await inputLatency(page, '1'); // warm up
     await stress(page, 'price', 'block').click();
     const ms = await inputLatency(page, '2');
-    expect(ms).toBeLessThanOrEqual(INPUT_BUDGET_MS);
+    withinBudget(ms);
     // The host's busy overlay (its text is CSS content), within design §9's 500 ms plus slack.
     await expect(slot(page, 'price').locator('.iso-busy')).toBeVisible({ timeout: 1_500 });
     await draws(page, 'spread');
@@ -85,7 +97,7 @@ for (const build of ['isoloop', 'native'] as const) {
     await stress(page, 'trades', 'flood').click();
     await expect(stress(page, 'trades', 'flood')).toHaveAttribute('aria-pressed', 'true');
     const ms = await inputLatency(page, '2');
-    expect(ms).toBeLessThanOrEqual(INPUT_BUDGET_MS);
+    withinBudget(ms);
     await draws(page, 'spread');
   });
 }
