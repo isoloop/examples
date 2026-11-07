@@ -1,6 +1,6 @@
 // The dashboard's streams by name, as the widgets and both builds see them.
 // The Isoloop build maps each to a topic; the native build to a store slot.
-import type { Aggregate, Alert, AlertRule, Book, Filters, Quote, Trade } from './schemas';
+import type { Aggregate, Alert, AlertRule, Book, Filters, Noise, Quote, Trade } from './schemas';
 
 export interface Streams {
   trades: Trade;
@@ -10,6 +10,7 @@ export interface Streams {
   alertRules: AlertRule;
   alerts: Alert;
   filters: Filters;
+  noise: Noise;
 }
 export type StreamName = keyof Streams;
 

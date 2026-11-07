@@ -22,6 +22,7 @@ body {
   color: #8ab4f8;
 }
 .page > .slot {
+  position: relative;
   padding: 0 12px;
   border-bottom: 1px solid #333;
 }

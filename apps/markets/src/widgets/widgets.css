@@ -86,3 +86,20 @@
 .fired li {
   color: #f28e2b;
 }
+.stress {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  z-index: 1;
+  display: flex;
+  gap: 2px;
+  opacity: 0.6;
+}
+.stress:hover,
+.stress:focus-within {
+  opacity: 1;
+}
+.stress button {
+  font-size: 11px;
+  padding: 1px 4px;
+}

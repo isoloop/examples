@@ -77,6 +77,9 @@ export const alert = z.object({
   ts,
 });
 
+/** Load from a widget's flood control (M3b task 14); nothing reads it. */
+export const noise = z.object({ widget: z.string().min(1), n: z.number().int().nonnegative(), ts });
+
 /** What every widget shows (compacted, key `current`). */
 export const filters = z.object({
   symbols: z.array(symbol).min(1),
@@ -94,3 +97,4 @@ export type Metric = z.infer<typeof metric>;
 export type AlertRule = z.infer<typeof alertRule>;
 export type Alert = z.infer<typeof alert>;
 export type Filters = z.infer<typeof filters>;
+export type Noise = z.infer<typeof noise>;

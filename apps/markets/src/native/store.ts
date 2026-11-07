@@ -13,6 +13,7 @@ const KEEP: Record<StreamName, number> = {
   alertRules: 0,
   alerts: 500,
   filters: 0,
+  noise: 100,
 };
 const KEYED: ReadonlySet<StreamName> = new Set(['prices', 'alertRules', 'filters']);
 const PERSIST: ReadonlySet<StreamName> = new Set(['alertRules', 'alerts']);
