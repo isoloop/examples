@@ -21,7 +21,10 @@ test('isoloop: the stats engine publishes stats.v1 at Normal', async ({ page }) 
       new Promise<number>((resolve) => {
         const seen = new Set<string>();
         window.kernel.subscribe({ name: 'stats.v1', schema }, (r) => {
-          seen.add((r.value as { symbol: string }).symbol);
+          const v: unknown = r.value;
+          const sym: unknown =
+            typeof v === 'object' && v !== null ? Reflect.get(v, 'symbol') : null;
+          if (typeof sym === 'string') seen.add(sym);
           if (seen.size === 10) resolve(seen.size);
         });
       }),
