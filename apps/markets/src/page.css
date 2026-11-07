@@ -21,6 +21,16 @@ body {
   margin-left: auto;
   color: #8ab4f8;
 }
+.page .sizes {
+  display: flex;
+  gap: 8px;
+}
+.page .sizes a {
+  color: #8ab4f8;
+}
+.page .sizes [aria-current] {
+  font-weight: 600;
+}
 .page > .slot {
   position: relative;
   padding: 0 12px;

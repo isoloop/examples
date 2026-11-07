@@ -46,7 +46,7 @@ test.describe('isoloop', () => {
   test('blocking one chart keeps input on the others within budget, and shows it busy', async ({
     page,
   }) => {
-    await page.goto('/isoloop/?speed=10');
+    await page.goto('/isoloop/?size=lite&speed=10');
     await inputLatency(page, '1'); // warm up
     await stress(page, 'price', 'block').click();
     const ms = await inputLatency(page, '2');
@@ -57,7 +57,7 @@ test.describe('isoloop', () => {
   });
 
   test('a crashed chart leaves the others drawing, and comes back', async ({ page }) => {
-    await page.goto('/isoloop/?speed=10');
+    await page.goto('/isoloop/?size=lite&speed=10');
     await draws(page, 'price');
     await stress(page, 'price', 'crash').click();
     await Promise.all([draws(page, 'spread'), draws(page, 'volume')]);
@@ -69,7 +69,7 @@ test.describe('isoloop', () => {
 
 test.describe('native', () => {
   test('blocking one chart freezes the whole page', async ({ page }) => {
-    await page.goto('/native/?speed=10');
+    await page.goto('/native/?size=lite&speed=10');
     await inputLatency(page, '1');
     const t0 = Date.now();
     // The click runs the busy loop on the main thread; nothing else runs until it ends.
@@ -81,7 +81,7 @@ test.describe('native', () => {
   test('a crashed chart shows its error boundary, and the others keep drawing', async ({
     page,
   }) => {
-    await page.goto('/native/?speed=10');
+    await page.goto('/native/?size=lite&speed=10');
     await stress(page, 'price', 'crash').click();
     await expect(slot(page, 'price')).toContainText('price crashed');
     await Promise.all([draws(page, 'spread'), draws(page, 'volume')]);
@@ -92,7 +92,7 @@ for (const build of ['isoloop', 'native'] as const) {
   test(`${build}: a flood from one widget keeps input on the others within budget`, async ({
     page,
   }) => {
-    await page.goto(`/${build}/?speed=10`);
+    await page.goto(`/${build}/?size=lite&speed=10`);
     await inputLatency(page, '1');
     await stress(page, 'trades', 'flood').click();
     await expect(stress(page, 'trades', 'flood')).toHaveAttribute('aria-pressed', 'true');

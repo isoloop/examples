@@ -1,5 +1,6 @@
 import { Component, type ReactNode } from 'react';
-import { WIDGETS, type WidgetName } from '../widgets';
+import type { Placement } from '../sizes/sizes';
+import { WIDGETS } from '../widgets';
 
 /** The idiomatic defence a native app has: one error boundary per widget. */
 class Boundary extends Component<{ name: string; children: ReactNode }, { error: string | null }> {
@@ -20,12 +21,12 @@ class Boundary extends Component<{ name: string; children: ReactNode }, { error:
 }
 
 /** A slot in the native build: the widget itself, in the page's tree. */
-export function Slot({ name }: { name: WidgetName }) {
-  const W = WIDGETS[name];
+export function Slot({ placement }: { placement: Placement }) {
+  const W = WIDGETS[placement.widget];
   return (
-    <div className="slot widget" data-slot={name}>
-      <Boundary name={name}>
-        <W />
+    <div className="slot widget" data-slot={placement.id} data-widget={placement.widget}>
+      <Boundary name={placement.id}>
+        <W config={placement.config} />
       </Boundary>
     </div>
   );

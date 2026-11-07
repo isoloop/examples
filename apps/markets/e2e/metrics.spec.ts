@@ -11,7 +11,7 @@ const NATIVE = ['native', 'native-preact'] as const;
 
 for (const build of inScope([...ISOLOOP, ...NATIVE])) {
   test(`${build}: every metric shows a value within 2 s of start`, async ({ page }) => {
-    await page.goto(`/${build}/?speed=10`);
+    await page.goto(`/${build}/?size=lite&speed=10`);
     // An input, so input latency has something to measure.
     await page.locator('[data-slot="filters"] select[name="symbol"]').selectOption('ETH-USD');
     const native = (NATIVE as readonly string[]).includes(build);

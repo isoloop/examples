@@ -36,7 +36,7 @@ test('the Preact isolates come from their own build', async ({ page }) => {
   page.on('request', (r) => {
     if (r.url().includes('/mixed/preact/')) loaded.push(new URL(r.url()).pathname);
   });
-  await page.goto('/mixed/?speed=10');
+  await page.goto('/mixed/?size=lite&speed=10');
   await filtersWork(page, 'ETH-USD');
   await expect(slot(page, 'alerts-panel').getByRole('button', { name: 'Add rule' })).toBeVisible();
   expect(loaded.some((p) => p.endsWith('/filters.js'))).toBe(true);
@@ -44,7 +44,7 @@ test('the Preact isolates come from their own build', async ({ page }) => {
 });
 
 test('a crashed Preact widget leaves the React ones drawing', async ({ page }) => {
-  await page.goto('/mixed/?speed=10');
+  await page.goto('/mixed/?size=lite&speed=10');
   await draws(page, 'price');
   await slot(page, 'filters').locator('button[name="stress-crash"]').click();
   await Promise.all([draws(page, 'price'), draws(page, 'spread')]);
@@ -53,7 +53,7 @@ test('a crashed Preact widget leaves the React ones drawing', async ({ page }) =
 });
 
 test('a crashed React widget leaves the Preact ones working', async ({ page }) => {
-  await page.goto('/mixed/?speed=10');
+  await page.goto('/mixed/?size=lite&speed=10');
   await draws(page, 'price');
   await slot(page, 'price').locator('button[name="stress-crash"]').click();
   await filtersWork(page, 'ETH-USD');

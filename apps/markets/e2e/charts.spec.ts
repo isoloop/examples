@@ -13,7 +13,7 @@ async function changes(el: Locator, before: Buffer): Promise<void> {
 for (const build of ['isoloop', 'native'] as const) {
   test.describe(build, () => {
     test('changing the symbol filter redraws all three charts', async ({ page }) => {
-      await page.goto(`/${build}/?speed=10`);
+      await page.goto(`/${build}/?size=lite&speed=10`);
       await Promise.all(CHARTS.map((c) => expect(chart(page, c)).toBeVisible()));
       // Let the charts fill, then freeze the picture to compare against.
       await page.waitForTimeout(3_000);
@@ -27,7 +27,7 @@ for (const build of ['isoloop', 'native'] as const) {
 }
 
 test('stopping one chart isolate leaves the others drawing', async ({ page }) => {
-  await page.goto('/isoloop/?speed=10');
+  await page.goto('/isoloop/?size=lite&speed=10');
   await page.waitForTimeout(2_000);
   await page.evaluate(() => window.kernel.stop('price'));
   await Promise.all(
