@@ -67,3 +67,35 @@ body {
   margin: 0;
   font-variant-numeric: tabular-nums;
 }
+.about {
+  padding: 6px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 13px;
+}
+.about summary {
+  cursor: pointer;
+  color: #8ab4f8;
+}
+.about-pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.about-col ul {
+  margin: 0;
+  padding-left: 16px;
+}
+.about h3 {
+  margin: 8px 0 4px;
+  font-size: 13px;
+}
+.about .state {
+  color: #999;
+}
+.about .state[data-state='running'] {
+  color: #7bc67b;
+}
+.about .state[data-state='crashed'],
+.about .state[data-state='failed'] {
+  color: #e57373;
+}

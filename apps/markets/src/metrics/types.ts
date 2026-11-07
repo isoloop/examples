@@ -8,4 +8,6 @@ export type BuildMetrics = {
 
 export interface BuildMetricsSource {
   read(): BuildMetrics;
+  /** Each isolate's state by id; `null` where nothing runs in isolates. */
+  states(): Record<string, string> | null;
 }
