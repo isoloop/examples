@@ -1,0 +1,92 @@
+// The dashboard's records, as Zod schemas. Plain data and no Isoloop imports:
+// the Isoloop build turns them into topics (src/isoloop/contracts.ts) and the
+// native build uses the same types for its store.
+import { z } from 'zod';
+
+export const EXCHANGES = ['coinbase', 'kraken', 'bitstamp', 'okx'] as const;
+export const SYMBOLS = ['BTC-USD', 'ETH-USD', 'SOL-USD'] as const;
+
+export const exchange = z.enum(EXCHANGES);
+export const symbol = z.enum(SYMBOLS);
+const price = z.number().positive();
+const size = z.number().nonnegative();
+const ts = z.number().int().nonnegative();
+
+/** One trade on one exchange. */
+export const trade = z.object({
+  exchange,
+  symbol,
+  id: z.string().min(1),
+  price,
+  size,
+  side: z.enum(['buy', 'sell']),
+  ts,
+});
+
+/** The top of one exchange's order book: up to 20 levels a side, best first. */
+const level = z.tuple([price, size]);
+export const book = z.object({
+  exchange,
+  symbol,
+  bids: z.array(level).max(20),
+  asks: z.array(level).max(20),
+  ts,
+});
+
+/** The latest price per exchange and symbol (compacted, key `exchange:symbol`). */
+export const quote = z.object({ exchange, symbol, last: price, bid: price, ask: price, ts });
+
+/** Cross-market figures for one symbol over a window. */
+export const aggregate = z.object({
+  symbol,
+  vwap: price,
+  /** Best ask minus best bid across exchanges; negative when markets cross. */
+  spread: z.number(),
+  volume: size,
+  windowMs: z.number().int().positive(),
+  ts,
+});
+
+export const metric = z.enum(['price', 'vwap', 'spread']);
+
+/** An alert rule (compacted, key = id). `removed` deletes it. */
+export const alertRule = z.discriminatedUnion('removed', [
+  z.object({
+    removed: z.literal(false),
+    id: z.string().min(1),
+    symbol,
+    metric,
+    op: z.enum(['above', 'below']),
+    threshold: z.number(),
+  }),
+  z.object({ removed: z.literal(true), id: z.string().min(1) }),
+]);
+
+/** A rule that fired. */
+export const alert = z.object({
+  ruleId: z.string().min(1),
+  symbol,
+  metric,
+  op: z.enum(['above', 'below']),
+  threshold: z.number(),
+  value: z.number(),
+  ts,
+});
+
+/** What every widget shows (compacted, key `current`). */
+export const filters = z.object({
+  symbols: z.array(symbol).min(1),
+  exchanges: z.array(exchange).min(1),
+  windowMs: z.number().int().positive(),
+});
+
+export type Exchange = z.infer<typeof exchange>;
+export type Sym = z.infer<typeof symbol>;
+export type Trade = z.infer<typeof trade>;
+export type Book = z.infer<typeof book>;
+export type Quote = z.infer<typeof quote>;
+export type Aggregate = z.infer<typeof aggregate>;
+export type Metric = z.infer<typeof metric>;
+export type AlertRule = z.infer<typeof alertRule>;
+export type Alert = z.infer<typeof alert>;
+export type Filters = z.infer<typeof filters>;
