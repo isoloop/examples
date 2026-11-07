@@ -12,6 +12,7 @@ for (const [from, to] of builds) {
   test(`${from} → ${to}: the toggle lands on the other build with the same filters and replay position`, async ({
     page,
   }) => {
+    const started = Date.now();
     await page.goto(`/${from}/?speed=10&seed=3`);
     const filters = page.locator('[data-slot="filters"]');
     await filters.locator('select[name="symbol"]').selectOption('ETH-USD');
@@ -24,13 +25,13 @@ for (const [from, to] of builds) {
     await expect.poll(url('symbol')).toBe('ETH-USD');
     await expect.poll(url('ex')).toBe('coinbase,kraken,bitstamp');
     await page.waitForTimeout(2_000);
-    const before = Date.now();
     await page.getByRole('link', { name: `Switch to ${to}` }).click();
     await page.waitForURL(`**/${to}/**`);
-    // About 2 s at 10×, plus boot: 20 s of recording or more, and no more than it could be.
-    const loaded = (Date.now() - before) * 10;
+    // At least the 2 s wait at 10× (20 s of recording), and no more than the
+    // whole test so far at 10×: a slow runner takes longer to get here, and the
+    // replay plays on meanwhile.
     expect(at(page)).toBeGreaterThanOrEqual(18_000);
-    expect(at(page)).toBeLessThan(40_000 + loaded);
+    expect(at(page)).toBeLessThan((Date.now() - started) * 10 + 5_000);
     const there = page.locator('[data-slot="filters"]');
     await expect(there.locator('select[name="symbol"]')).toHaveValue('ETH-USD');
     await expect(there.locator('input[name="exchange-okx"]')).not.toBeChecked();
