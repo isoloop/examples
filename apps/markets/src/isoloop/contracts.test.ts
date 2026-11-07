@@ -49,6 +49,9 @@ const samples = {
   'correlations.v1': [
     { horizonMs: 60_000, symbols: ['BTC-USD', 'ETH-USD'], matrix: [1, 0.8, 0.8, 1], ts },
   ],
+  'depth.v1': [
+    { symbol: 'BTC-USD', mid: 100_000, step: 0.0001, bids: [1.5, 2], asks: [1.25, 3], ts },
+  ],
   'stats.v1': [
     {
       symbol: 'ETH-USD',

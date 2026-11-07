@@ -6,6 +6,7 @@ import type {
   AlertRule,
   Book,
   Correlations,
+  Depth,
   Filters,
   Noise,
   Quote,
@@ -24,6 +25,7 @@ export interface Streams {
   noise: Noise;
   stats: Stats;
   correlations: Correlations;
+  depth: Depth;
 }
 export type StreamName = keyof Streams;
 

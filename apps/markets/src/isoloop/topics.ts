@@ -20,3 +20,4 @@ export const filters: typeof C.filters = handle('filters.v1');
 export const noise: typeof C.noise = handle('noise.v1');
 export const stats: typeof C.stats = handle('stats.v1');
 export const correlations: typeof C.correlations = handle('correlations.v1');
+export const depth: typeof C.depth = handle('depth.v1');

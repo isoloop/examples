@@ -16,6 +16,7 @@ const KEEP: Record<StreamName, number> = {
   noise: 100,
   stats: 2_000,
   correlations: 30,
+  depth: 2_400,
 };
 const KEYED: ReadonlySet<StreamName> = new Set(['prices', 'alertRules', 'filters']);
 const PERSIST: ReadonlySet<StreamName> = new Set(['alertRules', 'alerts']);

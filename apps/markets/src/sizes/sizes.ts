@@ -47,14 +47,14 @@ export const SPECS: Record<Size, SizeSpec> = {
     symbols: 20,
     rate: 1,
     widgets: LITE,
-    engines: ['stats', 'correlations'],
+    engines: ['stats', 'correlations', 'depth'],
   },
   heavy: {
     label: 'Heavy',
     symbols: 20,
     rate: 5,
     widgets: LITE,
-    engines: ['stats', 'correlations'],
+    engines: ['stats', 'correlations', 'depth'],
   },
 };
 

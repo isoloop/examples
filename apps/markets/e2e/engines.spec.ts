@@ -99,3 +99,41 @@ test('both builds publish correlations at three horizons at Normal', async ({ pa
     )
     .toBe(3);
 });
+
+test('both builds publish depth for every symbol at Normal', async ({ page }) => {
+  await page.goto('/isoloop/?size=normal&speed=10');
+  const symbols = await page.evaluate(
+    (schema) =>
+      new Promise<number>((resolve) => {
+        const seen = new Set<string>();
+        window.kernel.subscribe({ name: 'depth.v1', schema }, (r) => {
+          const v: unknown = r.value;
+          const sym: unknown =
+            typeof v === 'object' && v !== null ? Reflect.get(v, 'symbol') : null;
+          if (typeof sym === 'string') seen.add(sym);
+          if (seen.size === 20) resolve(seen.size);
+        });
+      }),
+    any,
+  );
+  expect(symbols).toBe(20);
+
+  await page.goto('/native/?size=normal&speed=10');
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const seen = new Set<string>();
+          window.store.subscribe(
+            'depth',
+            (r) => {
+              seen.add(r.value.symbol);
+            },
+            'earliest',
+          )();
+          return seen.size;
+        }),
+      { timeout: 10_000 },
+    )
+    .toBe(20);
+});
