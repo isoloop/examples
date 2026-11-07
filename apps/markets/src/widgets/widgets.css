@@ -60,3 +60,29 @@
 .trade .num {
   text-align: right;
 }
+.alerts {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.rule-editor {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.rule-editor input {
+  width: 90px;
+}
+.rules,
+.fired {
+  margin: 0;
+  padding-left: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.fired li {
+  color: #f28e2b;
+}

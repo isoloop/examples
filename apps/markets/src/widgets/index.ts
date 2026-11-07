@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { AlertsPanel } from './alerts-panel/AlertsPanel';
 import { FiltersBar } from './FiltersBar';
 import { PriceChart } from './PriceChart';
 import { SpreadChart } from './SpreadChart';
@@ -12,6 +13,7 @@ export const WIDGETS = {
   spread: SpreadChart,
   volume: VolumeChart,
   trades: TradesTable,
+  'alerts-panel': AlertsPanel,
 } as const satisfies Record<string, ComponentType>;
 
 export type WidgetName = keyof typeof WIDGETS;
