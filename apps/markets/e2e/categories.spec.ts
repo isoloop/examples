@@ -31,9 +31,10 @@ for (const build of ['isoloop', 'native'] as const) {
     const apply = rows.map((r) => r.applyMsPerSec);
     if (build === 'native') expect(apply.every((a) => a === null)).toBe(true);
     else expect(apply.every((a) => typeof a === 'number')).toBe(true);
+    // The panel redraws on its own interval, after the figures above exist.
     await expect(
       page.locator('.categories tr[data-category="engines"] td[data-col="work"]'),
-    ).toHaveText(/^\d+\.\d$/);
+    ).toHaveText(/^\d+\.\d$/, { timeout: 15_000 });
   });
 }
 
