@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "e2e": "playwright test",
+    "compare": "playwright test --project=comparison --workers=1 && node scripts/compare.ts",
     "record": "node scripts/record.ts",
     "dev:native": "vite --mode native"
   },

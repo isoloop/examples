@@ -24,3 +24,4 @@ test-results/
 
 # Local feed recordings (scripts/record.ts)
 apps/*/fixtures/ticks/
+comparison-results/
