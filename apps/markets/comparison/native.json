@@ -1,0 +1,9 @@
+{
+  "build": "native",
+  "calm": [15, 10, 9, 11, 11],
+  "stressed": [2832, 2833, 2844, 2825, 2822],
+  "fps": "27",
+  "longTasks": "3",
+  "firstData": "168 ms",
+  "bundle": "100 KB"
+}
