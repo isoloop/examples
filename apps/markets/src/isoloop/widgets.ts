@@ -5,6 +5,12 @@ import price from '../isolates/widgets/price?isolate';
 import spread from '../isolates/widgets/spread?isolate';
 import trades from '../isolates/widgets/trades?isolate';
 import volume from '../isolates/widgets/volume?isolate';
+import sparklines from '../isolates/widgets/sparklines?isolate';
+import vwap from '../isolates/widgets/vwap?isolate';
+import volatility from '../isolates/widgets/volatility?isolate';
+import volumeProfile from '../isolates/widgets/volume-profile?isolate';
+import correlations from '../isolates/widgets/correlations?isolate';
+import depth from '../isolates/widgets/depth?isolate';
 import type { WidgetName } from '../widgets';
 import { GRANTS, type Grants } from './grants';
 
@@ -15,6 +21,12 @@ export const ISOLATES: Record<WidgetName, { src: string; grants: Grants }> = {
   volume: { src: volume, grants: GRANTS.volume },
   trades: { src: trades, grants: GRANTS.trades },
   'alerts-panel': { src: alerts, grants: GRANTS['alerts-panel'] },
+  sparklines: { src: sparklines, grants: GRANTS['sparklines'] },
+  vwap: { src: vwap, grants: GRANTS['vwap'] },
+  volatility: { src: volatility, grants: GRANTS['volatility'] },
+  'volume-profile': { src: volumeProfile, grants: GRANTS['volume-profile'] },
+  correlations: { src: correlations, grants: GRANTS['correlations'] },
+  depth: { src: depth, grants: GRANTS['depth'] },
 };
 
 /** The module a slot's isolate runs. A promise, because `/mixed` reads some from a manifest. */

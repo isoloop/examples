@@ -5,6 +5,14 @@ import { PriceChart } from './PriceChart';
 import { SpreadChart } from './SpreadChart';
 import { TradesTable } from './trades-table/TradesTable';
 import { VolumeChart } from './VolumeChart';
+import {
+  CorrelationHeatmap,
+  DepthHeatmap,
+  Sparklines,
+  VolatilityChart,
+  VolumeProfile,
+  VwapChart,
+} from './derived';
 import { withStress } from './stress/withStress';
 
 /** Every widget by slot name. The same components render in both builds. */
@@ -15,6 +23,12 @@ export const WIDGETS = {
   volume: withStress('volume', VolumeChart),
   trades: withStress('trades', TradesTable),
   'alerts-panel': withStress('alerts-panel', AlertsPanel),
+  sparklines: withStress('sparklines', Sparklines),
+  vwap: withStress('vwap', VwapChart),
+  volatility: withStress('volatility', VolatilityChart),
+  'volume-profile': withStress('volume-profile', VolumeProfile),
+  correlations: withStress('correlations', CorrelationHeatmap),
+  depth: withStress('depth', DepthHeatmap),
 } as const satisfies Record<string, ComponentType>;
 
 export type WidgetName = keyof typeof WIDGETS;

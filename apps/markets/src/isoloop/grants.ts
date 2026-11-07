@@ -16,4 +16,10 @@ export const GRANTS: Record<WidgetName, Grants> = {
     publish: ['alert-rules.v1', 'noise.v1'],
     subscribe: ['alert-rules.v1', 'alerts.v1'],
   },
+  sparklines: { publish: ['noise.v1'], subscribe: ['prices.v1', 'filters.v1'] },
+  vwap: { publish: ['noise.v1'], subscribe: ['stats.v1', 'filters.v1'] },
+  volatility: { publish: ['noise.v1'], subscribe: ['stats.v1'] },
+  'volume-profile': { publish: ['noise.v1'], subscribe: ['stats.v1', 'filters.v1'] },
+  correlations: { publish: ['noise.v1'], subscribe: ['correlations.v1'] },
+  depth: { publish: ['noise.v1'], subscribe: ['depth.v1', 'filters.v1'] },
 };

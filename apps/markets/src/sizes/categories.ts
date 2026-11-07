@@ -21,4 +21,10 @@ export const CATEGORY: Record<WidgetName, Category> = {
   volume: { data: 'aggregated', output: 'canvas' },
   trades: { data: 'raw', output: 'dom' },
   'alerts-panel': { data: 'combined', output: 'dom' },
+  sparklines: { data: 'filtered', output: 'canvas' },
+  vwap: { data: 'aggregated', output: 'canvas' },
+  volatility: { data: 'aggregated', output: 'canvas' },
+  'volume-profile': { data: 'aggregated', output: 'canvas' },
+  correlations: { data: 'combined', output: 'canvas' },
+  depth: { data: 'combined', output: 'canvas' },
 };
