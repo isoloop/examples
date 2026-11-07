@@ -56,6 +56,12 @@ export const stats = topic('stats.v1', {
   retention: { kind: 'last-n', n: 2_000 },
 });
 
+/** The correlations engine's output (M3c task 4): a matrix per horizon, once a second. */
+export const correlations = topic('correlations.v1', {
+  schema: s.correlations,
+  retention: { kind: 'last-n', n: 30 },
+});
+
 export default contracts(
   trades,
   book,
@@ -66,4 +72,5 @@ export default contracts(
   filters,
   noise,
   stats,
+  correlations,
 );

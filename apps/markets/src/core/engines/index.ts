@@ -4,9 +4,10 @@
 import { SYMBOLS } from '../schemas';
 import type { Stoppable } from '../services';
 import type { Source } from '../streams';
+import { CorrelationEngine, HORIZONS } from './correlations';
 import { StatsEngine } from './stats';
 
-export const ENGINE_NAMES = ['stats'] as const;
+export const ENGINE_NAMES = ['stats', 'correlations'] as const;
 export type EngineName = (typeof ENGINE_NAMES)[number];
 
 /** Rolling stats per symbol over the last minute, once a second, into `stats`. */
@@ -34,6 +35,33 @@ export function runStats(src: Source, everyMs = 1_000, windowMs = 60_000): Stopp
   };
 }
 
+/** Correlations across symbols at each horizon, once a second, into `correlations`. */
+export function runCorrelations(src: Source, everyMs = 1_000): Stoppable {
+  const engine = new CorrelationEngine();
+  const off = src.subscribe(
+    'trades',
+    (r) => {
+      engine.addTrade(r.value);
+    },
+    'latest',
+  );
+  const timer = setInterval(() => {
+    engine.sample();
+    const now = Date.now();
+    for (const h of HORIZONS) {
+      const value = engine.compute(h, now);
+      if (value) src.publish('correlations', value);
+    }
+  }, everyMs);
+  return {
+    stop() {
+      clearInterval(timer);
+      off();
+    },
+  };
+}
+
 export const ENGINES: Record<EngineName, (src: Source) => Stoppable> = {
   stats: (src) => runStats(src),
+  correlations: (src) => runCorrelations(src),
 };
