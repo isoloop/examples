@@ -117,6 +117,14 @@ export const stats = z.object({
   ts,
 });
 
+/** Correlation of 1-second returns between symbols over one horizon, row-major (M3c task 4). */
+export const correlations = z.object({
+  horizonMs: z.number().int().positive(),
+  symbols: z.array(symbol).max(20),
+  matrix: z.array(z.number().min(-1).max(1)).max(400),
+  ts,
+});
+
 /** Load from a widget's flood control (M3b task 14); nothing reads it. */
 export const noise = z.object({ widget: z.string().min(1), n: z.number().int().nonnegative(), ts });
 
@@ -139,3 +147,4 @@ export type Alert = z.infer<typeof alert>;
 export type Filters = z.infer<typeof filters>;
 export type Noise = z.infer<typeof noise>;
 export type Stats = z.infer<typeof stats>;
+export type Correlations = z.infer<typeof correlations>;

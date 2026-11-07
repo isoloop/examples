@@ -42,8 +42,20 @@ const LITE: readonly Placement[] = [
 
 export const SPECS: Record<Size, SizeSpec> = {
   lite: { label: 'Lite', symbols: 3, rate: 1, widgets: LITE, engines: [] },
-  normal: { label: 'Normal', symbols: 20, rate: 1, widgets: LITE, engines: ['stats'] },
-  heavy: { label: 'Heavy', symbols: 20, rate: 5, widgets: LITE, engines: ['stats'] },
+  normal: {
+    label: 'Normal',
+    symbols: 20,
+    rate: 1,
+    widgets: LITE,
+    engines: ['stats', 'correlations'],
+  },
+  heavy: {
+    label: 'Heavy',
+    symbols: 20,
+    rate: 5,
+    widgets: LITE,
+    engines: ['stats', 'correlations'],
+  },
 };
 
 export const sizeOf = (params: URLSearchParams): Size =>

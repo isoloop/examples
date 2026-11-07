@@ -61,3 +61,41 @@ test('isoloop: Lite runs no engines', async ({ page }) => {
   const ids = await page.evaluate(() => window.kernel.isolates().map((i) => i.id));
   expect(ids.filter((id) => id.startsWith('engine-'))).toEqual([]);
 });
+
+test('both builds publish correlations at three horizons at Normal', async ({ page }) => {
+  await page.goto('/isoloop/?size=normal&speed=10');
+  const horizons = await page.evaluate(
+    (schema) =>
+      new Promise<number[]>((resolve) => {
+        const seen = new Set<number>();
+        window.kernel.subscribe({ name: 'correlations.v1', schema }, (r) => {
+          const v: unknown = r.value;
+          const h: unknown =
+            typeof v === 'object' && v !== null ? Reflect.get(v, 'horizonMs') : null;
+          if (typeof h === 'number') seen.add(h);
+          if (seen.size === 3) resolve([...seen].toSorted((a, b) => a - b));
+        });
+      }),
+    any,
+  );
+  expect(horizons).toEqual([60_000, 300_000, 900_000]);
+
+  await page.goto('/native/?size=normal&speed=10');
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const seen = new Set<number>();
+          window.store.subscribe(
+            'correlations',
+            (r) => {
+              seen.add(r.value.horizonMs);
+            },
+            'earliest',
+          )();
+          return seen.size;
+        }),
+      { timeout: 10_000 },
+    )
+    .toBe(3);
+});

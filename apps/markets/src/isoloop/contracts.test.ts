@@ -46,6 +46,9 @@ const samples = {
   ],
   'noise.v1': [{ widget: 'price', n: 0, ts }],
   'filters.v1': [{ symbols: ['BTC-USD'], exchanges: ['coinbase', 'kraken'], windowMs: 60_000 }],
+  'correlations.v1': [
+    { horizonMs: 60_000, symbols: ['BTC-USD', 'ETH-USD'], matrix: [1, 0.8, 0.8, 1], ts },
+  ],
   'stats.v1': [
     {
       symbol: 'ETH-USD',
