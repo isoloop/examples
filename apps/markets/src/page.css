@@ -8,7 +8,8 @@ body {
 }
 .page header {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 8px 16px;
   align-items: baseline;
   padding: 8px 16px;
   border-bottom: 1px solid #333;
@@ -21,10 +22,13 @@ body {
   margin-left: auto;
   color: #8ab4f8;
 }
+.page .builds,
 .page .sizes {
   display: flex;
   gap: 8px;
+  white-space: nowrap;
 }
+.page .builds a,
 .page .sizes a {
   color: #8ab4f8;
 }
@@ -36,6 +40,38 @@ body {
   padding: 0 12px;
   border-bottom: 1px solid #333;
 }
+/* A widget's header (M3c task 9b): name, where it runs, updates/s on the left;
+   the widget's own stress controls on the right (widgets.css). */
+.page .slot {
+  --head-height: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.widget-head {
+  flex: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: var(--head-height);
+  padding: 0 150px 0 8px;
+  font-size: 12px;
+  color: #9aa0a6;
+  border-bottom: 1px solid #2a2d31;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.widget-head .widget-name {
+  color: #ddd;
+  font-weight: 600;
+}
+.widget-head [data-head='updates'] {
+  font-variant-numeric: tabular-nums;
+}
+.widget-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
@@ -44,13 +80,14 @@ body {
 }
 .grid .slot {
   position: relative;
-  height: 220px;
+  /* 220px for the widget, as before the header, plus the header. */
+  height: 244px;
   background: #1d2024;
   border-radius: 6px;
   overflow: hidden;
 }
 /* The Isoloop build's surface element sits between the slot and the widget. */
-.grid .slot > iso-surface {
+.widget-body > iso-surface {
   height: 100%;
 }
 .widget-error {

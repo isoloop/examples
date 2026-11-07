@@ -30,7 +30,7 @@
 .filters input {
   font: inherit;
 }
-/* Fills the slot's box in both builds: the slot on native, the surface (`position: relative`) on Isoloop. */
+/* Fills the widget's box below its header in both builds: the slot's body on native, the surface (`position: relative`) on Isoloop. */
 .trades {
   position: absolute;
   inset: 0;
@@ -86,18 +86,17 @@
 .fired li {
   color: #f28e2b;
 }
+/* In the widget's header row (M3c task 9b), which the page draws just above the
+   widget's box: the controls are the widget's own, so they run on its thread. */
 .stress {
   position: absolute;
+  top: calc(-1 * var(--head-height, 24px));
   right: 4px;
-  bottom: 4px;
+  height: var(--head-height, 24px);
   z-index: 1;
   display: flex;
+  align-items: center;
   gap: 2px;
-  opacity: 0.6;
-}
-.stress:hover,
-.stress:focus-within {
-  opacity: 1;
 }
 .stress button {
   font-size: 11px;

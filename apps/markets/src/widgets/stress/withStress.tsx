@@ -90,13 +90,26 @@ export function withStress(
     // The time this widget spends rendering and drawing, published once a
     // second (M3c task 10). Measured on whichever thread runs it.
     const spent = useRef(0);
+    // Renders in the last second, the header's updates/s: counted here, in the
+    // widget's own code, so every build counts the same thing.
+    const renders = useRef(0);
+    const rendered = useCallback(() => {
+      renders.current++;
+    }, []);
     const record = useCallback((ms: number) => {
       spent.current += ms;
     }, []);
     useEffect(() => {
       const id = setInterval(() => {
-        publish({ slot, widget: name, ms: spent.current, ts: Date.now() });
+        publish({
+          slot,
+          widget: name,
+          ms: spent.current,
+          updates: renders.current,
+          ts: Date.now(),
+        });
         spent.current = 0;
+        renders.current = 0;
       }, 1_000);
       return () => {
         clearInterval(id);
@@ -105,7 +118,7 @@ export function withStress(
     if (crashed) throw new Error(`stress: ${name} crashed`);
     return (
       <TimingContext.Provider value={record}>
-        <Timed W={W} config={config} record={record} />
+        <Timed W={W} config={config} record={record} rendered={rendered} />
         <StressBar
           name={name}
           onCrash={() => {
@@ -124,11 +137,15 @@ function Timed({
   W,
   config,
   record,
+  rendered,
 }: {
   W: (props: { config?: unknown }) => ReactNode;
   config?: unknown;
   record: (ms: number) => void;
+  rendered: () => void;
 }) {
+  // After each commit, not each render call, so a render React throws away isn't counted.
+  useEffect(rendered);
   const t0 = performance.now();
   const out = W({ config });
   record(performance.now() - t0);
