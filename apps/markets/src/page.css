@@ -47,3 +47,23 @@ body {
   padding: 12px;
   color: #e15759;
 }
+.metrics dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 0;
+  padding: 6px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 12px;
+}
+.metrics dl div {
+  display: flex;
+  gap: 6px;
+}
+.metrics dt {
+  color: #999;
+}
+.metrics dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}

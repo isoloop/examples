@@ -6,34 +6,15 @@ import spread from '../isolates/widgets/spread?isolate';
 import trades from '../isolates/widgets/trades?isolate';
 import volume from '../isolates/widgets/volume?isolate';
 import type { WidgetName } from '../widgets';
-
-interface Grants {
-  publish: string[];
-  subscribe: string[];
-}
+import { GRANTS, type Grants } from './grants';
 
 export const ISOLATES: Record<WidgetName, { src: string; grants: Grants }> = {
-  filters: {
-    src: filters,
-    grants: { publish: ['filters.v1', 'noise.v1'], subscribe: ['filters.v1'] },
-  },
-  price: { src: price, grants: { publish: ['noise.v1'], subscribe: ['prices.v1', 'filters.v1'] } },
-  spread: {
-    src: spread,
-    grants: { publish: ['noise.v1'], subscribe: ['aggregates.v1', 'filters.v1'] },
-  },
-  volume: {
-    src: volume,
-    grants: { publish: ['noise.v1'], subscribe: ['aggregates.v1', 'filters.v1'] },
-  },
-  trades: {
-    src: trades,
-    grants: { publish: ['noise.v1'], subscribe: ['trades.v1', 'filters.v1'] },
-  },
-  'alerts-panel': {
-    src: alerts,
-    grants: { publish: ['alert-rules.v1', 'noise.v1'], subscribe: ['alert-rules.v1', 'alerts.v1'] },
-  },
+  filters: { src: filters, grants: GRANTS.filters },
+  price: { src: price, grants: GRANTS.price },
+  spread: { src: spread, grants: GRANTS.spread },
+  volume: { src: volume, grants: GRANTS.volume },
+  trades: { src: trades, grants: GRANTS.trades },
+  'alerts-panel': { src: alerts, grants: GRANTS['alerts-panel'] },
 };
 
 /** The module a slot's isolate runs. A promise, because `/mixed` reads some from a manifest. */

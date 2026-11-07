@@ -4,10 +4,24 @@
 // apart) and found through its manifest, as a host would load isolates that
 // someone else ships.
 import { z } from 'zod';
+import price from '../isolates/widgets/price?isolate';
+import spread from '../isolates/widgets/spread?isolate';
+import trades from '../isolates/widgets/trades?isolate';
+import volume from '../isolates/widgets/volume?isolate';
 import type { WidgetName } from '../widgets';
-import { ISOLATES } from './widgets';
+import { GRANTS, type Grants } from './grants';
 
-export { ISOLATES };
+// Only the React widgets are built here, so the page doesn't carry isolates it never runs.
+const REACT: Partial<Record<WidgetName, string>> = { price, spread, trades, volume };
+
+export const ISOLATES: Record<WidgetName, { grants: Grants }> = {
+  filters: { grants: GRANTS.filters },
+  price: { grants: GRANTS.price },
+  spread: { grants: GRANTS.spread },
+  volume: { grants: GRANTS.volume },
+  trades: { grants: GRANTS.trades },
+  'alerts-panel': { grants: GRANTS['alerts-panel'] },
+};
 
 /** Which framework each widget runs on in `/mixed`. */
 export const FRAMEWORK: Record<WidgetName, 'react' | 'preact'> = {
@@ -31,7 +45,8 @@ function preactFiles(): Promise<Record<string, string>> {
 }
 
 export async function srcOf(name: WidgetName): Promise<string> {
-  if (FRAMEWORK[name] === 'react') return ISOLATES[name].src;
+  const react = REACT[name];
+  if (react !== undefined) return react;
   const file = (await preactFiles())[name];
   if (!file) throw new Error(`no Preact isolate for ${name} in ./preact/isoloop-manifest.json`);
   return new URL(`./preact/${file}`, location.href).href;
