@@ -1,0 +1,9 @@
+{
+  "build": "isoloop-preact",
+  "calm": [33, 20, 47, 35, 35],
+  "stressed": [34, 40, 86, 34, 47],
+  "fps": "61",
+  "longTasks": "0",
+  "firstData": "277 ms",
+  "bundle": "94 KB"
+}

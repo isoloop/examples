@@ -1,0 +1,9 @@
+{
+  "build": "native-preact",
+  "calm": [13, 12, 15, 28, 7],
+  "stressed": [2833, 2847, 2830, 2832, 2827],
+  "fps": "4",
+  "longTasks": "3",
+  "firstData": "103 ms",
+  "bundle": "41 KB"
+}
