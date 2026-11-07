@@ -18,6 +18,7 @@ import topMovers from '../isolates/widgets/top-movers?isolate';
 import arbitrage from '../isolates/widgets/arbitrage?isolate';
 import tape from '../isolates/widgets/tape?isolate';
 import summary from '../isolates/widgets/summary?isolate';
+import orderFlow from '../isolates/widgets/order-flow?isolate';
 import type { WidgetName } from '../widgets';
 import { GRANTS, type Grants } from './grants';
 
@@ -33,6 +34,7 @@ const REACT: Partial<Record<WidgetName, string>> = {
   'volume-profile': volumeProfile,
   correlations,
   depth,
+  'order-flow': orderFlow,
   'top-movers': topMovers,
   arbitrage,
   tape,
@@ -52,6 +54,7 @@ export const ISOLATES: Record<WidgetName, { grants: Grants }> = {
   'volume-profile': { grants: GRANTS['volume-profile'] },
   correlations: { grants: GRANTS['correlations'] },
   depth: { grants: GRANTS['depth'] },
+  'order-flow': { grants: GRANTS['order-flow'] },
   'top-movers': { grants: GRANTS['top-movers'] },
   arbitrage: { grants: GRANTS['arbitrage'] },
   tape: { grants: GRANTS['tape'] },
@@ -72,6 +75,7 @@ export const FRAMEWORK: Record<WidgetName, 'react' | 'preact'> = {
   'volume-profile': 'react',
   correlations: 'react',
   depth: 'react',
+  'order-flow': 'react',
   'top-movers': 'react',
   arbitrage: 'react',
   tape: 'react',

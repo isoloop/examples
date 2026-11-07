@@ -24,8 +24,12 @@ const str = (config: unknown, k: string): string | undefined => {
 const symbolOf = (config: unknown, fallback: Sym | undefined): Sym | undefined =>
   SYMBOLS.find((s) => s === str(config, 'symbol')) ?? fallback;
 
-/** filtered: every symbol's mid price on the filtered exchanges, as small multiples. */
+/**
+ * filtered: every symbol's mid price on the filtered exchanges, as small
+ * multiples; `config.field: 'spread'` shows each quote's bid-ask spread in bp.
+ */
 export function Sparklines({ config }: { config?: unknown }) {
+  const field = str(config, 'field') === 'spread' ? 'spread' : 'mid';
   const f = useFilters();
   const quotes = useRecent('prices', 16_000);
   const offset = num(config, 'offset') ?? 0;
@@ -36,16 +40,21 @@ export function Sparklines({ config }: { config?: unknown }) {
       for (const q of quotes) {
         if (!f.exchanges.includes(q.exchange)) continue;
         const xs = per.get(q.symbol) ?? [];
-        xs.push((q.bid + q.ask) / 2);
+        const mid = (q.bid + q.ask) / 2;
+        xs.push(field === 'spread' ? ((q.ask - q.bid) / mid) * 1e4 : mid);
         per.set(q.symbol, xs);
       }
       const sparks: Spark[] = SYMBOLS.slice(offset, offset + count).map((s) => ({
         label: s,
         values: (per.get(s) ?? []).slice(-240),
       }));
-      return drawSparkGrid(ctx, w, h, `Mid prices, ${f.exchanges.length} exchanges`, sparks);
+      const title =
+        field === 'spread'
+          ? `Bid-ask spread (bp), ${f.exchanges.length} exchanges`
+          : `Mid prices, ${f.exchanges.length} exchanges`;
+      return drawSparkGrid(ctx, w, h, title, sparks);
     },
-    [quotes, f.exchanges, offset, count],
+    [quotes, f.exchanges, offset, count, field],
   );
   return <Plot draw={draw} />;
 }
@@ -169,6 +178,31 @@ export function DepthHeatmap({ config }: { config?: unknown }) {
       );
     },
     [all, symbol],
+  );
+  return <Plot draw={draw} />;
+}
+
+/** aggregated: each symbol's order-flow imbalance over the last 30 s, (buy − sell) / total notional. */
+export function OrderFlow() {
+  const trades = useRecent('trades', 8_000);
+  const draw = useCallback(
+    (ctx: Ctx2D, w: number, h: number) => {
+      const until = trades[trades.length - 1]?.ts ?? 0;
+      const buy = new Map<string, number>();
+      const sell = new Map<string, number>();
+      for (const t of trades) {
+        if (t.ts < until - 30_000) continue;
+        const m = t.side === 'buy' ? buy : sell;
+        m.set(t.symbol, (m.get(t.symbol) ?? 0) + t.size * t.price);
+      }
+      const bars = SYMBOLS.filter((s) => buy.has(s) || sell.has(s)).map((s) => {
+        const b = buy.get(s) ?? 0;
+        const x = sell.get(s) ?? 0;
+        return { label: s, value: (b - x) / (b + x || 1) };
+      });
+      return drawBars(ctx, w, h, 'Order-flow imbalance, 30 s', bars, { color: '#f28e2b' });
+    },
+    [trades],
   );
   return <Plot draw={draw} />;
 }

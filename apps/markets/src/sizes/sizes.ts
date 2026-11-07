@@ -55,6 +55,26 @@ const NORMAL: readonly Placement[] = [
   one('summary'),
 ];
 
+/**
+ * Heavy: Normal plus more of the expensive kinds (task 8): correlation at the
+ * other two horizons, depth heatmaps for four more symbols, a second
+ * sparkline grid (spreads) and order-flow imbalance. 24 widgets, which with
+ * the replay, the aggregator, the alerts and three engines makes 30 isolates,
+ * within ADR 0001's soft budget of 32.
+ */
+const HEAVY: readonly Placement[] = [
+  ...NORMAL,
+  { id: 'correlations-5m', widget: 'correlations', config: { horizonMs: 300_000 } },
+  { id: 'correlations-15m', widget: 'correlations', config: { horizonMs: 900_000 } },
+  ...(['ETH-USD', 'SOL-USD', 'XRP-USD', 'DOGE-USD'] as const).map((symbol): Placement => ({
+    id: `depth-${symbol}`,
+    widget: 'depth',
+    config: { symbol },
+  })),
+  { id: 'spreads', widget: 'sparklines', config: { field: 'spread' } },
+  one('order-flow'),
+];
+
 export const SPECS: Record<Size, SizeSpec> = {
   lite: { label: 'Lite', symbols: 3, rate: 1, widgets: LITE, engines: [] },
   normal: {
@@ -68,7 +88,7 @@ export const SPECS: Record<Size, SizeSpec> = {
     label: 'Heavy',
     symbols: 20,
     rate: 5,
-    widgets: NORMAL,
+    widgets: HEAVY,
     engines: ['stats', 'correlations', 'depth'],
   },
 };

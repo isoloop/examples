@@ -15,6 +15,7 @@ import topMovers from '../isolates/widgets/top-movers?isolate';
 import arbitrage from '../isolates/widgets/arbitrage?isolate';
 import tape from '../isolates/widgets/tape?isolate';
 import summary from '../isolates/widgets/summary?isolate';
+import orderFlow from '../isolates/widgets/order-flow?isolate';
 import type { WidgetName } from '../widgets';
 import { GRANTS, type Grants } from './grants';
 
@@ -31,6 +32,7 @@ export const ISOLATES: Record<WidgetName, { src: string; grants: Grants }> = {
   'volume-profile': { src: volumeProfile, grants: GRANTS['volume-profile'] },
   correlations: { src: correlations, grants: GRANTS['correlations'] },
   depth: { src: depth, grants: GRANTS['depth'] },
+  'order-flow': { src: orderFlow, grants: GRANTS['order-flow'] },
   'top-movers': { src: topMovers, grants: GRANTS['top-movers'] },
   arbitrage: { src: arbitrage, grants: GRANTS['arbitrage'] },
   tape: { src: tape, grants: GRANTS['tape'] },
