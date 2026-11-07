@@ -22,6 +22,7 @@ catalogs:
   isoloop:
     '@isoloop/bus': 0.0.0-next.4da23df
     '@isoloop/host': 0.0.0-next.4da23df
+    '@isoloop/preact': 0.0.0-next.4da23df
     '@isoloop/protocol': 0.0.0-next.4da23df
     '@isoloop/react': 0.0.0-next.4da23df
     '@isoloop/runtime': 0.0.0-next.4da23df
@@ -31,6 +32,9 @@ catalogs:
     react-dom: 19.3.1
     '@types/react': 19.3.0
     '@types/react-dom': 19.3.0
+  # The Preact builds (M3b task 16b): the same widgets through preact/compat.
+  preact:
+    preact: 11.1.1
 
 # Supply chain, as in isoloop/isoloop (ADR 0009, rule 9), except for our own
 # packages: a prerelease is used the day it's published.

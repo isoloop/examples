@@ -198,6 +198,9 @@ catalogs:
     '@isoloop/host':
       specifier: 0.0.0-next.4da23df
       version: 0.0.0-next.4da23df
+    '@isoloop/preact':
+      specifier: 0.0.0-next.4da23df
+      version: 0.0.0-next.4da23df
     '@isoloop/protocol':
       specifier: 0.0.0-next.4da23df
       version: 0.0.0-next.4da23df
@@ -210,6 +213,10 @@ catalogs:
     '@isoloop/vite':
       specifier: 0.0.0-next.4da23df
       version: 0.0.0-next.4da23df
+  preact:
+    preact:
+      specifier: 11.1.1
+      version: 11.1.1
   react:
     '@types/react':
       specifier: 19.3.0
@@ -255,6 +262,9 @@ importers:
       '@isoloop/host':
         specifier: catalog:isoloop
         version: 0.0.0-next.4da23df(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+      '@isoloop/preact':
+        specifier: catalog:isoloop
+        version: 0.0.0-next.4da23df(preact@11.1.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@isoloop/protocol':
         specifier: catalog:isoloop
         version: 0.0.0-next.4da23df
@@ -264,6 +274,9 @@ importers:
       '@isoloop/runtime':
         specifier: catalog:isoloop
         version: 0.0.0-next.4da23df(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+      preact:
+        specifier: catalog:preact
+        version: 11.1.1
       react:
         specifier: catalog:react
         version: 19.3.1
@@ -314,6 +327,11 @@ packages:
 
   '@isoloop/host@0.0.0-next.4da23df':
     resolution: {integrity: sha512-S9IoCZzyp1t8WCaqwWuWBEu3lZAjgIzM01NrFoJKeptmYsc4DVgK1g8h/opJQJ2c8YooMMNHrAXB/XJpRtV8uQ==}
+
+  '@isoloop/preact@0.0.0-next.4da23df':
+    resolution: {integrity: sha512-wf8XYlMk/cz0hDJ69efbxfiaWEGQxzX6Rbik59zql66hbdu69uD29rovTf3sR8AY6jDlP3KCDW0PxvLzRa+U6w==}
+    peerDependencies:
+      preact: ^10 || ^11
 
   '@isoloop/protocol@0.0.0-next.4da23df':
     resolution: {integrity: sha512-5cHeJH/8TjBg5ZD6yV8L/RVS+DqvdQJ36qyO3rG4/6v5E5vB6QgW/d7ZVJU94UsD1t2gyj1SZerbDMzuizS9Bw==}
@@ -1056,6 +1074,14 @@ packages:
     resolution: {integrity: sha512-LJlKCCAUFKOuZxipUdYw1NzIITEsPcgyOG9LkvRJvuKj/bRzbuRY0ARXvL0pWGpsZvn8jku+LMep2eU0seHp8g==}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact@11.1.1:
+    resolution: {integrity: sha512-vpFVfai437pbuLri7XVeslCPfrEZX6Z1S2gV+MOFrA/kji+NKUXvH7y01EnVjA1guLigfkVp77Sqipd4SIllCg==}
+    peerDependencies:
+      preact-render-to-string: '>=6.7.0'
+    peerDependenciesMeta:
+      preact-render-to-string:
+        optional: true
+
   react-dom@19.3.1:
     resolution: {integrity: sha512-Y0bARz53lhEC1NMCASs0/j+faB/zqt3R8hpvg1e8+61ZVJ4UL0UdC4cBbXfZMcIuhrfgeILTLe+ZeBCavQPtKQ==}
     peerDependencies:
@@ -1213,6 +1239,14 @@ snapshots:
     dependencies:
       '@isoloop/dom': 0.0.0-next.4da23df(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@isoloop/protocol': 0.0.0-next.4da23df
+    transitivePeerDependencies:
+      - vitest
+
+  '@isoloop/preact@0.0.0-next.4da23df(preact@11.1.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
+    dependencies:
+      '@isoloop/protocol': 0.0.0-next.4da23df
+      '@isoloop/runtime': 0.0.0-next.4da23df(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+      preact: 11.1.1
     transitivePeerDependencies:
       - vitest
 
@@ -1675,6 +1709,8 @@ snapshots:
       nanoid: 3.3.20
       picocolors: 1.1.1
       source-map-js: 1.2.2
+
+  preact@11.1.1: {}
 
   react-dom@19.3.1(react@19.3.1):
     dependencies:

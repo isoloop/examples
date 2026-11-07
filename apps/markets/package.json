@@ -5,7 +5,7 @@
   "description": "A backend-less markets dashboard, as an idiomatic native app and on Isoloop.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build --mode native && node scripts/index-page.ts && node scripts/check-native.ts",
+    "build": "vite build && vite build --mode native && vite build --mode isoloop-preact && vite build --mode native-preact && vite build --mode mixed && vite build --mode mixed-preact && node scripts/index-page.ts && node scripts/check-builds.ts",
     "preview": "vite preview --outDir dist",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
@@ -16,11 +16,13 @@
   "dependencies": {
     "@isoloop/bus": "catalog:isoloop",
     "@isoloop/host": "catalog:isoloop",
+    "@isoloop/preact": "catalog:isoloop",
     "@isoloop/protocol": "catalog:isoloop",
     "@isoloop/react": "catalog:isoloop",
     "@isoloop/runtime": "catalog:isoloop",
     "react": "catalog:react",
     "react-dom": "catalog:react",
+    "preact": "catalog:preact",
     "zod": "catalog:"
   },
   "devDependencies": {

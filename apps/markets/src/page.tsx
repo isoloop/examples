@@ -1,10 +1,11 @@
 import { BUILD } from '#env';
 import { Slot } from '#slot';
+import { BUILDS, COUNTERPART, CURRENT } from './builds';
 import { switchHref } from './url';
 
-/** The page shell, the same in both builds; only what a slot holds differs. */
+/** The page shell, the same in every build; only what a slot holds differs. */
 export function Page() {
-  const other = BUILD === 'native' ? 'isoloop' : 'native';
+  const other = COUNTERPART[CURRENT];
   return (
     <div className="page">
       <header>
@@ -22,6 +23,25 @@ export function Page() {
         >
           Switch to {other}
         </a>
+        <nav className="builds" aria-label="Builds">
+          {BUILDS.map((b) =>
+            b.name === CURRENT ? (
+              <span key={b.name} aria-current="page">
+                {b.label}
+              </span>
+            ) : (
+              <a
+                key={b.name}
+                href={`../${b.name}/${location.search}`}
+                onClick={(e) => {
+                  e.currentTarget.href = switchHref(b.name);
+                }}
+              >
+                {b.label}
+              </a>
+            ),
+          )}
+        </nav>
       </header>
       <Slot name="filters" />
       <main className="grid">
