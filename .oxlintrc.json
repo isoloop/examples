@@ -1,0 +1,39 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // ADR 0009, rule 5: every rule is an error or off; type-aware on every run.
+  "options": {
+    "typeAware": true,
+    "denyWarnings": true,
+    "reportUnusedDisableDirectives": "error"
+  },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error",
+    "pedantic": "off",
+    "style": "off",
+    "restriction": "off",
+    "nursery": "off"
+  },
+  // Type-aware rules outside the categories above, added by name: promise
+  // handling, `any` leaking out of message payloads, and exhaustive switches
+  // over message unions.
+  "rules": {
+    "typescript/no-misused-promises": "error",
+    "typescript/only-throw-error": "error",
+    "typescript/prefer-promise-reject-errors": "error",
+    "typescript/return-await": ["error", "in-try-catch"],
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/restrict-plus-operands": "error",
+    "typescript/switch-exhaustiveness-check": "error",
+    "typescript/no-deprecated": "error",
+    // For window.postMessage. Isoloop posts to workers and ports, which take no
+    // targetOrigin, so every hit would be a false positive.
+    "unicorn/require-post-message-target-origin": "off",
+    "no-underscore-dangle": "error"
+  }
+}

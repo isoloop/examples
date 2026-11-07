@@ -1,0 +1,32 @@
+{
+  "name": "markets",
+  "private": true,
+  "type": "module",
+  "description": "A backend-less markets dashboard, as an idiomatic native app and on Isoloop.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "e2e": "playwright test"
+  },
+  "dependencies": {
+    "@isoloop/bus": "catalog:isoloop",
+    "@isoloop/host": "catalog:isoloop",
+    "@isoloop/react": "catalog:isoloop",
+    "@isoloop/runtime": "catalog:isoloop",
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@isoloop/vite": "catalog:isoloop",
+    "@playwright/test": "catalog:",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

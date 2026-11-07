@@ -1,0 +1,24 @@
+# As in isoloop/isoloop (ADR 0009, rule 8): one grouped PR a week for minors
+# and patches, majors as separate PRs, and a 3-day cooldown to match pnpm's
+# minimumReleaseAge. `@isoloop/*` prereleases are bumped by hand: they're
+# `next` builds, which Dependabot doesn't propose.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    ignore:
+      - dependency-name: '@isoloop/*'
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directories: [/, /.github/actions/*]
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
