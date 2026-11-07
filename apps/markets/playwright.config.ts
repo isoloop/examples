@@ -2,6 +2,13 @@ import { defineConfig, devices } from '@playwright/test';
 
 // Both builds, served by `vite preview` from dist/ (/isoloop/ and /native/), in
 // all three engines.
+const ENGINES = [
+  ['chromium', 'Desktop Chrome'],
+  ['firefox', 'Desktop Firefox'],
+  ['webkit', 'Desktop Safari'],
+] as const;
+const LOAD = /(stress|table)\.spec\.ts$/;
+
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: true,
@@ -15,9 +22,12 @@ export default defineConfig({
     url: 'http://localhost:4791',
     reuseExistingServer: !process.env['CI'],
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-  ],
+  // Each engine has two projects. `<engine>-load` holds the tests that measure
+  // timing under load (input latency within the 200 ms budget, the table at
+  // 3,000 trades/s). CI runs it alone with --workers=1 after the rest, so those
+  // tests don't share the runner's cores with other pages.
+  projects: ENGINES.flatMap(([name, device]) => [
+    { name, use: { ...devices[device] }, testIgnore: LOAD },
+    { name: `${name}-load`, use: { ...devices[device] }, testMatch: LOAD },
+  ]),
 });
