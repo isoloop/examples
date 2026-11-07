@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  background: #15171a;
+  color: #ddd;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+}
+.page header {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  padding: 8px 16px;
+  border-bottom: 1px solid #333;
+}
+.page h1 {
+  margin: 0;
+  font-size: 18px;
+}
+.page .toggle {
+  margin-left: auto;
+  color: #8ab4f8;
+}
+.page > .slot {
+  padding: 0 12px;
+  border-bottom: 1px solid #333;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 12px;
+  padding: 12px;
+}
+.grid .slot {
+  height: 220px;
+  background: #1d2024;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.widget-error {
+  padding: 12px;
+  color: #e15759;
+}

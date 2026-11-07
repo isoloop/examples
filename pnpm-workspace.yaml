@@ -22,6 +22,7 @@ catalogs:
   isoloop:
     '@isoloop/bus': 0.0.0-next.56111e3
     '@isoloop/host': 0.0.0-next.56111e3
+    '@isoloop/protocol': 0.0.0-next.56111e3
     '@isoloop/react': 0.0.0-next.56111e3
     '@isoloop/runtime': 0.0.0-next.56111e3
     '@isoloop/vite': 0.0.0-next.56111e3
