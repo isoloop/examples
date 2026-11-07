@@ -1,0 +1,27 @@
+name: Weekly
+
+# Catches drift without slowing pull requests: every Monday at 05:00 UTC,
+# check, every E2E test on every build and engine, and the recorded comparison.
+# Its numbers stay an artifact; nothing is committed.
+on:
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    uses: ./.github/workflows/check.yml
+
+  e2e:
+    needs: check
+    uses: ./.github/workflows/e2e.yml
+    with:
+      apps: ${{ needs.check.outputs.apps }}
+      scope: full
+
+  compare:
+    needs: check
+    uses: ./.github/workflows/comparison.yml

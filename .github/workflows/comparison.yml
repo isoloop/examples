@@ -2,21 +2,22 @@ name: Comparison
 
 # The recorded comparison (M3b task 18): the same scenario on the native and
 # Isoloop builds, React and Preact, on Chromium, one test at a time. It runs on
-# demand; its numbers and the side-by-side video are uploaded as an artifact.
-# Adding a trigger (a tag, a schedule) is one line under `on:`.
+# demand, after a `markets-v*` deploy (release.yml) and weekly (weekly.yml);
+# its numbers and the side-by-side video are uploaded as an artifact.
 on:
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
 
-concurrency:
-  group: comparison
-  cancel-in-progress: false
-
 jobs:
   compare:
     runs-on: ubuntu-latest
+    # In the job, not the workflow: this one is also called from others.
+    concurrency:
+      group: comparison
+      cancel-in-progress: false
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
