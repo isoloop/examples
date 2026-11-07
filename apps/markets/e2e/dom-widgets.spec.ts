@@ -16,7 +16,7 @@ for (const build of inScope([
   'mixed',
 ] as const)) {
   test(`${build}: the DOM widgets fill at Normal`, async ({ page }) => {
-    await page.goto(`/${build}/?size=normal&speed=10`);
+    await page.goto(`/${build}/?size=normal&speed=1`);
     await Promise.all([
       ...Object.entries(EXPECTED).map(async ([slot, n]) =>
         expect.poll(async () => rows(page, slot), { timeout: 15_000 }).toBe(n),
@@ -28,7 +28,7 @@ for (const build of inScope([
 
 for (const build of ['isoloop', 'native'] as const) {
   test(`${build}: the tape follows the symbol filter`, async ({ page }) => {
-    await page.goto(`/${build}/?size=normal&speed=10`);
+    await page.goto(`/${build}/?size=normal&speed=1`);
     await page.locator('select[name="symbol"]').selectOption('XRP-USD');
     await expect(page.locator('[data-slot="tape"] h3')).toHaveText('XRP-USD tape by exchange');
   });

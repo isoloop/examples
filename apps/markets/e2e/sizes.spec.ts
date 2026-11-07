@@ -6,7 +6,7 @@ const BUILDS = inScope(['isoloop', 'native', 'isoloop-preact', 'native-preact', 
 // The size switch (M3c task 1) reloads into the chosen size on every build.
 for (const build of BUILDS) {
   test(`${build}: the size switch reloads into the chosen size`, async ({ page }) => {
-    await page.goto(`/${build}/?speed=10`);
+    await page.goto(`/${build}/?speed=1`);
     const grid = page.locator('main.grid');
     await expect(grid).toHaveAttribute('data-size', 'normal');
     const sizes = page.getByRole('navigation', { name: 'Dashboard size' });
