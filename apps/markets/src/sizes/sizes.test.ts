@@ -52,3 +52,15 @@ describe('replayFor', () => {
     });
   });
 });
+
+describe('the sizes', () => {
+  it('holds 6, 16 and 24 widgets', () => {
+    expect([SPECS.lite, SPECS.normal, SPECS.heavy].map((s) => s.widgets.length)).toEqual([
+      6, 16, 24,
+    ]);
+  });
+
+  it('keeps Heavy within 32 isolates: widgets, engines, the replay, the aggregator and the alerts', () => {
+    expect(SPECS.heavy.widgets.length + SPECS.heavy.engines.length + 3).toBeLessThanOrEqual(32);
+  });
+});

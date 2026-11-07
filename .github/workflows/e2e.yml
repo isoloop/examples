@@ -2,8 +2,8 @@ name: E2E
 
 # Playwright for the given apps, per engine. `scope: pr` runs every build on
 # Chromium and the React pair only on Firefox and WebKit; `scope: full` runs
-# every build everywhere. The `-load` project (timing under load) runs after
-# the rest, one test at a time.
+# every build everywhere, and adds the Heavy size (M3c decision 11). The
+# `-load` project (timing under load) runs after the rest, one test at a time.
 on:
   workflow_call:
     inputs:
@@ -41,9 +41,11 @@ jobs:
         env:
           E2E_SCOPE: ${{ inputs.scope == 'pr' && matrix.browser != 'chromium' && 'react' || 'full' }}
           PERF_BUDGET_SCALE: '2'
+          E2E_HEAVY: ${{ inputs.scope == 'pr' && '0' || '1' }}
       - run: pnpm --filter ./apps/${{ matrix.app }} e2e --project=${{ matrix.browser }}-load --workers=1
         env:
           PERF_BUDGET_SCALE: '2'
+          E2E_HEAVY: ${{ inputs.scope == 'pr' && '0' || '1' }}
       - if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

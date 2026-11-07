@@ -8,6 +8,7 @@ import { VolumeChart } from './VolumeChart';
 import {
   CorrelationHeatmap,
   DepthHeatmap,
+  OrderFlow,
   Sparklines,
   VolatilityChart,
   VolumeProfile,
@@ -30,6 +31,7 @@ export const WIDGETS = {
   'volume-profile': withStress('volume-profile', VolumeProfile),
   correlations: withStress('correlations', CorrelationHeatmap),
   depth: withStress('depth', DepthHeatmap),
+  'order-flow': withStress('order-flow', OrderFlow),
   'top-movers': withStress('top-movers', TopMovers),
   arbitrage: withStress('arbitrage', ArbitrageScanner),
   tape: withStress('tape', ExchangeTape),

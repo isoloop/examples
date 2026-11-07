@@ -22,6 +22,7 @@ export const GRANTS: Record<WidgetName, Grants> = {
   'volume-profile': { publish: ['noise.v1'], subscribe: ['stats.v1', 'filters.v1'] },
   correlations: { publish: ['noise.v1'], subscribe: ['correlations.v1'] },
   depth: { publish: ['noise.v1'], subscribe: ['depth.v1', 'filters.v1'] },
+  'order-flow': { publish: ['noise.v1'], subscribe: ['trades.v1'] },
   'top-movers': { publish: ['noise.v1'], subscribe: ['prices.v1', 'stats.v1', 'alerts.v1'] },
   arbitrage: { publish: ['noise.v1'], subscribe: ['prices.v1', 'stats.v1'] },
   tape: { publish: ['noise.v1'], subscribe: ['trades.v1', 'filters.v1'] },
