@@ -1,9 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["vite/client", "node"],
+    "allowImportingTsExtensions": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "e2e", "*.config.ts"]
+  "include": ["src", "e2e", "scripts", "*.config.ts"]
 }

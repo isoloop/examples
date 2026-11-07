@@ -21,3 +21,6 @@ test-results/
 .env
 .env.*
 !.env.example
+
+# Local feed recordings (scripts/record.ts)
+apps/*/fixtures/ticks/
