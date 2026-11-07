@@ -23,10 +23,12 @@ for (const build of inScope([
 ] as const)) {
   test(`${build}: every canvas widget draws its data at Normal`, async ({ page }) => {
     await page.goto(`/${build}/?size=normal&speed=10`);
-    for (const [slot, shape] of Object.entries(WIDGETS)) {
-      // Engines publish once a second; the stats and correlations need a few seconds of trades.
-      await expect.poll(async () => drawn(page, slot), { timeout: 15_000 }).toMatch(shape);
-    }
+    // Engines publish once a second; the stats and correlations need a few seconds of trades.
+    await Promise.all(
+      Object.entries(WIDGETS).map(async ([slot, shape]) =>
+        expect.poll(async () => drawn(page, slot), { timeout: 15_000 }).toMatch(shape),
+      ),
+    );
   });
 }
 
@@ -34,12 +36,13 @@ test('Isoloop and native draw the same shapes from the same replay', async ({ br
   const shapes = async (build: string): Promise<string[]> => {
     const page = await browser.newPage();
     await page.goto(`/${build}/?size=normal&speed=10&seed=5`);
-    const out: string[] = [];
-    for (const [slot, shape] of Object.entries(WIDGETS)) {
-      await expect.poll(async () => drawn(page, slot), { timeout: 15_000 }).toMatch(shape);
-      // depth's column count and vwap's point count grow with time; compare the fixed part.
-      out.push(`${slot}:${(await drawn(page, slot))?.replace(/×\d+$|^\d+ points$/, '') ?? ''}`);
-    }
+    const out = await Promise.all(
+      Object.entries(WIDGETS).map(async ([slot, shape]) => {
+        await expect.poll(async () => drawn(page, slot), { timeout: 15_000 }).toMatch(shape);
+        // depth's column count and vwap's point count grow with time; compare the fixed part.
+        return `${slot}:${(await drawn(page, slot))?.replace(/×\d+$|^\d+ points$/, '') ?? ''}`;
+      }),
+    );
     await page.close();
     return out;
   };
