@@ -20,6 +20,8 @@ export interface ReplayConfig {
   /** N× speed; 1 is real time. */
   speed?: number;
   tradesPerSecond?: number;
+  /** Stop after this much recording time; endless by default. */
+  durationMs?: number;
 }
 
 /**
@@ -31,7 +33,12 @@ export interface ReplayConfig {
 export function runReplay(src: Source, c: ReplayConfig = {}): Stoppable {
   const last = new Map<string, number>();
   return play(
-    synth({ seed: c.seed ?? 1, startTs: Date.now(), tradesPerSecond: c.tradesPerSecond ?? 2 }),
+    synth({
+      seed: c.seed ?? 1,
+      startTs: Date.now(),
+      tradesPerSecond: c.tradesPerSecond ?? 2,
+      ...(c.durationMs === undefined ? {} : { durationMs: c.durationMs }),
+    }),
     (played) => {
       const tick = restamp(played, Date.now());
       const key = `${tick.rec.exchange}:${tick.rec.symbol}`;

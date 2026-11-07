@@ -6,7 +6,7 @@
 import type { Rec, Source, StreamName, Streams } from '../core/streams';
 
 const KEEP: Record<StreamName, number> = {
-  trades: 5_000,
+  trades: 20_000, // as trades.v1's retention
   book: 200,
   prices: 0,
   aggregates: 2_000,
