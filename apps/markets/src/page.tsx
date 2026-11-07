@@ -21,6 +21,7 @@ export function Page() {
         <Slot name="spread" />
         <Slot name="volume" />
         <Slot name="trades" />
+        <Slot name="alerts-panel" />
       </main>
     </div>
   );

@@ -1,4 +1,5 @@
 // Each widget as an isolate: its module URL and the topics it may use (I4).
+import alerts from '../isolates/widgets/alerts?isolate';
 import filters from '../isolates/widgets/filters?isolate';
 import price from '../isolates/widgets/price?isolate';
 import spread from '../isolates/widgets/spread?isolate';
@@ -17,4 +18,8 @@ export const ISOLATES: Record<WidgetName, { src: string; grants: Grants }> = {
   spread: { src: spread, grants: { publish: [], subscribe: ['aggregates.v1', 'filters.v1'] } },
   volume: { src: volume, grants: { publish: [], subscribe: ['aggregates.v1', 'filters.v1'] } },
   trades: { src: trades, grants: { publish: [], subscribe: ['trades.v1', 'filters.v1'] } },
+  'alerts-panel': {
+    src: alerts,
+    grants: { publish: ['alert-rules.v1'], subscribe: ['alert-rules.v1', 'alerts.v1'] },
+  },
 };
