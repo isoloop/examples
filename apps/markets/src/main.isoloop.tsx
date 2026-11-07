@@ -6,8 +6,10 @@ import coinbase from './isolates/feeds/coinbase?isolate';
 import kraken from './isolates/feeds/kraken?isolate';
 import okx from './isolates/feeds/okx?isolate';
 import replay from './isolates/replay?isolate';
+import { filters as filtersTopic } from './isoloop/contracts';
 import { kernel } from './isoloop/kernel';
 import { Page } from './page';
+import { filtersFrom, replayConfig, startReplayClock, writeFilters } from './url';
 import './page.css';
 
 declare global {
@@ -27,18 +29,20 @@ if (params.get('source') === 'live') {
     kernel.spawn({ id: `feed-${name}`, src, grants: feedGrants });
   }
 } else {
-  kernel.spawn({
-    id: 'replay',
-    src: replay,
-    config: {
-      speed: Number(params.get('speed')) || 1,
-      seed: Number(params.get('seed')) || 1,
-      tradesPerSecond: Number(params.get('tps')) || 2,
-      ...(params.has('for') ? { durationMs: Number(params.get('for')) } : {}),
-    },
-    grants: feedGrants,
-  });
+  const config = replayConfig(params);
+  kernel.spawn({ id: 'replay', src: replay, config, grants: feedGrants });
+  startReplayClock(config);
 }
+// Filters from the URL (after a switch), and back into it as they change.
+const initial = filtersFrom(params);
+if (initial) void kernel.publish(filtersTopic, { key: 'current', value: initial });
+kernel.subscribe(
+  filtersTopic,
+  (r) => {
+    writeFilters(r.value);
+  },
+  { from: 'latest' },
+);
 kernel.spawn({
   id: 'aggregator',
   src: aggregator,

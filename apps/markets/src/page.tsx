@@ -1,5 +1,6 @@
 import { BUILD } from '#env';
 import { Slot } from '#slot';
+import { switchHref } from './url';
 
 /** The page shell, the same in both builds; only what a slot holds differs. */
 export function Page() {
@@ -11,7 +12,14 @@ export function Page() {
         <span className="build" data-build={BUILD}>
           {BUILD === 'native' ? 'Native: one main thread' : 'Isoloop: an event loop per widget'}
         </span>
-        <a className="toggle" href={`../${other}/${location.search}`}>
+        <a
+          className="toggle"
+          href={`../${other}/${location.search}`}
+          onClick={(e) => {
+            // Built at click time: the replay's position moves on.
+            e.currentTarget.href = switchHref(other);
+          }}
+        >
           Switch to {other}
         </a>
       </header>
