@@ -17,7 +17,8 @@ const src = (p: string): string => fileURLToPath(new URL(`./src/${p}`, import.me
 //
 // Each points three aliases at its own files: `#main` (the entry), `#slot`
 // (what a slot holds) and `#env` (the widgets' data and canvas hooks), plus
-// `#widgets` (which module each Isoloop slot runs). Native builds have no
+// `#widgets` (which module each Isoloop slot runs) and `#metrics` (the
+// panel's Isoloop-only figures). Native builds have no
 // @isoloop/vite, so no Isoloop code at all. Widgets are written once against
 // React's API; the Preact builds alias React to preact/compat, and
 // @isoloop/react to @isoloop/preact. `/mixed` runs the React build's host and
@@ -71,6 +72,7 @@ export default defineConfig(({ mode }) => {
         { find: '#main', replacement: src(`main.${kind}.tsx`) },
         { find: '#slot', replacement: src(`slot/${kind}.tsx`) },
         { find: '#env', replacement: src(`env/${kind}.ts`) },
+        { find: '#metrics', replacement: src(`metrics/${kind}.ts`) },
         {
           find: '#widgets',
           replacement: src(build === 'mixed' ? 'isoloop/widgets.mixed.ts' : 'isoloop/widgets.ts'),

@@ -11,7 +11,8 @@
       "#env": ["./src/env/isoloop.ts"],
       "#slot": ["./src/slot/isoloop.tsx"],
       "#main": ["./src/main.isoloop.tsx"],
-      "#widgets": ["./src/isoloop/widgets.ts"]
+      "#widgets": ["./src/isoloop/widgets.ts"],
+      "#metrics": ["./src/metrics/isoloop.ts"]
     }
   },
   "include": ["src", "e2e", "scripts", "*.config.ts"]
