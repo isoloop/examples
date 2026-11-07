@@ -6,5 +6,7 @@ writeFileSync(
   'dist/index.html',
   '<!doctype html><meta charset="utf-8"><title>Markets</title>' +
     '<meta http-equiv="refresh" content="0; url=./isoloop/">' +
-    '<a href="./isoloop/">Markets on Isoloop</a> · <a href="./native/">native</a>\n',
+    '<a href="./isoloop/">Markets on Isoloop</a> · <a href="./native/">native</a> · ' +
+    '<a href="./isoloop-preact/">Isoloop, Preact</a> · <a href="./native-preact/">native, Preact</a> · ' +
+    '<a href="./mixed/">React and Preact</a>\n',
 );

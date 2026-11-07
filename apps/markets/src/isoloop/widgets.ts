@@ -35,3 +35,8 @@ export const ISOLATES: Record<WidgetName, { src: string; grants: Grants }> = {
     grants: { publish: ['alert-rules.v1', 'noise.v1'], subscribe: ['alert-rules.v1', 'alerts.v1'] },
   },
 };
+
+/** The module a slot's isolate runs. A promise, because `/mixed` reads some from a manifest. */
+export function srcOf(name: WidgetName): Promise<string> {
+  return Promise.resolve(ISOLATES[name].src);
+}

@@ -10,7 +10,8 @@
     "paths": {
       "#env": ["./src/env/isoloop.ts"],
       "#slot": ["./src/slot/isoloop.tsx"],
-      "#main": ["./src/main.isoloop.tsx"]
+      "#main": ["./src/main.isoloop.tsx"],
+      "#widgets": ["./src/isoloop/widgets.ts"]
     }
   },
   "include": ["src", "e2e", "scripts", "*.config.ts"]

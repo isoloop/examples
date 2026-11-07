@@ -54,11 +54,14 @@ async function settledTable(
   return { total, oldest, newest };
 }
 
-test('both builds render the same data from the replay source', async ({ browser }) => {
-  const [native, isoloop] = await Promise.all([browser.newPage(), browser.newPage()]);
-  const q = `?speed=10&seed=7&for=${FOR_MS}`;
-  await Promise.all([native.goto(`/native/${q}`), isoloop.goto(`/isoloop/${q}`)]);
-  const [a, b] = await Promise.all([settledTable(native), settledTable(isoloop)]);
-  expect(a.total).toBeGreaterThan(50);
-  expect(b).toEqual(a);
-});
+// Every build renders what native React renders (M3b tasks 15 and 16b).
+for (const build of ['isoloop', 'isoloop-preact', 'native-preact', 'mixed'] as const) {
+  test(`${build} renders the same data as native from the replay source`, async ({ browser }) => {
+    const [native, other] = await Promise.all([browser.newPage(), browser.newPage()]);
+    const q = `?speed=10&seed=7&for=${FOR_MS}`;
+    await Promise.all([native.goto(`/native/${q}`), other.goto(`/${build}/${q}`)]);
+    const [a, b] = await Promise.all([settledTable(native), settledTable(other)]);
+    expect(a.total).toBeGreaterThan(50);
+    expect(b).toEqual(a);
+  });
+}
