@@ -59,7 +59,7 @@ async function settledTable(
 for (const build of inScope(['isoloop', 'isoloop-preact', 'native-preact', 'mixed'] as const)) {
   test(`${build} renders the same data as native from the replay source`, async ({ browser }) => {
     const [native, other] = await Promise.all([browser.newPage(), browser.newPage()]);
-    const q = `?speed=10&seed=7&for=${FOR_MS}`;
+    const q = `?size=lite&speed=10&seed=7&for=${FOR_MS}`;
     await Promise.all([native.goto(`/native/${q}`), other.goto(`/${build}/${q}`)]);
     const [a, b] = await Promise.all([settledTable(native), settledTable(other)]);
     expect(a.total).toBeGreaterThan(50);

@@ -5,7 +5,7 @@ const any = { '~standard': {} };
 test('the aggregator publishes VWAP and spread per symbol from the replay source', async ({
   page,
 }) => {
-  await page.goto('/isoloop/?speed=10');
+  await page.goto('/isoloop/?size=lite&speed=10');
   const symbols = await page.evaluate(
     (schema) =>
       new Promise<string[]>((resolve) => {
@@ -29,7 +29,7 @@ test('the aggregator publishes VWAP and spread per symbol from the replay source
 });
 
 test('a rule published to alert-rules.v1 fires into alerts.v1', async ({ page }) => {
-  await page.goto('/isoloop/?speed=10');
+  await page.goto('/isoloop/?size=lite&speed=10');
   const alert = await page.evaluate(async (schema) => {
     const fired = new Promise<unknown>((resolve) => {
       window.kernel.subscribe({ name: 'alerts.v1', schema }, (r) => {

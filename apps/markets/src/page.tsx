@@ -3,11 +3,15 @@ import { Slot } from '#slot';
 import { BUILDS, COUNTERPART, CURRENT } from './builds';
 import { About } from './about/About';
 import { MetricsPanel } from './metrics/Panel';
+import { SIZES, SPECS, specFrom, sizeHref } from './sizes/sizes';
 import { switchHref } from './url';
 
 /** The page shell, the same in every build; only what a slot holds differs. */
 export function Page() {
   const other = COUNTERPART[CURRENT];
+  const spec = specFrom(new URLSearchParams(location.search));
+  const filters = spec.widgets.find((p) => p.widget === 'filters');
+  const grid = spec.widgets.filter((p) => p.widget !== 'filters');
   return (
     <div className="page">
       <header>
@@ -44,16 +48,27 @@ export function Page() {
             ),
           )}
         </nav>
+        <nav className="sizes" aria-label="Dashboard size">
+          {SIZES.map((size) =>
+            size === spec.size ? (
+              <span key={size} aria-current="page">
+                {SPECS[size].label}
+              </span>
+            ) : (
+              <a key={size} href={sizeHref(size, location.search)}>
+                {SPECS[size].label}
+              </a>
+            ),
+          )}
+        </nav>
       </header>
       <MetricsPanel />
       <About />
-      <Slot name="filters" />
-      <main className="grid">
-        <Slot name="price" />
-        <Slot name="spread" />
-        <Slot name="volume" />
-        <Slot name="trades" />
-        <Slot name="alerts-panel" />
+      {filters && <Slot placement={filters} />}
+      <main className="grid" data-size={spec.size}>
+        {grid.map((p) => (
+          <Slot key={p.id} placement={p} />
+        ))}
       </main>
     </div>
   );

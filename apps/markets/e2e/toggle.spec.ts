@@ -13,7 +13,7 @@ for (const [from, to] of builds) {
     page,
   }) => {
     const started = Date.now();
-    await page.goto(`/${from}/?speed=10&seed=3`);
+    await page.goto(`/${from}/?size=lite&speed=10&seed=3`);
     const filters = page.locator('[data-slot="filters"]');
     await filters.locator('select[name="symbol"]').selectOption('ETH-USD');
     await filters.locator('input[name="exchange-okx"]').click();

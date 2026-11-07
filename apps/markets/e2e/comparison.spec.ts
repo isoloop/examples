@@ -66,7 +66,7 @@ test.use({
 for (const build of BUILDS) {
   test(`comparison: ${build}`, async ({ page }) => {
     test.setTimeout(120_000);
-    await page.goto(`/${build}/?speed=10&seed=7`);
+    await page.goto(`/${build}/?size=lite&speed=10&seed=7`);
     await expect(page.locator('[data-metric="first-data"] dd')).toHaveText(/ms$/, {
       timeout: 15_000,
     });

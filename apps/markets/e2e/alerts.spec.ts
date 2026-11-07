@@ -4,7 +4,7 @@ for (const build of ['isoloop', 'native'] as const) {
   test(`${build}: a rule added in the editor fires on the replay source and shows in the panel`, async ({
     page,
   }) => {
-    await page.goto(`/${build}/?speed=10`);
+    await page.goto(`/${build}/?size=lite&speed=10`);
     const panel = page.locator('[data-slot="alerts-panel"] .alerts');
     await expect(panel).toBeVisible();
     // BTC-USD trades far above 1, so the rule holds on its first value and fires once.

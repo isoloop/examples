@@ -73,14 +73,14 @@ function StressBar({ name, onCrash }: { name: string; onCrash: () => void }) {
 /** Takes the isolate's `config` prop where there is one, so `defineIsolate` accepts it. */
 export function withStress(
   name: string,
-  W: ComponentType,
+  W: ComponentType<{ config?: unknown }>,
 ): FunctionComponent<{ config?: unknown }> {
-  function Stressed() {
+  function Stressed({ config }: { config?: unknown }) {
     const [crashed, setCrashed] = useState(false);
     if (crashed) throw new Error(`stress: ${name} crashed`);
     return (
       <>
-        <W />
+        <W config={config} />
         <StressBar
           name={name}
           onCrash={() => {
