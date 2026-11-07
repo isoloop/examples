@@ -101,6 +101,22 @@ export const alert = z.object({
   ts,
 });
 
+/** Rolling statistics for one symbol across exchanges (M3c task 3). */
+export const stats = z.object({
+  symbol,
+  vwap: z.number().nonnegative(),
+  /** Standard deviation of 1-second log returns over the window. */
+  volatility: z.number().nonnegative(),
+  volume: size,
+  trades: z.number().int().nonnegative(),
+  lo: price,
+  hi: price,
+  /** Volume per price bucket between `lo` and `hi`. */
+  profile: z.array(z.number().nonnegative()).max(64),
+  windowMs: z.number().int().positive(),
+  ts,
+});
+
 /** Load from a widget's flood control (M3b task 14); nothing reads it. */
 export const noise = z.object({ widget: z.string().min(1), n: z.number().int().nonnegative(), ts });
 
@@ -122,3 +138,4 @@ export type AlertRule = z.infer<typeof alertRule>;
 export type Alert = z.infer<typeof alert>;
 export type Filters = z.infer<typeof filters>;
 export type Noise = z.infer<typeof noise>;
+export type Stats = z.infer<typeof stats>;

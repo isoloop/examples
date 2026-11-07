@@ -18,3 +18,4 @@ export const alertRules: typeof C.alertRules = handle('alert-rules.v1');
 export const alerts: typeof C.alerts = handle('alerts.v1');
 export const filters: typeof C.filters = handle('filters.v1');
 export const noise: typeof C.noise = handle('noise.v1');
+export const stats: typeof C.stats = handle('stats.v1');

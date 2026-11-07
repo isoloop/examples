@@ -13,6 +13,7 @@ const TOPICS: Record<StreamName, TopicRef<unknown, unknown, unknown, unknown>> =
   alerts: T.alerts,
   filters: T.filters,
   noise: T.noise,
+  stats: T.stats,
 };
 
 export function busSource(bus: BusClient): Source {

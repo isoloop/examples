@@ -1,5 +1,6 @@
 // The dashboard's sizes (M3c decision 3): which widgets the page holds, how
 // many symbols the replay synthesizes, and how fast. The same in every build.
+import type { EngineName } from '../core/engines';
 import type { ReplayConfig } from '../core/services';
 import { replayConfig } from '../url';
 import type { WidgetName } from '../widgets';
@@ -23,6 +24,8 @@ export interface SizeSpec {
   /** Multiplies the replay's trades per second. */
   rate: number;
   widgets: readonly Placement[];
+  /** The shared engines the size's widgets read from. */
+  engines: readonly EngineName[];
 }
 
 const one = (widget: WidgetName): Placement => ({ id: widget, widget });
@@ -38,9 +41,9 @@ const LITE: readonly Placement[] = [
 ];
 
 export const SPECS: Record<Size, SizeSpec> = {
-  lite: { label: 'Lite', symbols: 3, rate: 1, widgets: LITE },
-  normal: { label: 'Normal', symbols: 20, rate: 1, widgets: LITE },
-  heavy: { label: 'Heavy', symbols: 20, rate: 5, widgets: LITE },
+  lite: { label: 'Lite', symbols: 3, rate: 1, widgets: LITE, engines: [] },
+  normal: { label: 'Normal', symbols: 20, rate: 1, widgets: LITE, engines: ['stats'] },
+  heavy: { label: 'Heavy', symbols: 20, rate: 5, widgets: LITE, engines: ['stats'] },
 };
 
 export const sizeOf = (params: URLSearchParams): Size =>

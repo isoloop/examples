@@ -50,4 +50,20 @@ export const noise = topic('noise.v1', {
   retention: { kind: 'last-n', n: 100 },
 });
 
-export default contracts(trades, book, prices, aggregates, alertRules, alerts, filters, noise);
+/** The rolling-stats engine's output (M3c task 3): 20 symbols a second. */
+export const stats = topic('stats.v1', {
+  schema: s.stats,
+  retention: { kind: 'last-n', n: 2_000 },
+});
+
+export default contracts(
+  trades,
+  book,
+  prices,
+  aggregates,
+  alertRules,
+  alerts,
+  filters,
+  noise,
+  stats,
+);
