@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 
 type Node = { id: string; label: string };
 
+const cores: number | null =
+  typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : null;
+
 const SOURCES: Node[] = [
   { id: 'replay', label: 'Replay (recorded ticks)' },
   { id: 'feed-coinbase', label: 'Coinbase' },
@@ -103,6 +106,19 @@ export function About() {
         <li>Upstream APIs must allow calls from a browser (CORS, WebSocket origins).</li>
         <li>Alerts fire only while a tab is open.</li>
         <li>Each tab opens its own set of connections; tabs don't share feeds.</li>
+      </ul>
+      <h3>Threads and limits</h3>
+      <ul>
+        <li data-about="cores">
+          This device reports {cores ?? 'an unknown number of'} logical cores.
+          {cores !== null && cores < 4
+            ? ' With fewer than 4, Isoloop has little room to move work off the main thread.'
+            : ''}
+        </li>
+        <li>
+          Heavy runs 30 isolates, within the soft budget of 32 workers (ADR 0001). Apps that need
+          more share workers through named pools (M2c).
+        </li>
       </ul>
     </details>
   );
