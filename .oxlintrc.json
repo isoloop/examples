@@ -35,5 +35,30 @@
     // targetOrigin, so every hit would be a false positive.
     "unicorn/require-post-message-target-origin": "off",
     "no-underscore-dangle": "error"
-  }
+  },
+  // The markets app: code shared by both builds, and the native build itself,
+  // never import Isoloop, so /native is an idiomatic app with none of it.
+  "overrides": [
+    {
+      "files": [
+        "apps/markets/src/core/**",
+        "apps/markets/src/charts/**",
+        "apps/markets/src/widgets/**",
+        "apps/markets/src/native/**"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@isoloop/**", "**/isoloop/**", "virtual:isoloop/*"],
+                "message": "Shared and native code stays free of Isoloop (M3b task 15)."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }
