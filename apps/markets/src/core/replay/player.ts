@@ -26,18 +26,22 @@ export interface Player {
 /**
  * Emits each tick when `t / speed` ms have passed since the start. Ticks due
  * in the same timer turn go out together, in order, so a slow consumer
- * catches up instead of drifting.
+ * catches up instead of drifting. `from` starts part-way into the recording:
+ * ticks before it are skipped, and the one at `from` plays at once.
  */
 export function play(
   ticks: Iterable<Tick>,
   emit: (tick: Tick) => void,
-  opts: { speed?: number; clock?: Clock } = {},
+  opts: { speed?: number; clock?: Clock; from?: number } = {},
 ): Player {
   const speed = opts.speed ?? 1;
   const clock = opts.clock ?? realClock;
+  const from = Math.max(0, opts.from ?? 0);
   const it = ticks[Symbol.iterator]();
-  const start = clock.now();
+  // Recording time `from` plays now: shift the start back by `from / speed`.
+  const start = clock.now() - from / speed;
   let pending = it.next();
+  while (!pending.done && pending.value.t < from) pending = it.next();
   let cancel: (() => void) | undefined;
   const state = { stopped: false };
 

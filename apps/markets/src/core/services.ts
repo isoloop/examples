@@ -22,6 +22,8 @@ export interface ReplayConfig {
   tradesPerSecond?: number;
   /** Stop after this much recording time; endless by default. */
   durationMs?: number;
+  /** Start this far into the recording (ms), as after a switch between builds. */
+  from?: number;
 }
 
 /**
@@ -59,7 +61,7 @@ export function runReplay(src: Source, c: ReplayConfig = {}): Stoppable {
         key,
       );
     },
-    { speed: c.speed ?? 1 },
+    { speed: c.speed ?? 1, from: c.from ?? 0 },
   );
 }
 

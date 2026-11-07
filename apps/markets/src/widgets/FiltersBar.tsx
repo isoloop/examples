@@ -1,4 +1,5 @@
 import { usePublish } from '#env';
+import { useEffect, useRef } from 'react';
 import { EXCHANGES, SYMBOLS, type Filters } from '../core/schemas';
 import { useFilters } from './useFilters';
 
@@ -12,12 +13,22 @@ const WINDOWS = [
 export function FiltersBar() {
   const f = useFilters();
   const publish = usePublish('filters');
+  // Each change builds on the last value, ours or one that arrived: two quick
+  // changes (a symbol, then an exchange) mustn't undo each other while the
+  // first is still on its way back.
+  const last = useRef(f);
+  useEffect(() => {
+    last.current = f;
+  }, [f]);
   const set = (next: Partial<Filters>): void => {
-    publish({ ...f, ...next }, 'current');
+    const value = { ...last.current, ...next };
+    last.current = value;
+    publish(value, 'current');
   };
   const toggle = (ex: Filters['exchanges'][number]): void => {
-    const on = f.exchanges.includes(ex);
-    const exchanges = on ? f.exchanges.filter((e) => e !== ex) : [...f.exchanges, ex];
+    const now = last.current.exchanges;
+    const on = now.includes(ex);
+    const exchanges = on ? now.filter((e) => e !== ex) : [...now, ex];
     if (exchanges.length > 0) set({ exchanges });
   };
   return (

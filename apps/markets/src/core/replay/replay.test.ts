@@ -94,6 +94,26 @@ describe('play', () => {
     });
   });
 
+  it('starts part-way in: skips ticks before `from`, plays the rest on time', () => {
+    const all = run(10).order;
+    const clock = manualClock();
+    const order: Tick[] = [];
+    const at: number[] = [];
+    play(
+      synth({ seed: 11, durationMs: 4_000 }),
+      (tick) => {
+        order.push(tick);
+        at.push(clock.now());
+      },
+      { speed: 10, clock, from: 2_000 },
+    );
+    clock.advance(2_000 / 10 + 1);
+    expect(order).toEqual(all.filter((t) => t.t >= 2_000));
+    order.forEach((tick, i) => {
+      expect((at[i] ?? 0) + 1e-9).toBeGreaterThanOrEqual((tick.t - 2_000) / 10);
+    });
+  });
+
   it('stops', () => {
     const clock = manualClock();
     let n = 0;

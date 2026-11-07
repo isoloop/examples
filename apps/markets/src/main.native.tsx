@@ -3,6 +3,7 @@ import { feeds } from './core/feeds';
 import { runAggregator, runAlerts, runLiveFeed, runReplay } from './core/services';
 import { store } from './native/store';
 import { Page } from './page';
+import { filtersFrom, replayConfig, startReplayClock, writeFilters } from './url';
 import './page.css';
 import './widgets/widgets.css';
 
@@ -19,13 +20,20 @@ const params = new URLSearchParams(location.search);
 if (params.get('source') === 'live') {
   for (const feed of feeds) runLiveFeed(store, feed);
 } else {
-  runReplay(store, {
-    speed: Number(params.get('speed')) || 1,
-    seed: Number(params.get('seed')) || 1,
-    tradesPerSecond: Number(params.get('tps')) || 2,
-    ...(params.has('for') ? { durationMs: Number(params.get('for')) } : {}),
-  });
+  const config = replayConfig(params);
+  runReplay(store, config);
+  startReplayClock(config);
 }
+// Filters from the URL (after a switch), and back into it as they change.
+const initial = filtersFrom(params);
+if (initial) store.publish('filters', initial, 'current');
+store.subscribe(
+  'filters',
+  (r) => {
+    writeFilters(r.value);
+  },
+  'latest',
+);
 runAggregator(store);
 runAlerts(store);
 
