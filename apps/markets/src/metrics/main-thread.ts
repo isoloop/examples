@@ -11,6 +11,8 @@ export type MainThreadMetrics = {
   longTasks: number;
   /** Worst input-to-next-frame latency in the last 10 s, ms; `null` before any input. */
   inputLatencyMs: number | null;
+  /** Median input-to-next-frame latency in the last 10 s, ms; `null` before any input. */
+  inputMedianMs: number | null;
   /** Bytes, or why it can't be measured. */
   memory: number | 'unavailable' | 'pending';
   /** From navigation to the first trade on screen, ms; `null` until then. */
@@ -22,6 +24,20 @@ const recent = (xs: { at: number }[]): void => {
   const cut = performance.now() - WINDOW_MS;
   while (xs.length > 0 && (xs[0]?.at ?? 0) < cut) xs.shift();
 };
+
+function median(xs: number[]): number | null {
+  if (xs.length === 0) return null;
+  const s = xs.toSorted((a, b) => a - b);
+  return s[Math.floor(s.length / 2)] ?? null;
+}
+
+let shared: (() => MainThreadMetrics) | undefined;
+
+/** The page's one set of main-thread measurements, shared by the panel and the badge. */
+export function mainThreadMetrics(): () => MainThreadMetrics {
+  shared ??= startMainThreadMetrics();
+  return shared;
+}
 
 export function startMainThreadMetrics(): () => MainThreadMetrics {
   // Frame rate: frames in the last second.
@@ -104,6 +120,7 @@ export function startMainThreadMetrics(): () => MainThreadMetrics {
       fps: frames.length,
       longTasks: long.length,
       inputLatencyMs: inputs.length > 0 ? Math.max(...inputs.map((i) => i.ms)) : null,
+      inputMedianMs: median(inputs.map((i) => i.ms)),
       memory,
       firstDataMs,
     };

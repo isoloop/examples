@@ -3,6 +3,7 @@ import { Slot } from '#slot';
 import { BUILDS, COUNTERPART, CURRENT } from './builds';
 import { About } from './about/About';
 import { MetricsPanel } from './metrics/Panel';
+import { Responsiveness } from './responsive/Responsiveness';
 import { SIZES, SPECS, specFrom, sizeHref } from './sizes/sizes';
 import { switchHref } from './url';
 
@@ -62,6 +63,7 @@ export function Page() {
           )}
         </nav>
       </header>
+      <Responsiveness />
       <MetricsPanel />
       <About />
       {filters && <Slot placement={filters} />}
