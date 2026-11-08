@@ -7,7 +7,7 @@ const ENGINES = [
   ['firefox', 'Desktop Firefox'],
   ['webkit', 'Desktop Safari'],
 ] as const;
-const LOAD = /(stress|table)\.spec\.ts$/;
+const LOAD = /(stress|table|budget)\.spec\.ts$/;
 const COMPARISON = /comparison\.spec\.ts$/;
 const LIVE = process.env['LIVE_URL'];
 
