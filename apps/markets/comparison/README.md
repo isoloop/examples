@@ -81,6 +81,29 @@ main-thread time there, for applying their changes.
 [`side-by-side-normal.webm`](side-by-side-normal.webm): the React pair at
 Normal, native on the left and Isoloop on the right.
 
+### Updates per second in the widget headers
+
+Each header's `updates/s` counts how often that widget's output changed on
+screen in the last second, the same way in every build:
+
+- **DOM widgets:** animation frames in which the page applied a change to the
+  widget's DOM, counted on the main thread, where both builds draw it.
+- **Canvas widgets:** the widget's draws, at most one a frame, counted where it
+  draws. On Isoloop that is the isolate's thread; Chromium and Firefox present
+  that canvas without the main thread, WebKit presents it on the main thread
+  (see the WebKit section).
+
+Until this change the header counted the widget's renders, including renders
+that changed nothing on screen (the trades table rendered about 35 times a
+second and changed its DOM about 7 times). Both builds counted the same way, so
+the comparison between them held, but the numbers overstated what was drawn.
+
+Measured by hand at Normal in Chromium (3 runs each, medians; the same
+widgets checked against a per-frame probe of DOM changes and canvas pixels):
+on 32 cores and on 4 cores the two builds show the same updates/s per widget
+within about 10%; on 4 cores Isoloop's busiest DOM widgets (top movers,
+arbitrage) show about 7% fewer (43 against 46).
+
 ## WebKit
 
 The recorded comparison runs in Chromium. Playwright's WebKit on Linux (no GPU)

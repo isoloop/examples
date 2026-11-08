@@ -9,7 +9,7 @@ import {
   type FunctionComponent,
   type ReactNode,
 } from 'react';
-import { TimingContext } from '../../metrics/timing';
+import { DrawContext, TimingContext } from '../../metrics/timing';
 
 /** How long `block` keeps the widget's loop busy. */
 export const BLOCK_MS = 3_000;
@@ -90,11 +90,16 @@ export function withStress(
     // The time this widget spends rendering and drawing, published once a
     // second (M3c task 10). Measured on whichever thread runs it.
     const spent = useRef(0);
-    // Renders in the last second, the header's updates/s: counted here, in the
-    // widget's own code, so every build counts the same thing.
+    // Renders and canvas draws in the last second, counted here, in the
+    // widget's own code, so every build counts the same thing. A canvas
+    // widget's header shows its draws (metrics/updates.ts).
     const renders = useRef(0);
     const rendered = useCallback(() => {
       renders.current++;
+    }, []);
+    const draws = useRef(0);
+    const drew = useCallback(() => {
+      draws.current++;
     }, []);
     const record = useCallback((ms: number) => {
       spent.current += ms;
@@ -106,10 +111,12 @@ export function withStress(
           widget: name,
           ms: spent.current,
           updates: renders.current,
+          ...(draws.current > 0 ? { draws: draws.current } : {}),
           ts: Date.now(),
         });
         spent.current = 0;
         renders.current = 0;
+        draws.current = 0;
       }, 1_000);
       return () => {
         clearInterval(id);
@@ -118,7 +125,9 @@ export function withStress(
     if (crashed) throw new Error(`stress: ${name} crashed`);
     return (
       <TimingContext.Provider value={record}>
-        <Timed W={W} config={config} record={record} rendered={rendered} />
+        <DrawContext.Provider value={drew}>
+          <Timed W={W} config={config} record={record} rendered={rendered} />
+        </DrawContext.Provider>
         <StressBar
           name={name}
           onCrash={() => {
