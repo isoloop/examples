@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { CATEGORY, DATA_KINDS, OUTPUTS } from '../sizes/categories';
 import type { WidgetName } from '../widgets';
 import type { Timing } from '../core/schemas';
+import { updatesPerSec } from './updates';
 
 const WINDOW_MS = 5_000;
 
@@ -29,6 +30,8 @@ export interface CategoryRow {
   slots: number;
   workMsPerSec: number;
   applyMsPerSec: number | null;
+  /** The category's widgets' updates/s summed, as their headers show them. */
+  updatesPerSec: number;
 }
 
 /** The rows the panel shows, and the E2E suite and the comparison read (`window.categories`). */
@@ -67,6 +70,10 @@ export function categoryRows(): CategoryRow[] {
     slots: slots.get(category)?.size ?? 0,
     workMsPerSec: (work.get(category) ?? 0) / seconds,
     applyMsPerSec: applyBy ? (applyBy.get(category) ?? 0) : null,
+    updatesPerSec: [...(slots.get(category) ?? [])].reduce(
+      (n, slot) => n + (updatesPerSec(slot) ?? 0),
+      0,
+    ),
   }));
 }
 
@@ -98,6 +105,7 @@ export function CategoryPanel() {
           <tr>
             <th>Category</th>
             <th>Slots</th>
+            <th>Updates/s</th>
             <th>{native ? 'Render and draw (main thread)' : 'Render and draw (own threads)'}</th>
             <th>DOM apply (main thread)</th>
           </tr>
@@ -107,6 +115,7 @@ export function CategoryPanel() {
             <tr key={r.category} data-category={r.category}>
               <td>{r.category}</td>
               <td>{r.slots}</td>
+              <td data-col="updates">{r.updatesPerSec}</td>
               <td data-col="work">{f(r.workMsPerSec)}</td>
               <td data-col="apply">
                 {r.applyMsPerSec === null ? 'in render' : f(r.applyMsPerSec)}

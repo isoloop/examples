@@ -1,9 +1,10 @@
 name: Comparison
 
-# The recorded comparison (M3b task 18): the same scenario on the native and
-# Isoloop builds, React and Preact, on Chromium, one test at a time. It runs on
-# demand, after a `markets-v*` deploy (release.yml) and weekly (weekly.yml);
-# its numbers and the side-by-side video are uploaded as an artifact.
+# The recorded comparison: the size matrix (M3c task 12), each size on each
+# build, and the one-chart-blocked scenario (M3b task 18), native and Isoloop,
+# React and Preact, on Chromium, one test at a time. It runs on demand, after a
+# `markets-v*` deploy (release.yml) and weekly (weekly.yml); its numbers and
+# the side-by-side videos are uploaded as an artifact.
 on:
   workflow_dispatch:
   workflow_call:
@@ -18,7 +19,7 @@ jobs:
     concurrency:
       group: comparison
       cancel-in-progress: false
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1

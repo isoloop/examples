@@ -29,3 +29,15 @@ typing to the panel re-rendering, which is what a user waits for.
 
 [`side-by-side.webm`](side-by-side.webm): the React pair, native on the left and
 Isoloop on the right. The per-build numbers are in the `*.json` files.
+
+## Why there's no throttled-CPU run
+
+Chromium's CPU throttling (CDP `Emulation.setCPUThrottlingRate`, the same
+setting as DevTools' "CPU: 4× slowdown") slows the page's main thread but not
+its dedicated workers. Measured in Chromium 156 with a fixed loop: on the main
+thread 18 ms unthrottled and 73 ms at 4×; in a worker 18 ms in both. Worker
+targets don't accept the call (`'Emulation.setCPUThrottlingRate' wasn't
+found`), so it can't be applied to them either. A throttled run would slow
+native's widgets and not Isoloop's, so it isn't a like-for-like slower device,
+and the comparison doesn't include one. The same applies to throttled runs in
+DevTools by hand.
