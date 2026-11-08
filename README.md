@@ -1,10 +1,10 @@
 # Isoloop examples
 
-Apps built on [Isoloop](https://github.com/isoloop/isoloop), installed from npm the way any app would. Each app is its own package under `apps/`.
+Apps built on [Isoloop](https://github.com/isoloop/isoloop), installed from npm the way any app would. Each app is its own package under `apps/`, grouped by kind (`apps/dashboards/<name>`). The live demos are at [isoloop.github.io/examples](https://isoloop.github.io/examples/).
 
 | App | What it shows |
 | --- | --- |
-| [`apps/markets`](apps/markets) | A backend-less markets dashboard: public exchange feeds, cross-market aggregates and alerts, all in the visitor's tab. One code base, two builds: an idiomatic native app and the Isoloop app, side by side with live metrics. |
+| [`apps/dashboards/markets`](apps/dashboards/markets) | A backend-less markets dashboard: public exchange feeds, cross-market aggregates and alerts, all in the visitor's tab. One code base, five builds (native and Isoloop, each with React and with Preact, plus a mixed React and Preact Isoloop build), in Lite, Normal and Heavy sizes, with live metrics. [Live](https://isoloop.github.io/examples/dashboards/markets/) |
 
 ## Setup
 

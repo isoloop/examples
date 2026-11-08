@@ -1,6 +1,7 @@
 name: Deploy
 
-# The markets dashboard to GitHub Pages, at <pages url>/markets/ (M3b task 19),
+# The markets dashboard to GitHub Pages, at <pages url>/dashboards/markets/ (M3b
+# task 19; the old <pages url>/markets/ paths redirect there),
 # then the smoke test against the live URL. Only from a `markets-v*` tag
 # (release.yml) or by hand: the public demo changes when someone decides it should.
 #
@@ -24,14 +25,9 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter ./apps/markets build
+      - run: pnpm --filter ./apps/dashboards/markets build
       - name: Assemble the site
-        run: |
-          mkdir -p site
-          cp -r apps/markets/dist site/markets
-          printf '%s\n' '<!doctype html><meta charset="utf-8"><title>Isoloop examples</title>' \
-            '<meta http-equiv="refresh" content="0; url=./markets/">' \
-            '<a href="./markets/">Markets dashboard</a>' > site/index.html
+        run: scripts/assemble-site.sh site
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -49,7 +45,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}markets/
+      url: ${{ steps.deployment.outputs.page_url }}dashboards/markets/
     outputs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
@@ -70,6 +66,6 @@ jobs:
       - uses: ./.github/actions/install-browsers
         with:
           browsers: chromium
-      - run: pnpm --filter ./apps/markets e2e --project=live
+      - run: pnpm --filter ./apps/dashboards/markets e2e --project=live
         env:
-          LIVE_URL: ${{ needs.deploy.outputs.url }}markets/
+          LIVE_URL: ${{ needs.deploy.outputs.url }}dashboards/markets/

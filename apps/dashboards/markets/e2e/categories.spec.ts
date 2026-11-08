@@ -21,13 +21,22 @@ for (const build of ['isoloop', 'native'] as const) {
         timeout: 15_000,
       })
       .toEqual(CATEGORIES);
+    // The panel lists every category from the start (#40), so wait for the
+    // figures too: widgets that render something spend measurable time.
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () => window.categories().find((r) => r.category === 'combined · canvas')?.workMsPerSec,
+          ),
+        { timeout: 15_000 },
+      )
+      .toBeGreaterThan(0);
     const rows = await page.evaluate(() => window.categories());
     for (const r of rows) {
       expect(r.slots).toBeGreaterThan(0);
       expect(r.workMsPerSec).toBeGreaterThanOrEqual(0);
     }
-    // Widgets that render something spend measurable time.
-    expect(rows.find((r) => r.category === 'combined · canvas')?.workMsPerSec).toBeGreaterThan(0);
     const apply = rows.map((r) => r.applyMsPerSec);
     if (build === 'native') expect(apply.every((a) => a === null)).toBe(true);
     else expect(apply.every((a) => typeof a === 'number')).toBe(true);

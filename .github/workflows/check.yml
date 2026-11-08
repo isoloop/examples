@@ -36,7 +36,10 @@ jobs:
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          all=$(ls apps)
+          # An app is a folder under apps/ with a package.json, at any depth
+          # (apps/<name> or apps/<group>/<name>); its id is that path below apps/.
+          all=$(find apps -name package.json -not -path '*/node_modules/*' \
+            | xargs -n1 dirname | sed 's#^apps/##' | sort)
           if [ -z "$BASE" ]; then
             apps="$all"
           else
@@ -44,7 +47,9 @@ jobs:
             if echo "$changed" | grep -qvE '^apps/'; then
               apps="$all"
             else
-              apps=$(echo "$changed" | cut -d/ -f2 | sort -u)
+              apps=$(for app in $all; do
+                if echo "$changed" | grep -q "^apps/$app/"; then echo "$app"; fi
+              done)
             fi
           fi
           echo "apps=$(printf '%s\n' $apps | jq -Rnc '[inputs | select(length > 0)]')" >> "$GITHUB_OUTPUT"

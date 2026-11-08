@@ -5,7 +5,7 @@ by [this CI run](https://github.com/isoloop/examples/actions/runs/42464452395)
 on a GitHub-hosted `ubuntu-latest` runner (4 cores, no GPU), Chromium, one page
 at a time. Rerun it with the *Comparison* workflow
 (`.github/workflows/comparison.yml`), or locally with
-`pnpm --filter ./apps/markets compare`. The raw numbers are in the `*.json`
+`pnpm --filter ./apps/dashboards/markets compare`. The raw numbers are in the `*.json`
 files and [`summary.md`](summary.md).
 
 Two scenarios:

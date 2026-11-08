@@ -17,7 +17,7 @@ jobs:
     needs: check
     uses: ./.github/workflows/e2e.yml
     with:
-      apps: '["markets"]'
+      apps: '["dashboards/markets"]'
       scope: full
 
   deploy:

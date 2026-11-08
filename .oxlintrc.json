@@ -41,15 +41,15 @@
   "overrides": [
     {
       "files": [
-        "apps/markets/src/core/**",
-        "apps/markets/src/charts/**",
-        "apps/markets/src/widgets/**",
-        "apps/markets/src/native/**",
-        "apps/markets/src/env/native.ts",
-        "apps/markets/src/env/hooks.ts",
-        "apps/markets/src/slot/native.tsx",
-        "apps/markets/src/main.native.tsx",
-        "apps/markets/src/page.tsx"
+        "apps/dashboards/markets/src/core/**",
+        "apps/dashboards/markets/src/charts/**",
+        "apps/dashboards/markets/src/widgets/**",
+        "apps/dashboards/markets/src/native/**",
+        "apps/dashboards/markets/src/env/native.ts",
+        "apps/dashboards/markets/src/env/hooks.ts",
+        "apps/dashboards/markets/src/slot/native.tsx",
+        "apps/dashboards/markets/src/main.native.tsx",
+        "apps/dashboards/markets/src/page.tsx"
       ],
       "rules": {
         "no-restricted-imports": [
