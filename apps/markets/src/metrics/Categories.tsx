@@ -19,6 +19,17 @@ const categoryOf = (t: Timing): string => {
 };
 const ORDER = [...DATA_KINDS.flatMap((d) => OUTPUTS.map((o) => `${d} · ${o}`)), 'engines'];
 
+/**
+ * The rows the panel shows for these widgets, from the start: each of their
+ * categories, then the engines (feeds, the aggregator and the shared engines
+ * report there). Drawing them all before the first figures arrive keeps the
+ * panel's height, so nothing below it moves while the page fills.
+ */
+export function panelCategories(widgets: readonly WidgetName[]): string[] {
+  const present = new Set(widgets.map((w) => `${CATEGORY[w].data} · ${CATEGORY[w].output}`));
+  return ORDER.filter((c) => c === 'engines' || present.has(c));
+}
+
 const recent: Timing[] = [];
 buildMetrics.timings((t) => {
   recent.push(t);
@@ -86,8 +97,9 @@ window.categories = categoryRows;
 
 const f = (v: number): string => v.toFixed(1);
 
-export function CategoryPanel() {
+export function CategoryPanel({ widgets }: { widgets: readonly WidgetName[] }) {
   const [rows, setRows] = useState<CategoryRow[]>([]);
+  const byCategory = new Map(rows.map((r) => [r.category, r]));
   useEffect(() => {
     const id = setInterval(() => {
       setRows(categoryRows());
@@ -111,17 +123,20 @@ export function CategoryPanel() {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
-            <tr key={r.category} data-category={r.category}>
-              <td>{r.category}</td>
-              <td>{r.slots}</td>
-              <td data-col="updates">{r.updatesPerSec}</td>
-              <td data-col="work">{f(r.workMsPerSec)}</td>
-              <td data-col="apply">
-                {r.applyMsPerSec === null ? 'in render' : f(r.applyMsPerSec)}
-              </td>
-            </tr>
-          ))}
+          {panelCategories(widgets).map((category) => {
+            const r = byCategory.get(category);
+            return (
+              <tr key={category} data-category={category}>
+                <td>{category}</td>
+                <td>{r ? r.slots : '—'}</td>
+                <td data-col="updates">{r ? r.updatesPerSec : '—'}</td>
+                <td data-col="work">{r ? f(r.workMsPerSec) : '—'}</td>
+                <td data-col="apply">
+                  {!r ? '—' : r.applyMsPerSec === null ? 'in render' : f(r.applyMsPerSec)}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </details>
