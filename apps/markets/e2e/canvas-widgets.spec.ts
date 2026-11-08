@@ -35,12 +35,15 @@ for (const build of inScope([
 }
 
 test('Isoloop and native draw the same shapes from the same replay', async ({ browser }) => {
+  // Two pages one after the other; on WebKit the Isoloop page can take longer
+  // than 15 s before every symbol has the trades the correlations need.
+  test.setTimeout(90_000);
   const shapes = async (build: string): Promise<string[]> => {
     const page = await browser.newPage();
     await page.goto(`/${build}/?size=normal&speed=1&seed=5`);
     const out = await Promise.all(
       Object.entries(WIDGETS).map(async ([slot, shape]) => {
-        await expect.poll(async () => drawn(page, slot), { timeout: 15_000 }).toMatch(shape);
+        await expect.poll(async () => drawn(page, slot), { timeout: 30_000 }).toMatch(shape);
         // depth's column count and vwap's point count grow with time; compare the fixed part.
         return `${slot}:${(await drawn(page, slot))?.replace(/×\d+$|^\d+ points$/, '') ?? ''}`;
       }),
