@@ -119,6 +119,7 @@ export function specFrom(params: URLSearchParams): SizeSpec & { size: Size } {
           {},
           p.config,
           { slot: p.id },
+          params.get('diag') ? { diag: params.get('diag') } : {},
           SYMBOL_PICKERS.has(p.widget) ? { symbols } : {},
         ),
       }),

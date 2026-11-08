@@ -19,14 +19,14 @@ export default defineConfig({
   reporter: process.env['CI'] ? [['list'], ['html', { open: 'never' }]] : 'list',
   // LIVE_URL runs the smoke test against a deployed copy (after each deploy)
   // instead of the local build.
-  use: { baseURL: LIVE ?? 'http://localhost:4791' },
+  use: { baseURL: LIVE ?? 'http://localhost:4795' },
   ...(LIVE
     ? {}
     : {
         webServer: {
-          command: 'pnpm build && pnpm preview --port 4791 --strictPort',
+          command: 'pnpm build && pnpm preview --port 4795 --strictPort',
           timeout: 120_000,
-          url: 'http://localhost:4791',
+          url: 'http://localhost:4795',
           reuseExistingServer: !process.env['CI'],
         },
       }),

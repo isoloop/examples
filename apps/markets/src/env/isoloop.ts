@@ -21,6 +21,8 @@ export const BUILD: Build = 'isoloop';
 /** The canvas `ref` points at, as an OffscreenCanvas from the host, sized to its CSS box. */
 export function useCanvas(ref: RefObject<HTMLCanvasElement | null>): CanvasState {
   const host = useHost();
+  const { config } = useIsolate();
+  const diag = String(Reflect.get((config as object | null) ?? {}, 'diag') ?? '');
   const [state, setState] = useState<CanvasState>({ ctx: null, width: 0, height: 0 });
   useEffect(() => {
     const el = ref.current;
@@ -44,6 +46,13 @@ export function useCanvas(ref: RefObject<HTMLCanvasElement | null>): CanvasState
         apply();
       }
     };
+    if (diag.includes('nopresent')) {
+      // DIAG: draw in the worker on a canvas the page never shows.
+      off = new OffscreenCanvas(1, 1);
+      size = { width: 300, height: 150 };
+      apply();
+      return undefined;
+    }
     el.addEventListener('resize', onResize);
     void host.requestCanvas(el).then((c) => {
       off = c;
@@ -52,7 +61,7 @@ export function useCanvas(ref: RefObject<HTMLCanvasElement | null>): CanvasState
     return () => {
       el.removeEventListener('resize', onResize);
     };
-  }, [host, ref]);
+  }, [host, ref, diag]);
   return state;
 }
 
