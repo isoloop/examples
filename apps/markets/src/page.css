@@ -113,6 +113,9 @@ body {
 .metrics dd {
   margin: 0;
   font-variant-numeric: tabular-nums;
+  /* As wide as the longest value ("no input yet"), so the row wraps the same
+     way while values change and nothing below it moves. */
+  min-width: 12ch;
 }
 .about {
   padding: 6px 16px;

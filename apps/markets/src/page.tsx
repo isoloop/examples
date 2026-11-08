@@ -66,7 +66,7 @@ export function Page() {
       </header>
       <Responsiveness />
       <MetricsPanel />
-      <CategoryPanel />
+      <CategoryPanel widgets={spec.widgets.map((p) => p.widget)} />
       <About />
       {filters && <Slot placement={filters} />}
       <main className="grid" data-size={spec.size}>
