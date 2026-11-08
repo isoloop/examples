@@ -18,17 +18,14 @@ const PAIRS = inScope(['isoloop', 'isoloop-preact'] as const).map(
 
 // Known over budget on Playwright's WebKit (Linux, no GPU): presenting the
 // canvases workers draw takes the main thread, so typing waits. Measured on the
-// 4-core CI runner (Weekly run 42464452395, budget 400 ms with the ×2 scale):
-// isoloop-preact at Normal 436–548 ms; both Isoloop builds at Heavy time out.
-// isoloop at Normal (373–419 ms) sits at the budget and stays asserted. These
-// are marked expected to fail, not skipped: they still run, report their
-// numbers, and turn red if WebKit gets within budget. See
-// https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md
-const WEBKIT_OVER_BUDGET = new Set([
-  'isoloop-preact@normal',
-  'isoloop@heavy',
-  'isoloop-preact@heavy',
-]);
+// 4-core CI runner (Weekly runs 42464452395 and 42465659644, budget 400 ms with
+// the ×2 scale): at Heavy both Isoloop builds are over budget or time out in
+// every run, so they're marked expected to fail, not skipped: they still run,
+// report their numbers, and turn red if WebKit gets within budget. At Normal
+// the medians vary around the budget from run to run (isoloop 190–419 ms,
+// isoloop-preact 240–548 ms), so they stay asserted and can fail on WebKit.
+// See https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md
+const WEBKIT_OVER_BUDGET = new Set(['isoloop@heavy', 'isoloop-preact@heavy']);
 const ENGINE_CONSTRAINTS =
   'https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md';
 

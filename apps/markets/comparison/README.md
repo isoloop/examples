@@ -89,14 +89,16 @@ Chromium's:
 
 | WebKit | Isoloop · React | Native · React | Isoloop · Preact | Native · Preact |
 | --- | --- | --- | --- | --- |
-| Lite, CI runner | 87 ms | 27 ms | 71 ms | 20 ms |
-| Normal, CI runner | 373–419 ms | 42–44 ms | 436–548 ms | 25 ms |
-| Heavy, CI runner | no answer within 30 s | — | no answer within 30 s | — |
+| Lite, CI runner | 38–87 ms | 20–27 ms | 39–71 ms | 19–20 ms |
+| Normal, CI runner | 190–419 ms | 22–44 ms | 240–548 ms | 17–29 ms |
+| Heavy, CI runner | no answer within 30 s | not reached (measured after Isoloop) | 797 ms or no answer within 30 s | 16 ms |
 | Heavy, 32-core desktop, one page at a time | 166 ms | 8 ms | — | — |
 
-CI runner figures are from the budget check in
-[Weekly run 42464452395](https://github.com/isoloop/examples/actions/runs/42464452395);
-the desktop figure is from a diagnostic run with 3 repeats.
+CI runner figures are the ranges of the budget check's medians across
+[Weekly run 42464452395](https://github.com/isoloop/examples/actions/runs/42464452395)
+and [Weekly run 42465659644](https://github.com/isoloop/examples/actions/runs/42465659644),
+retries included; they vary a lot from run to run. The desktop figure is from
+a diagnostic run with 3 repeats.
 
 **Why:** WebKit presents each frame a worker draws to a transferred
 `OffscreenCanvas` on the page's main thread. A standalone page with no Isoloop
@@ -110,9 +112,10 @@ are in
 [engine constraints](https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md).
 Not yet checked in Safari on macOS or iOS, or on a GPU-backed WebKit.
 
-The budget check (`e2e/budget.spec.ts`) marks the cases over budget on WebKit
-as expected to fail: they still run and report, and turn red if WebKit gets
-within budget.
+The budget check (`e2e/budget.spec.ts`, 200 ms × 2 on CI) marks both Isoloop
+builds at Heavy on WebKit as expected to fail: they still run and report, and
+turn red if WebKit gets within budget. At Normal, WebKit's medians fall either
+side of the budget from run to run, so those stay asserted and can fail.
 
 ## One chart blocked
 
