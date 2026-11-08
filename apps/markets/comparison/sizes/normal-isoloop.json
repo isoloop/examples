@@ -1,0 +1,84 @@
+{
+  "size": "normal",
+  "build": "isoloop",
+  "windowSeconds": 10,
+  "mainThreadCpuPct": 17.5,
+  "layoutsPerSec": 56.3,
+  "styleRecalcsPerSec": 60.7,
+  "rendererCpuPct": 73.6,
+  "gpuCpuPct": 26.1,
+  "rendererPssMb": 524,
+  "frames": 600,
+  "frameP95Ms": 16.8,
+  "framesOver25Ms": 0,
+  "typingMedianMs": 37,
+  "typing": [39, 18, 51, 34, 37],
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 1,
+      "workMsPerSec": 15.319999999884748,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 56
+    },
+    {
+      "category": "raw · dom",
+      "slots": 1,
+      "workMsPerSec": 4.080000000022119,
+      "applyMsPerSec": 1.0832102412805245,
+      "updatesPerSec": 39
+    },
+    {
+      "category": "filtered · canvas",
+      "slots": 1,
+      "workMsPerSec": 16.780000000091967,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 56
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 2,
+      "workMsPerSec": 4.220000000053551,
+      "applyMsPerSec": 0.344657804035987,
+      "updatesPerSec": 39
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 5,
+      "workMsPerSec": 1.2200000000011642,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 7
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 1,
+      "workMsPerSec": 0.14000000000232832,
+      "applyMsPerSec": 0.07385524371943832,
+      "updatesPerSec": 1
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 1.4799999999930151,
+      "applyMsPerSec": 0.04923682915106881,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 3,
+      "workMsPerSec": 7.480000000121072,
+      "applyMsPerSec": 9.256523879963877,
+      "updatesPerSec": 112
+    },
+    {
+      "category": "engines",
+      "slots": 3,
+      "workMsPerSec": 1.540000000037253,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 0
+    }
+  ],
+  "firstData": "529 ms",
+  "bundle": "168 KB",
+  "longTasks": "0"
+}

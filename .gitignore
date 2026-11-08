@@ -25,3 +25,6 @@ test-results/
 # Local feed recordings (scripts/record.ts)
 apps/*/fixtures/ticks/
 comparison-results/
+
+# The comparison writes here; the recorded results are copied to comparison/
+apps/markets/comparison-results/

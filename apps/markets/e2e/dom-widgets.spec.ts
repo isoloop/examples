@@ -30,6 +30,9 @@ for (const build of ['isoloop', 'native'] as const) {
   test(`${build}: the tape follows the symbol filter`, async ({ page }) => {
     await page.goto(`/${build}/?size=normal&speed=1`);
     await page.locator('select[name="symbol"]').selectOption('XRP-USD');
-    await expect(page.locator('[data-slot="tape"] h3')).toHaveText('XRP-USD tape by exchange');
+    // The filter goes through the bus to the tape's isolate; on WebKit at Normal that can take longer than 5 s.
+    await expect(page.locator('[data-slot="tape"] h3')).toHaveText('XRP-USD tape by exchange', {
+      timeout: 15_000,
+    });
   });
 }

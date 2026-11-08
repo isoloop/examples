@@ -31,7 +31,17 @@ test('isoloop: Heavy starts its isolates with no budget warning', async ({ page 
 });
 
 for (const build of ['isoloop', 'native'] as const) {
-  test(`${build}: Heavy's additions draw their data`, async ({ page }) => {
+  test(`${build}: Heavy's additions draw their data`, async ({ page, browserName }) => {
+    test.setTimeout(60_000);
+    if (browserName === 'webkit' && build === 'isoloop') {
+      // On Playwright's WebKit the main thread presents every worker canvas, so at
+      // Heavy the first draws can land late (engine-constraints.md in isoloop/isoloop).
+      test.info().annotations.push({
+        type: 'webkit',
+        description:
+          'Worker canvases are presented on the main thread: https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md',
+      });
+    }
     await page.goto(`/${build}/?size=heavy&speed=1`);
     const shapes = {
       'correlations-5m': /^20×20$/,
@@ -46,7 +56,7 @@ for (const build of ['isoloop', 'native'] as const) {
           .poll(
             async () => page.locator(`[data-slot="${slot}"] canvas`).getAttribute('data-drawn'),
             {
-              timeout: 20_000,
+              timeout: 40_000,
             },
           )
           .toMatch(shape),

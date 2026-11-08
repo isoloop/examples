@@ -1,0 +1,84 @@
+{
+  "size": "heavy",
+  "build": "native-preact",
+  "windowSeconds": 10,
+  "mainThreadCpuPct": 43.8,
+  "layoutsPerSec": 58.7,
+  "styleRecalcsPerSec": 65.7,
+  "rendererCpuPct": 54,
+  "gpuCpuPct": 5.9,
+  "rendererPssMb": 252,
+  "frames": 600,
+  "frameP95Ms": 16.7,
+  "framesOver25Ms": 0,
+  "typingMedianMs": 16,
+  "typing": [12, 36, 4, 16, 16],
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 1,
+      "workMsPerSec": 10.499999999743887,
+      "applyMsPerSec": null,
+      "updatesPerSec": 58
+    },
+    {
+      "category": "raw · dom",
+      "slots": 1,
+      "workMsPerSec": 8.89999999991851,
+      "applyMsPerSec": null,
+      "updatesPerSec": 60
+    },
+    {
+      "category": "filtered · canvas",
+      "slots": 2,
+      "workMsPerSec": 17.77999999995809,
+      "applyMsPerSec": null,
+      "updatesPerSec": 116
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 2,
+      "workMsPerSec": 8.739999999850989,
+      "applyMsPerSec": null,
+      "updatesPerSec": 60
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 6,
+      "workMsPerSec": 10.840000000002329,
+      "applyMsPerSec": null,
+      "updatesPerSec": 65
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 1,
+      "workMsPerSec": 0.02000000000698492,
+      "applyMsPerSec": null,
+      "updatesPerSec": 1
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 8,
+      "workMsPerSec": 1.5400000000023284,
+      "applyMsPerSec": null,
+      "updatesPerSec": 8
+    },
+    {
+      "category": "combined · dom",
+      "slots": 3,
+      "workMsPerSec": 4.840000000165309,
+      "applyMsPerSec": null,
+      "updatesPerSec": 116
+    },
+    {
+      "category": "engines",
+      "slots": 3,
+      "workMsPerSec": 0.9000000000349246,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    }
+  ],
+  "firstData": "124 ms",
+  "bundle": "49 KB",
+  "longTasks": "0"
+}

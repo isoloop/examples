@@ -16,6 +16,25 @@ const PAIRS = inScope(['isoloop', 'isoloop-preact'] as const).map(
   (isoloop) => [isoloop, isoloop === 'isoloop' ? 'native' : 'native-preact'] as const,
 );
 
+// Playwright's WebKit (Linux, no GPU) presents the canvases workers draw on the
+// main thread, so typing waits. Measured on the 4-core CI runner, budget 400 ms
+// with the ×2 scale:
+// - Heavy: both Isoloop builds over budget or timed out in every run. Marked
+//   expected to fail, not skipped: they still run, report their numbers, and
+//   turn red if WebKit gets within budget.
+// - Normal: the medians fall either side of the budget from run to run
+//   (isoloop 170–588 ms, isoloop-preact 228–642 ms), so neither asserting nor
+//   expecting a failure is stable. They're reported only: measured, annotated
+//   and attached, not asserted.
+// See https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md
+const WEBKIT_EXPECTED_FAIL = new Set(['isoloop@heavy', 'isoloop-preact@heavy']);
+const WEBKIT_REPORT_ONLY = new Map([
+  ['isoloop@normal', '170–588 ms'],
+  ['isoloop-preact@normal', '228–642 ms'],
+]);
+const ENGINE_CONSTRAINTS =
+  'https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md';
+
 const median = (xs: number[]): number =>
   xs.toSorted((a, b) => a - b)[Math.floor(xs.length / 2)] ?? 0;
 
@@ -57,8 +76,15 @@ for (const size of SIZES) {
   for (const [isoloop, native] of PAIRS) {
     test(`${isoloop} at ${size}: typing stays within the input budget (${native} reported)`, async ({
       page,
+      browserName,
     }, info) => {
       test.setTimeout(120_000);
+      const key = `${isoloop}@${size}`;
+      test.fail(
+        browserName === 'webkit' && WEBKIT_EXPECTED_FAIL.has(key),
+        `Known over budget on WebKit: worker canvases are presented on the main thread (${ENGINE_CONSTRAINTS})`,
+      );
+      const reportOnly = browserName === 'webkit' ? WEBKIT_REPORT_ONLY.get(key) : undefined;
       const iso = await measure(page, isoloop, size);
       const nat = await measure(page, native, size);
       const ratio = nat > 0 ? iso / nat : null;
@@ -72,6 +98,13 @@ for (const size of SIZES) {
         contentType: 'application/json',
       });
       console.log(`[budget] ${JSON.stringify(report)}`);
+      if (reportOnly !== undefined) {
+        info.annotations.push({
+          type: 'webkit: reported, not asserted',
+          description: `${iso} ms against ${INPUT_BUDGET_MS * SCALE} ms; CI medians so far ${reportOnly}. Worker canvases are presented on the main thread (${ENGINE_CONSTRAINTS})`,
+        });
+        return;
+      }
       expect(
         iso,
         `${isoloop} at ${size}: ${iso} ms > ${INPUT_BUDGET_MS} ms × ${SCALE} = ${INPUT_BUDGET_MS * SCALE} ms`,

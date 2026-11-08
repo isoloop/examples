@@ -1,0 +1,84 @@
+{
+  "size": "normal",
+  "build": "isoloop-preact",
+  "windowSeconds": 10,
+  "mainThreadCpuPct": 13.5,
+  "layoutsPerSec": 55.9,
+  "styleRecalcsPerSec": 60.4,
+  "rendererCpuPct": 49.9,
+  "gpuCpuPct": 5.5,
+  "rendererPssMb": 498,
+  "frames": 600,
+  "frameP95Ms": 16.7,
+  "framesOver25Ms": 0,
+  "typingMedianMs": 32,
+  "typing": [34, 28, 32, 32, 32],
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 1,
+      "workMsPerSec": 11.940000000025611,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 52
+    },
+    {
+      "category": "raw · dom",
+      "slots": 1,
+      "workMsPerSec": 4.480000000004656,
+      "applyMsPerSec": 1.1122345803489133,
+      "updatesPerSec": 42
+    },
+    {
+      "category": "filtered · canvas",
+      "slots": 1,
+      "workMsPerSec": 8.4200000001234,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 52
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 2,
+      "workMsPerSec": 4.300000000034925,
+      "applyMsPerSec": 0.6673407482399527,
+      "updatesPerSec": 41
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 5,
+      "workMsPerSec": 0.9400000000256113,
+      "applyMsPerSec": 0.020222446923139452,
+      "updatesPerSec": 10
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 1,
+      "workMsPerSec": 0.12000000003026798,
+      "applyMsPerSec": 0.06066734075764734,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 1.2599999999976716,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 3
+    },
+    {
+      "category": "combined · dom",
+      "slots": 3,
+      "workMsPerSec": 7.6399999998277055,
+      "applyMsPerSec": 7.664307381091893,
+      "updatesPerSec": 104
+    },
+    {
+      "category": "engines",
+      "slots": 3,
+      "workMsPerSec": 1.3799999999813735,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 0
+    }
+  ],
+  "firstData": "386 ms",
+  "bundle": "108 KB",
+  "longTasks": "0"
+}
