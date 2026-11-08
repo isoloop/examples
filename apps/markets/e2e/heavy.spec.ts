@@ -51,14 +51,17 @@ for (const build of ['isoloop', 'native'] as const) {
       // On Playwright's WebKit the main thread presents every worker canvas, so at
       // Heavy the first draws land late or not within the timeout, varying run to
       // run on the CI runner. Reported, not asserted, like budget.spec at Normal.
-      const until = Date.now() + 40_000;
-      const done = new Set<string>();
-      while (Date.now() < until && done.size < Object.keys(SHAPES).length) {
-        for (const [slot, shape] of Object.entries(SHAPES)) {
-          if (!done.has(slot) && shape.test((await drawn(slot)) ?? '')) done.add(slot);
-        }
-        await page.waitForTimeout(500);
-      }
+      const results = await Promise.all(
+        Object.entries(SHAPES).map(async ([slot, shape]) => {
+          try {
+            await expect.poll(async () => drawn(slot), { timeout: 40_000 }).toMatch(shape);
+            return [slot, true] as const;
+          } catch {
+            return [slot, false] as const;
+          }
+        }),
+      );
+      const done = new Set(results.filter(([, ok]) => ok).map(([slot]) => slot));
       const missing = Object.keys(SHAPES).filter((s) => !done.has(s));
       test.info().annotations.push({
         type: 'webkit: reported, not asserted',
