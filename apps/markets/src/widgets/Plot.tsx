@@ -17,8 +17,24 @@ export function Plot({
   const { ctx, width, height } = useCanvas(ref);
   const [drawn, setDrawn] = useState<string | null>(null);
   const record = useRecordTime();
+  // At most one draw per frame: updates that arrive within a frame are drawn
+  // once, with the latest data.
+  const latest = useRef({ ctx, width, height, draw });
+  latest.current = { ctx, width, height, draw };
+  const pending = useRef(0);
   useEffect(() => {
-    if (ctx) setDrawn(timed(record, () => draw(ctx, width, height)));
+    if (!ctx || pending.current !== 0) return;
+    pending.current = requestAnimationFrame(() => {
+      pending.current = 0;
+      const l = latest.current;
+      if (l.ctx) setDrawn(timed(record, () => l.draw(l.ctx!, l.width, l.height)));
+    });
   }, [ctx, width, height, draw, record]);
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(pending.current);
+    },
+    [],
+  );
   return <canvas ref={ref} className="chart" data-drawn={drawn ?? undefined} />;
 }
