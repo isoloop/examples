@@ -254,7 +254,7 @@ importers:
         specifier: 'catalog:'
         version: 7.0.2
 
-  apps/markets:
+  apps/dashboards/markets:
     dependencies:
       '@isoloop/bus':
         specifier: catalog:isoloop

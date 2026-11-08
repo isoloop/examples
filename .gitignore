@@ -23,8 +23,8 @@ test-results/
 !.env.example
 
 # Local feed recordings (scripts/record.ts)
-apps/*/fixtures/ticks/
+apps/**/fixtures/ticks/
 comparison-results/
 
 # The comparison writes here; the recorded results are copied to comparison/
-apps/markets/comparison-results/
+apps/dashboards/markets/comparison-results/

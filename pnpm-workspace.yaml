@@ -1,5 +1,7 @@
 packages:
   - apps/*
+  # Apps grouped by kind, e.g. apps/dashboards/markets.
+  - apps/dashboards/*
 
 # Every version lives here, pinned exactly, as in isoloop/isoloop (ADR 0009,
 # rule 8). Apps reference them with "catalog:".
