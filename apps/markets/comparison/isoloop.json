@@ -1,9 +1,9 @@
 {
   "build": "isoloop",
-  "calm": [34, 63, 23, 13, 44],
-  "stressed": [34, 21, 43, 42, 58],
+  "calm": [12, 37, 33, 32, 33],
+  "stressed": [38, 31, 35, 60, 48],
   "fps": "61",
   "longTasks": "0",
-  "firstData": "357 ms",
-  "bundle": "153 KB"
+  "firstData": "331 ms",
+  "bundle": "168 KB"
 }

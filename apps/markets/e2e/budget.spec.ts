@@ -16,6 +16,22 @@ const PAIRS = inScope(['isoloop', 'isoloop-preact'] as const).map(
   (isoloop) => [isoloop, isoloop === 'isoloop' ? 'native' : 'native-preact'] as const,
 );
 
+// Known over budget on Playwright's WebKit (Linux, no GPU): presenting the
+// canvases workers draw takes the main thread, so typing waits. Measured on the
+// 4-core CI runner (Weekly run 42464452395, budget 400 ms with the ×2 scale):
+// isoloop-preact at Normal 436–548 ms; both Isoloop builds at Heavy time out.
+// isoloop at Normal (373–419 ms) sits at the budget and stays asserted. These
+// are marked expected to fail, not skipped: they still run, report their
+// numbers, and turn red if WebKit gets within budget. See
+// https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md
+const WEBKIT_OVER_BUDGET = new Set([
+  'isoloop-preact@normal',
+  'isoloop@heavy',
+  'isoloop-preact@heavy',
+]);
+const ENGINE_CONSTRAINTS =
+  'https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md';
+
 const median = (xs: number[]): number =>
   xs.toSorted((a, b) => a - b)[Math.floor(xs.length / 2)] ?? 0;
 
@@ -57,8 +73,13 @@ for (const size of SIZES) {
   for (const [isoloop, native] of PAIRS) {
     test(`${isoloop} at ${size}: typing stays within the input budget (${native} reported)`, async ({
       page,
+      browserName,
     }, info) => {
       test.setTimeout(120_000);
+      test.fail(
+        browserName === 'webkit' && WEBKIT_OVER_BUDGET.has(`${isoloop}@${size}`),
+        `Known over budget on WebKit: worker canvases are presented on the main thread (${ENGINE_CONSTRAINTS})`,
+      );
       const iso = await measure(page, isoloop, size);
       const nat = await measure(page, native, size);
       const ratio = nat > 0 ? iso / nat : null;

@@ -1,0 +1,84 @@
+{
+  "size": "heavy",
+  "build": "isoloop",
+  "windowSeconds": 10,
+  "mainThreadCpuPct": 20.5,
+  "layoutsPerSec": 58.4,
+  "styleRecalcsPerSec": 60.7,
+  "rendererCpuPct": 99.6,
+  "gpuCpuPct": 8.5,
+  "rendererPssMb": 754,
+  "frames": 600,
+  "frameP95Ms": 16.8,
+  "framesOver25Ms": 0,
+  "typingMedianMs": 32,
+  "typing": [11, 29, 32, 33, 34],
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 1,
+      "workMsPerSec": 13.660000000009314,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 53
+    },
+    {
+      "category": "raw · dom",
+      "slots": 1,
+      "workMsPerSec": 13.219999999913853,
+      "applyMsPerSec": 6.035328753660086,
+      "updatesPerSec": 59
+    },
+    {
+      "category": "filtered · canvas",
+      "slots": 2,
+      "workMsPerSec": 29.420000000065194,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 105
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 2,
+      "workMsPerSec": 16.02000000013504,
+      "applyMsPerSec": 1.7419038272045337,
+      "updatesPerSec": 58
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 6,
+      "workMsPerSec": 26.379999999969733,
+      "applyMsPerSec": 0.02453385671656451,
+      "updatesPerSec": 63
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 1,
+      "workMsPerSec": 0.2200000000069849,
+      "applyMsPerSec": 0.09813542688053863,
+      "updatesPerSec": 1
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 8,
+      "workMsPerSec": 6.180000000004656,
+      "applyMsPerSec": 0.024533856730845096,
+      "updatesPerSec": 11
+    },
+    {
+      "category": "combined · dom",
+      "slots": 3,
+      "workMsPerSec": 6.699999999976717,
+      "applyMsPerSec": 6.624141315114684,
+      "updatesPerSec": 106
+    },
+    {
+      "category": "engines",
+      "slots": 3,
+      "workMsPerSec": 2.6800000000046564,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 0
+    }
+  ],
+  "firstData": "749 ms",
+  "bundle": "168 KB",
+  "longTasks": "0"
+}

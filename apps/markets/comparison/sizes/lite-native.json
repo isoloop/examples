@@ -1,0 +1,56 @@
+{
+  "size": "lite",
+  "build": "native",
+  "windowSeconds": 10,
+  "mainThreadCpuPct": 5.1,
+  "layoutsPerSec": 9.5,
+  "styleRecalcsPerSec": 60.1,
+  "rendererCpuPct": 7.5,
+  "gpuCpuPct": 2.5,
+  "rendererPssMb": 123,
+  "frames": 600,
+  "frameP95Ms": 16.7,
+  "framesOver25Ms": 0,
+  "typingMedianMs": 6,
+  "typing": [8, 6, 5, 5, 6],
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 1,
+      "workMsPerSec": 2.1000000000058208,
+      "applyMsPerSec": null,
+      "updatesPerSec": 16
+    },
+    {
+      "category": "raw · dom",
+      "slots": 1,
+      "workMsPerSec": 1.1600000000034925,
+      "applyMsPerSec": null,
+      "updatesPerSec": 17
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 1,
+      "workMsPerSec": 0,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 2,
+      "workMsPerSec": 0.11999999999534339,
+      "applyMsPerSec": null,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 1,
+      "workMsPerSec": 0,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    }
+  ],
+  "firstData": "110 ms",
+  "bundle": "108 KB",
+  "longTasks": "0"
+}
