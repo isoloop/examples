@@ -7,7 +7,7 @@ const ENGINES = [
   ['firefox', 'Desktop Firefox'],
   ['webkit', 'Desktop Safari'],
 ] as const;
-const LOAD = /(stress|table|budget)\.spec\.ts$/;
+const LOAD = /(stress|table|budget|heavy)\.spec\.ts$/;
 const COMPARISON = /comparison\.spec\.ts$/;
 const LIVE = process.env['LIVE_URL'];
 
@@ -32,8 +32,10 @@ export default defineConfig({
       }),
   // Each engine has two projects. `<engine>-load` holds the tests that measure
   // timing under load (input latency within the 200 ms budget, the table at
-  // 3,000 trades/s). CI runs it alone with --workers=1 after the rest, so those
-  // tests don't share the runner's cores with other pages.
+  // 3,000 trades/s), and Heavy, whose 30 workers would take the cores that
+  // other pages' tests run on (on WebKit, Normal pages beside it starved). CI
+  // runs it alone with --workers=1 after the rest, so those tests don't share
+  // the runner's cores with other pages.
   // `comparison` is the recorded comparison (M3b task 18): Chromium, alone,
   // on demand (.github/workflows/comparison.yml), never in the default run.
   projects: [
