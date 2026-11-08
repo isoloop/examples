@@ -12,7 +12,12 @@ export function Head({ slot, where }: { slot: string; where: string }) {
     <div className="widget-head" aria-label={`${slot} header`}>
       <span className="widget-name">{slot}</span>
       <span data-head="where">{where}</span>
-      <span data-head="updates">{n === null ? '—' : n} updates/s</span>
+      <span
+        data-head="updates"
+        title="How often this widget's output changed in the last second: frames in which the page applied a change to its DOM, or its canvas draws (at most one a frame)"
+      >
+        {n === null ? '—' : n} updates/s
+      </span>
     </div>
   );
 }

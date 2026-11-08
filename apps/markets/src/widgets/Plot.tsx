@@ -1,7 +1,7 @@
 import { useCanvas } from '#env';
 import { useEffect, useRef, useState } from 'react';
 import type { Ctx2D } from '../env/canvas';
-import { timed, useRecordTime } from '../metrics/timing';
+import { timed, useCountDraw, useRecordTime } from '../metrics/timing';
 
 /**
  * A canvas the widget draws on with `draw`; the context comes from the build
@@ -17,6 +17,7 @@ export function Plot({
   const { ctx, width, height } = useCanvas(ref);
   const [drawn, setDrawn] = useState<string | null>(null);
   const record = useRecordTime();
+  const counted = useCountDraw();
   // At most one draw per frame: updates that arrive within a frame are drawn
   // once, with the latest data.
   const latest = useRef({ ctx, width, height, draw });
@@ -27,9 +28,11 @@ export function Plot({
     pending.current = requestAnimationFrame(() => {
       pending.current = 0;
       const l = latest.current;
-      if (l.ctx) setDrawn(timed(record, () => l.draw(l.ctx!, l.width, l.height)));
+      if (!l.ctx) return;
+      counted();
+      setDrawn(timed(record, () => l.draw(l.ctx!, l.width, l.height)));
     });
-  }, [ctx, width, height, draw, record]);
+  }, [ctx, width, height, draw, record, counted]);
   useEffect(
     () => () => {
       cancelAnimationFrame(pending.current);

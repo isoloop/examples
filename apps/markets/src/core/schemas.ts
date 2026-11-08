@@ -143,8 +143,10 @@ export const timing = z.object({
   /** The widget's name, or `engine`. */
   widget: z.string().min(1),
   ms: z.number().nonnegative(),
-  /** Times the widget rendered in that second (its header's updates/s); engines leave it out. */
+  /** Times the widget rendered in that second; engines leave it out. */
   updates: z.number().int().nonnegative().optional(),
+  /** Times a canvas widget drew in that second (its header's updates/s); others leave it out. */
+  draws: z.number().int().nonnegative().optional(),
   ts,
 });
 
