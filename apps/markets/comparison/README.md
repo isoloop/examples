@@ -89,8 +89,8 @@ Chromium's:
 
 | WebKit | Isoloop · React | Native · React | Isoloop · Preact | Native · Preact |
 | --- | --- | --- | --- | --- |
-| Lite, CI runner | 38–103 ms | 20–37 ms | 39–134 ms | 19–20 ms |
-| Normal, CI runner | 190–588 ms | 22–51 ms | 240–642 ms | 17–29 ms |
+| Lite, CI runner | 38–103 ms | 20–37 ms | 39–134 ms | 18–20 ms |
+| Normal, CI runner | 170–588 ms | 22–51 ms | 228–642 ms | 17–29 ms |
 | Heavy, CI runner | no answer within 30 s | not reached (measured after Isoloop) | 797 ms or no answer within 30 s | 16 ms |
 | Heavy, 32-core desktop, one page at a time | 166 ms | 8 ms | — | — |
 
@@ -98,7 +98,8 @@ CI runner figures (GitHub-hosted `ubuntu-latest`, 4 cores, no GPU) are the
 ranges of the budget check's medians across
 [Weekly run 42464452395](https://github.com/isoloop/examples/actions/runs/42464452395),
 [Weekly run 42465659644](https://github.com/isoloop/examples/actions/runs/42465659644)
-and [CI run 42466402993](https://github.com/isoloop/examples/actions/runs/42466402993),
+[CI run 42466402993](https://github.com/isoloop/examples/actions/runs/42466402993)
+and [CI run 42467193238](https://github.com/isoloop/examples/actions/runs/42467193238),
 retries included; they vary a lot from run to run. The desktop figure is from
 a diagnostic run with 3 repeats.
 
@@ -114,10 +115,11 @@ are in
 [engine constraints](https://github.com/isoloop/isoloop/blob/main/docs/investigations/engine-constraints.md).
 Not yet checked in Safari on macOS or iOS, or on a GPU-backed WebKit.
 
-The budget check (`e2e/budget.spec.ts`, 200 ms × 2 on CI) marks both Isoloop
-builds at Normal and Heavy on WebKit as expected to fail: they still run and
-report, and turn red if WebKit gets within budget in two attempts in a row
-(CI retries once).
+In the budget check (`e2e/budget.spec.ts`, 200 ms × 2 on CI), both Isoloop
+builds at Heavy on WebKit are marked expected to fail: they still run and
+report, and turn red if WebKit gets within budget. At Normal, WebKit's medians
+fall either side of the budget from run to run, so they're reported only:
+measured and annotated with the range above, not asserted.
 
 ## One chart blocked
 
