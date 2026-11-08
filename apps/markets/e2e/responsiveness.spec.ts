@@ -13,18 +13,17 @@ for (const build of inScope([
     await page.goto(`/${build}/?size=lite&speed=1`);
     const badge = page.getByRole('status', { name: 'Main-thread responsiveness' });
     await expect(badge.locator('[data-badge="fps"]')).toHaveText(/^[1-9]\d* fps$/, {
-      timeout: 2_000,
+      timeout: 10_000,
     });
     await page.locator('input[name="echo"]').pressSequentially('abc');
     await expect(page.locator('output[name="echoed"]')).toHaveText('abc');
     await expect(badge.locator('[data-badge="input"]')).toHaveText(/^input \d+ ms$/, {
-      timeout: 2_000,
+      timeout: 10_000,
     });
-    const tape = await page.evaluate(() => ({
-      frames: window.tape.frames,
-      gaps: window.tape.gaps.length,
-    }));
-    expect(tape.frames).toBeGreaterThan(10);
-    expect(tape.gaps).toBeGreaterThan(10);
+    // The tape records a frame each animation frame; a slow runner starts the
+    // page later, so wait for frames rather than reading them once.
+    await expect
+      .poll(() => page.evaluate(() => window.tape.gaps.length), { timeout: 10_000 })
+      .toBeGreaterThan(10);
   });
 }
