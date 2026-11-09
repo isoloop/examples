@@ -3,16 +3,19 @@
 #   /                       -> links to the example groups
 #   /dashboards/            -> lists the dashboards
 #   /dashboards/markets/    -> the markets dashboard, every build under it
+#   /dashboards/plant/      -> the plant dashboard, every build under it
 #   /markets/**             -> redirects from the old paths (before the
 #                              dashboards/ grouping), query string and hash kept
 set -euo pipefail
 
 site=${1:-site}
 markets=apps/dashboards/markets/dist
+plant=apps/dashboards/plant/dist
 
 rm -rf "$site"
 mkdir -p "$site/dashboards"
 cp -r "$markets" "$site/dashboards/markets"
+cp -r "$plant" "$site/dashboards/plant"
 
 page() { # title, body
   printf '%s\n' '<!doctype html><html lang="en"><meta charset="utf-8">' \
@@ -27,7 +30,7 @@ page 'Isoloop examples' \
   > "$site/index.html"
 
 page 'Dashboards · Isoloop examples' \
-  '<h1>Dashboards</h1><ul><li><a href="./markets/">Markets</a>: a backend-less markets dashboard on public exchange feeds, as a native app and as an Isoloop app, in Lite, Normal and Heavy sizes.</li></ul>' \
+  '<h1>Dashboards</h1><ul><li><a href="./markets/">Markets</a>: a backend-less markets dashboard on public exchange feeds, as a native app and as an Isoloop app, in Lite, Normal and Heavy sizes.</li><li><a href="./plant/">Plant</a>: telemetry from a fictional plant of eight machines, 72 widgets on high-rate sensor data, as a native app, a native app with workers, and an Isoloop app in four placements.</li></ul>' \
   > "$site/dashboards/index.html"
 
 # One redirect page per old path: /markets/ and /markets/<build>/.

@@ -5,6 +5,7 @@ Apps built on [Isoloop](https://github.com/isoloop/isoloop), installed from npm 
 | App | What it shows |
 | --- | --- |
 | [`apps/dashboards/markets`](apps/dashboards/markets) | A backend-less markets dashboard: public exchange feeds, cross-market aggregates and alerts, all in the visitor's tab. One code base, five builds (native and Isoloop, each with React and with Preact, plus a mixed React and Preact Isoloop build), in Lite, Normal and Heavy sizes, with live metrics. [Live](https://isoloop.github.io/examples/dashboards/markets/) |
+| [`apps/dashboards/plant`](apps/dashboards/plant) | A telemetry dashboard for a fictional plant of eight machines: 72 widgets on seeded high-rate sensor data. Three builds (native, native with a data worker per machine, Isoloop), and four placements of the Isoloop build's isolates in workers and pools. In progress (M3d). |
 
 ## Setup
 
