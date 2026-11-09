@@ -1,5 +1,15 @@
 import type { FunctionComponent } from 'react';
 import type { WidgetName } from './catalog';
+import {
+  AlarmFeed,
+  AnomalyRanking,
+  FleetPower,
+  FleetStatus,
+  FleetTrend,
+  HottestBearings,
+  LoadCorrelation,
+  LoadDistribution,
+} from './fleet';
 import { Spectrum, Temps, Waveform } from './machine-canvas';
 import { ActiveAlarms, EventLog, Gauges, HealthScore, SensorTable } from './machine-dom';
 import { withStress } from './stress/withStress';
@@ -16,4 +26,12 @@ export const WIDGETS: Partial<Record<WidgetName, Widget>> = {
   alarms: withStress('alarms', ActiveAlarms),
   events: withStress('events', EventLog),
   sensors: withStress('sensors', SensorTable),
+  'fleet-status': withStress('fleet-status', FleetStatus),
+  'fleet-power': withStress('fleet-power', FleetPower),
+  'fleet-anomaly': withStress('fleet-anomaly', AnomalyRanking),
+  'fleet-correlation': withStress('fleet-correlation', LoadCorrelation),
+  'fleet-alarms': withStress('fleet-alarms', AlarmFeed),
+  'fleet-trend': withStress('fleet-trend', FleetTrend),
+  'fleet-bearings': withStress('fleet-bearings', HottestBearings),
+  'fleet-load': withStress('fleet-load', LoadDistribution),
 };

@@ -61,7 +61,7 @@ body {
 }
 /* A widget's header: name, where it runs, updates/s on the left; the
    widget's own stress controls on the right (widgets.css). */
-.slot {
+.page .slot {
   --head-height: 22px;
   display: flex;
   flex-direction: column;

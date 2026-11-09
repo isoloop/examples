@@ -195,35 +195,37 @@ export function SensorTable({ config }: { config?: unknown }) {
   const s = useLatest(of(m, 'stats'));
   if (!s) return <div className="waiting">waiting for data…</div>;
   return (
-    <table className="sensors" data-ts={s.ts}>
-      <thead>
-        <tr>
-          <th>sensor</th>
-          <th>last</th>
-          <th>min</th>
-          <th>p50</th>
-          <th>p95</th>
-          <th>p99</th>
-          <th>max</th>
-        </tr>
-      </thead>
-      <tbody>
-        {ROWS.map((k) => {
-          const v = s.sensors[k];
-          if (!v) return null;
-          return (
-            <tr key={k} data-sensor={k}>
-              <th>{SENSOR[k].label}</th>
-              <td>{n(v.last, k)}</td>
-              <td>{n(v.min, k)}</td>
-              <td>{n(v.p50, k)}</td>
-              <td>{n(v.p95, k)}</td>
-              <td>{n(v.p99, k)}</td>
-              <td>{n(v.max, k)}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="sensors-wrap">
+      <table className="sensors" data-ts={s.ts}>
+        <thead>
+          <tr>
+            <th>sensor</th>
+            <th>last</th>
+            <th>min</th>
+            <th>p50</th>
+            <th>p95</th>
+            <th>p99</th>
+            <th>max</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ROWS.map((k) => {
+            const v = s.sensors[k];
+            if (!v) return null;
+            return (
+              <tr key={k} data-sensor={k}>
+                <th>{SENSOR[k].label}</th>
+                <td>{n(v.last, k)}</td>
+                <td>{n(v.min, k)}</td>
+                <td>{n(v.p50, k)}</td>
+                <td>{n(v.p95, k)}</td>
+                <td>{n(v.p99, k)}</td>
+                <td>{n(v.max, k)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
