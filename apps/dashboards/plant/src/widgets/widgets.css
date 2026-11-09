@@ -40,3 +40,146 @@
 .stress:focus-within {
   opacity: 1;
 }
+.waiting,
+.none {
+  padding: 8px;
+  color: #888;
+}
+.gauges {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: space-around;
+}
+.gauge {
+  margin: 0;
+  width: 32%;
+  text-align: center;
+}
+.gauge svg {
+  width: 100%;
+}
+.gauge .track,
+.gauge .arc {
+  fill: none;
+  stroke-width: 8;
+}
+.gauge .track {
+  stroke: #2a2d31;
+}
+.gauge .arc {
+  stroke: #4e79a7;
+}
+.gauge .arc.over {
+  stroke: #e15759;
+}
+.gauge text {
+  fill: #ddd;
+  font-size: 16px;
+}
+.gauge figcaption {
+  font-size: 11px;
+  color: #9aa0a6;
+}
+.health {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  padding: 8px;
+  align-items: center;
+}
+.health .score {
+  font-size: 36px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.health .reasons {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-left: 16px;
+  color: #9aa0a6;
+}
+.status,
+.level {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+}
+.ok {
+  color: #59a14f;
+}
+.warn {
+  color: #edc948;
+}
+.alarm,
+.status.alarm {
+  color: #e15759;
+}
+.stopped {
+  color: #9aa0a6;
+}
+.alarms,
+.events {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 4px;
+}
+.alarms .alarm {
+  display: flex;
+  gap: 6px;
+  padding: 2px 0;
+}
+.alarms .alarm.warn .level {
+  color: #edc948;
+}
+.alarms .sensor {
+  color: #ddd;
+}
+.alarms .since {
+  color: #9aa0a6;
+}
+.event-filter {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.event-filter input {
+  flex: 1;
+  min-width: 0;
+}
+.event-filter select,
+.event-filter input {
+  font: inherit;
+  background: #15171a;
+  color: #ddd;
+  border: 1px solid #333;
+}
+.events table,
+.sensors {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.events td {
+  padding: 1px 4px;
+  vertical-align: top;
+}
+.events td.ts {
+  color: #9aa0a6;
+  white-space: nowrap;
+}
+.events tr.alarm td:last-child {
+  color: #e15759;
+}
+.sensors th,
+.sensors td {
+  padding: 1px 4px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.sensors th:first-child {
+  text-align: left;
+  font-weight: normal;
+  color: #9aa0a6;
+}
