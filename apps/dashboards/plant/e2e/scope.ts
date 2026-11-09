@@ -22,3 +22,10 @@ export const WEBKIT_STOPS =
 
 export const stopsOn = (browserName: string, build: string): boolean =>
   browserName === 'webkit' && build === 'isoloop';
+
+/**
+ * How long a test waits for a page's first data. With 72 widgets starting on
+ * a 4-core CI runner, Firefox has taken about 4 s to first data (plant rc.1),
+ * so the first wait matches the 15 s the later waits use.
+ */
+export const FIRST_DATA = 15_000;
