@@ -52,26 +52,32 @@ const stopAll = (...xs: (() => void)[]): Stoppable => ({
   },
 });
 
-/** Spectra of the machine's vibration: 1024 samples, Hann, every 256 samples. */
+/**
+ * Spectra of the machine's vibration: 1024 samples, Hann, every 256 samples.
+ * The hop counts samples since the epoch, so every build (and a restarted
+ * engine) computes its spectra on the same windows, with the same results.
+ */
 export function runFft(src: Source, machine: MachineId, rateKHz: number): Stoppable {
   const meter = engineMeter(src, `fft-${machine}`);
   const buf = new Float64Array(WINDOW);
   const ordered = new Float64Array(WINDOW);
   let at = 0;
   let filled = 0;
-  let since = 0;
+  let next: number | undefined;
   const off = src.subscribe(
     of(machine, 'vib'),
     (r) => {
       meter.time(() => {
         const c = r.value;
+        // A gap in the data (a stalled feed) starts the window again.
+        if (next !== undefined && Math.abs(c.t0 - next) > c.dtMs / 2) filled = 0;
+        next = c.t0 + c.values.length * c.dtMs;
         for (let k = 0; k < c.values.length; k++) {
           buf[at] = c.values[k] ?? 0;
           at = (at + 1) % WINDOW;
           filled = Math.min(WINDOW, filled + 1);
-          since++;
-          if (since >= HOP && filled === WINDOW) {
-            since -= HOP;
+          const n = Math.round((c.t0 + k * c.dtMs) / c.dtMs);
+          if (n % HOP === HOP - 1 && filled === WINDOW) {
             ordered.set(buf.subarray(at), 0);
             ordered.set(buf.subarray(0, at), WINDOW - at);
             const s = spectrumOf(ordered, rateKHz * 1000);

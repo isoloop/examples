@@ -108,3 +108,25 @@ describe('the engines', () => {
     expect(last?.totalPower).toBeGreaterThan(1_000);
   });
 });
+
+const spectraFrom = (startOffsetMs: number): Map<number, Float32Array> => {
+  vi.useFakeTimers({ now: T + startOffsetMs });
+  const s = new Store();
+  const out = new Map<number, Float32Array>();
+  s.subscribe('T1.spectrum', (r) => out.set(r.value.ts, r.value.mags), 'latest');
+  const jobs = [runFeed(s, { machine: 'T1', seed: 1, rateKHz: 2 }), runMachineEngines(s, 'T1', 2)];
+  vi.advanceTimersByTime(5_000 - startOffsetMs);
+  for (const j of jobs) j.stop();
+  vi.useRealTimers();
+  return out;
+};
+
+describe('the FFT engine', () => {
+  it('computes the same spectra whenever it starts', () => {
+    const a = spectraFrom(0);
+    const b = spectraFrom(1_350);
+    const common = [...b.keys()].filter((ts) => a.has(ts));
+    expect(common.length).toBeGreaterThan(10);
+    for (const ts of common) expect(b.get(ts)).toEqual(a.get(ts));
+  });
+});
