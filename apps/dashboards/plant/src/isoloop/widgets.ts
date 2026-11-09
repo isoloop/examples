@@ -11,10 +11,24 @@ import health from '../isolates/widgets/health?isolate';
 import alarms from '../isolates/widgets/alarms?isolate';
 import events from '../isolates/widgets/events?isolate';
 import sensors from '../isolates/widgets/sensors?isolate';
+import fleetstatus from '../isolates/widgets/fleet-status?isolate';
+import fleetpower from '../isolates/widgets/fleet-power?isolate';
+import fleetanomaly from '../isolates/widgets/fleet-anomaly?isolate';
+import fleetcorrelation from '../isolates/widgets/fleet-correlation?isolate';
+import fleetalarms from '../isolates/widgets/fleet-alarms?isolate';
+import fleettrend from '../isolates/widgets/fleet-trend?isolate';
+import fleetbearings from '../isolates/widgets/fleet-bearings?isolate';
+import fleetload from '../isolates/widgets/fleet-load?isolate';
 import type { WidgetName } from '../widgets/catalog';
 import { topicName } from './names';
 
 const OWN = [topicName('timings'), topicName('noise')];
+
+/** A fleet widget's grants: the fleet engine's records, the alarms and their clear marker. */
+const fleet = (): Grants => ({
+  publish: OWN,
+  subscribe: [topicName('fleet'), topicName('alarms'), topicName('cleared')],
+});
 
 /** A machine widget's grants: its machine's topics, plus `extra`. */
 const machine =
@@ -35,4 +49,12 @@ export const ISOLATES: Partial<
   alarms: { src: alarms, grants: machine([topicName('alarms'), topicName('cleared')]) },
   events: { src: events, grants: machine([topicName('events'), topicName('cleared')]) },
   sensors: { src: sensors, grants: machine() },
+  'fleet-status': { src: fleetstatus, grants: fleet },
+  'fleet-power': { src: fleetpower, grants: fleet },
+  'fleet-anomaly': { src: fleetanomaly, grants: fleet },
+  'fleet-correlation': { src: fleetcorrelation, grants: fleet },
+  'fleet-alarms': { src: fleetalarms, grants: fleet },
+  'fleet-trend': { src: fleettrend, grants: fleet },
+  'fleet-bearings': { src: fleetbearings, grants: fleet },
+  'fleet-load': { src: fleetload, grants: fleet },
 };

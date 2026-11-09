@@ -127,7 +127,9 @@ export function withStress(
     return (
       <TimingContext.Provider value={record}>
         <DrawContext.Provider value={drew}>
-          <Timed W={W} config={config} record={record} rendered={rendered} />
+          <div className="widget-inner">
+            <Timed W={W} config={config} record={record} rendered={rendered} />
+          </div>
         </DrawContext.Provider>
         <StressBar
           name={name}
