@@ -1,6 +1,7 @@
-// A machine's data worker in the native + workers build: its feed (and, from
-// M3d task 3, its engines) against a store of its own; every record it
-// publishes goes to the page.
+// A machine's data worker in the native + workers build: its feed and its
+// engines against a store of its own; every record they publish goes to the
+// page.
+import { runMachineEngines } from '../core/engines';
 import { runFeed } from '../core/sensors/feed';
 import { Store } from '../core/store';
 import type { Rec, Source, StreamName, ValueOf } from '../core/streams';
@@ -30,5 +31,7 @@ const source: Source = {
 
 addEventListener('message', (e: MessageEvent<ToWorker>) => {
   const m = e.data;
-  if (m.type === 'start') runFeed(source, { machine: m.machine, seed: m.seed, rateKHz: m.rateKHz });
+  if (m.type !== 'start') return;
+  runFeed(source, { machine: m.machine, seed: m.seed, rateKHz: m.rateKHz });
+  runMachineEngines(source, m.machine, m.rateKHz);
 });
