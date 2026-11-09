@@ -11,7 +11,7 @@ type Spectra = Record<string, number[]>;
 async function spectra(browser: Browser, build: string): Promise<Spectra> {
   const page = await browser.newPage();
   await page.goto(`/${build}/?seed=4&rate=2`);
-  const got = await records(page, build, ['T6.spectrum'], 12);
+  const got = await records(page, build, ['T6.spectrum'], 40);
   await page.close();
   const out: Spectra = {};
   for (const v of got['T6.spectrum'] ?? []) {
@@ -31,7 +31,7 @@ test('every build computes the same spectra from the same seed', async ({
   // At the same time, so their windows overlap.
   const [a, b, c] = await Promise.all(BUILDS.map((build) => spectra(browser, build)));
   const common = Object.keys(a ?? {}).filter((ts) => b?.[ts] && c?.[ts]);
-  expect(common.length).toBeGreaterThan(3);
+  expect(common.length).toBeGreaterThanOrEqual(5);
   for (const ts of common) {
     expect(b?.[ts]).toEqual(a?.[ts]);
     expect(c?.[ts]).toEqual(a?.[ts]);
