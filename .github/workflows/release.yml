@@ -34,3 +34,8 @@ jobs:
     needs: deploy
     if: startsWith(github.ref_name, 'markets-v')
     uses: ./.github/workflows/comparison.yml
+
+  compare-plant:
+    needs: deploy
+    if: startsWith(github.ref_name, 'plant-v')
+    uses: ./.github/workflows/comparison-plant.yml

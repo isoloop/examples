@@ -40,6 +40,12 @@ export default defineConfig({
       { name: `${name}-load`, use: { ...devices[device] }, testMatch: LOAD },
     ]),
     { name: 'comparison', use: { ...devices['Desktop Chrome'] }, testMatch: COMPARISON },
+    {
+      name: 'comparison-firefox',
+      use: { ...devices['Desktop Firefox'] },
+      testMatch: COMPARISON,
+    },
+    { name: 'comparison-webkit', use: { ...devices['Desktop Safari'] }, testMatch: COMPARISON },
     { name: 'live', use: { ...devices['Desktop Chrome'] }, testMatch: /smoke\.spec\.ts$/ },
   ],
 });

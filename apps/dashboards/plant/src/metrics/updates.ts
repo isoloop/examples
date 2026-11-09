@@ -106,3 +106,31 @@ export function useUpdatesPerSec(slot: string): number | null {
   }, [slot]);
   return n;
 }
+
+/** The widget's own root, in the page or inside its surface's shadow root. */
+function innerOf(el: Element): Element | null {
+  const direct = el.querySelector('.widget-inner');
+  if (direct) return direct;
+  for (const e of el.querySelectorAll('*')) {
+    const hit = e.shadowRoot?.querySelector('.widget-inner');
+    if (hit) return hit;
+  }
+  return null;
+}
+
+/** True once the slot's widget shows data: a drawn canvas, or content that isn't "waiting". */
+function hasData(el: Element): boolean {
+  const inner = innerOf(el);
+  if (!inner || inner.querySelector('.waiting')) return false;
+  const canvas = inner.querySelector('canvas');
+  if (canvas) return canvas.hasAttribute('data-drawn');
+  return inner.childElementCount > 0;
+}
+
+declare global {
+  interface Window {
+    /** How many slots show data so far, for the comparison's start-up figure. */
+    slotsWithData: () => number;
+  }
+}
+window.slotsWithData = () => [...document.querySelectorAll('[data-slot]')].filter(hasData).length;
