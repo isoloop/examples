@@ -1,8 +1,15 @@
+import { Slot } from '#slot';
 import { BUILDS, CURRENT } from './builds';
+import { MACHINES } from './core/machines';
+import { WIDGETS } from './widgets';
+import { layout, type WidgetName } from './widgets/catalog';
 import { PLACEMENTS, RATES, SETTINGS, buildHref, withParam } from './url';
 
 /** The page shell, the same in every build; only what a slot holds differs. */
+const SHOWN = Object.keys(WIDGETS).filter((w): w is WidgetName => w in WIDGETS);
+
 export function Page() {
+  const { fleet, machines } = layout(SHOWN);
   const build = BUILDS.find((b) => b.name === CURRENT);
   return (
     <div className="page">
@@ -53,6 +60,28 @@ export function Page() {
           </nav>
         )}
       </header>
+      {fleet.length > 0 && (
+        <section className="fleet" aria-label="Fleet">
+          <h2>Fleet</h2>
+          <div className="widgets">
+            {fleet.map((p) => (
+              <Slot key={p.id} placed={p} />
+            ))}
+          </div>
+        </section>
+      )}
+      <main className="machines">
+        {machines.map((ws, i) => (
+          <section key={MACHINES[i]} className="machine" aria-label={MACHINES[i]}>
+            <h2>{MACHINES[i]}</h2>
+            <div className="widgets">
+              {ws.map((p) => (
+                <Slot key={p.id} placed={p} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </main>
     </div>
   );
 }

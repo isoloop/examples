@@ -1,0 +1,42 @@
+/* The widgets' styles: imported by the native pages, and passed to the
+   Isoloop kernel as a surface stylesheet. */
+:host,
+.widget {
+  display: block;
+  height: 100%;
+  font:
+    12px/1.4 system-ui,
+    sans-serif;
+  color: #ddd;
+}
+.chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.widget-error {
+  padding: 8px;
+  color: #e15759;
+}
+.stress {
+  /* Over the header's right end, shown while the pointer is on the widget. */
+  opacity: 0;
+  background: #1b1e22;
+  position: absolute;
+  top: calc(-1 * var(--head-height, 24px));
+  right: 4px;
+  height: var(--head-height, 24px);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.stress button {
+  font-size: 11px;
+  padding: 1px 4px;
+}
+.slot:hover .stress,
+:host(:hover) .stress,
+.stress:focus-within {
+  opacity: 1;
+}
