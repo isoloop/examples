@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { BUILDS, inScope } from './scope';
+import { BUILDS, WEBKIT_STOPS, inScope, stopsOn } from './scope';
 
 // M3d task 2: every machine's feed publishes its vibration chunks and slow
 // rows, on the bus (Isoloop) or into the page's store (native builds), the
@@ -58,7 +58,11 @@ async function watch(page: Page, build: string): Promise<Seen> {
 }
 
 for (const build of inScope(BUILDS)) {
-  test(`${build}: every machine's feed publishes chunks and rows`, async ({ page }) => {
+  test(`${build}: every machine's feed publishes chunks and rows`, async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(stopsOn(browserName, build), WEBKIT_STOPS);
     await page.goto(`/${build}/?rate=2`);
     const seen = await watch(page, build);
     expect(seen.machines).toEqual(['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8']);

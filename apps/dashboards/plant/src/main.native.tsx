@@ -6,6 +6,7 @@ import { store } from './native/store';
 import { Page } from './page';
 import { SETTINGS } from './url';
 import './page.css';
+import './widgets/widgets.css';
 
 // The same jobs as the Isoloop build's headless isolates, on the main thread.
 for (const machine of MACHINES) {
