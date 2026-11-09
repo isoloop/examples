@@ -87,6 +87,9 @@ export const health = z.object({
   speed: z.number(),
   /** What lowers the score, worst first. */
   reasons: z.array(z.string()),
+  running: z.boolean(),
+  /** Each limited sensor's level, so a restarted engine carries on where it was. */
+  levels: z.record(z.string(), z.enum(['ok', 'warn', 'alarm'])),
 });
 export type Health = z.infer<typeof health>;
 
@@ -103,7 +106,7 @@ export const alarm = z.object({
 });
 export type Alarm = z.infer<typeof alarm>;
 
-export const EVENT_KINDS = ['start', 'stop', 'alarm', 'clear', 'fault'] as const;
+export const EVENT_KINDS = ['start', 'stop', 'alarm', 'clear'] as const;
 export type EventKind = (typeof EVENT_KINDS)[number];
 
 /** What happened on a machine, for the event log. Persistent (M2b). */
@@ -134,7 +137,7 @@ export const fleet = z.object({
       load: z.number(),
     }),
   ),
-  /** Pearson correlation of the machines' vibration RMS over the last 60 s, row-major 8×8. */
+  /** Pearson correlation of the machines' power over the last 2 minutes, row-major 8×8. */
   correlation: z.array(z.number()),
 });
 export type Fleet = z.infer<typeof fleet>;
