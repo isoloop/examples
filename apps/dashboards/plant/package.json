@@ -1,0 +1,36 @@
+{
+  "name": "plant",
+  "private": true,
+  "type": "module",
+  "description": "A telemetry dashboard for a fictional plant of eight machines: native, native with workers, and on Isoloop.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --mode native && vite build --mode native-workers && node scripts/index-page.ts && node scripts/check-builds.ts && node scripts/build-stats.ts",
+    "preview": "vite preview --outDir dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "e2e": "playwright test",
+    "compare": "playwright test --project=comparison --workers=1 && node scripts/compare.ts",
+    "dev:native": "vite --mode native",
+    "dev:native-workers": "vite --mode native-workers"
+  },
+  "dependencies": {
+    "@isoloop/bus": "catalog:isoloop",
+    "@isoloop/host": "catalog:isoloop",
+    "@isoloop/protocol": "catalog:isoloop",
+    "@isoloop/react": "catalog:isoloop",
+    "@isoloop/runtime": "catalog:isoloop",
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@isoloop/vite": "catalog:isoloop",
+    "@playwright/test": "catalog:",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

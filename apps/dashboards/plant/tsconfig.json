@@ -1,0 +1,18 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["vite/client", "node"],
+    "allowImportingTsExtensions": true,
+    "jsx": "react-jsx",
+    // What the Isoloop build's aliases point at; env/match.ts checks the
+    // native builds' #env has the same API.
+    "paths": {
+      "#env": ["./src/env/isoloop.ts"],
+      "#slot": ["./src/slot/isoloop.tsx"],
+      "#main": ["./src/main.isoloop.tsx"],
+      "#metrics": ["./src/metrics/isoloop.ts"]
+    }
+  },
+  "include": ["src", "e2e", "scripts", "*.config.ts"]
+}
