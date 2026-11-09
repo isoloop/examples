@@ -63,6 +63,13 @@
         "apps/dashboards/plant/src/page.tsx",
         "apps/dashboards/plant/src/ClearHistory.tsx",
         "apps/dashboards/plant/src/Notices.tsx",
+        "apps/dashboards/plant/src/responsive/**",
+        "apps/dashboards/plant/src/metrics/native.ts",
+        "apps/dashboards/plant/src/metrics/main-thread.ts",
+        "apps/dashboards/plant/src/metrics/Panel.tsx",
+        "apps/dashboards/plant/src/metrics/Categories.tsx",
+        "apps/dashboards/plant/src/metrics/updates.ts",
+        "apps/dashboards/plant/src/metrics/timing.ts",
         "apps/dashboards/plant/src/host/native.ts"
       ],
       "rules": {

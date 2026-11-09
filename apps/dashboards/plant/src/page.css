@@ -99,3 +99,81 @@ body {
   border-left: 3px solid #edc948;
   background: #22262b;
 }
+.metrics dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 0;
+  padding: 6px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 12px;
+}
+.metrics dl div {
+  display: flex;
+  gap: 6px;
+}
+.metrics dt {
+  color: #999;
+}
+.metrics dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  /* As wide as the longest value ("no input yet"), so the row wraps the same
+     way while values change and nothing below it moves. */
+  min-width: 12ch;
+}
+
+/* Responsiveness on the page (as in the markets app). */
+.responsiveness {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 4px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 12px;
+}
+.tape-strip {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #8ab4f8;
+}
+.tape-track {
+  display: inline-block;
+  will-change: transform;
+}
+.echo input {
+  width: 140px;
+}
+.echo output {
+  display: inline-block;
+  min-width: 80px;
+  margin-left: 6px;
+  color: #aaa;
+}
+.badge {
+  display: inline-flex;
+  gap: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Time per category (M3c task 10). */
+.categories {
+  padding: 4px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 12px;
+}
+.categories table {
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+.categories td,
+.categories th {
+  padding: 1px 10px 1px 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.categories td:first-child,
+.categories th:first-child {
+  text-align: left;
+}
