@@ -141,7 +141,9 @@ export function EventLog({ config }: { config?: unknown }) {
     return out;
   }, [events, m, clearedAt, kind, text]);
   return (
-    <div className="events">
+    // `data-filter`: the text this render filtered by, so a test can time a
+    // keystroke until the widget has rendered it.
+    <div className="events" data-filter={text}>
       <div className="event-filter">
         <select
           name="event-kind"
