@@ -23,7 +23,7 @@ for (const build of inScope(BUILDS)) {
       els.reduce((n, el) => n + Number(el.getAttribute('data-share')), 0),
     );
     expect(shares).toBeCloseTo(1, 2);
-    // Anomaly ranking sorted, the hottest bearing first, the overheating machine near the top.
+    // Anomaly ranking sorted; every machine in the bearings table.
     const anomalies = await at(page, 'fleet-anomaly', 'tr').evaluateAll((els) =>
       els.map((el) => Number(el.getAttribute('data-anomaly'))),
     );
@@ -32,10 +32,21 @@ for (const build of inScope(BUILDS)) {
       els.map((el) => el.getAttribute('data-machine')),
     );
     expect(bearings.toSorted((a, b) => (a ?? '').localeCompare(b ?? ''))).toEqual(MACHINES);
-    await expect(at(page, 'fleet-bearings', 'tr').first()).toHaveAttribute(
-      'data-machine',
-      fault.machine,
+    // Sorted hottest first; the overheating machine's bearing is past its
+    // warning limit (another machine's fault can be hotter still).
+    const temps = await at(page, 'fleet-bearings', 'tr').evaluateAll((els) =>
+      els.map((el) => Number(el.getAttribute('data-temp'))),
     );
+    expect(temps).toEqual(temps.toSorted((a, b) => b - a));
+    await expect
+      .poll(async () =>
+        Number(
+          await at(page, 'fleet-bearings', `tr[data-machine="${fault.machine}"]`).getAttribute(
+            'data-temp',
+          ),
+        ),
+      )
+      .toBeGreaterThan(85);
     // The combined alarm feed has the overheating machine's alarm.
     await expect(
       at(page, 'fleet-alarms', `.feed-alarm[data-machine="${fault.machine}"]`).first(),
