@@ -49,7 +49,18 @@
         "apps/dashboards/markets/src/env/hooks.ts",
         "apps/dashboards/markets/src/slot/native.tsx",
         "apps/dashboards/markets/src/main.native.tsx",
-        "apps/dashboards/markets/src/page.tsx"
+        "apps/dashboards/markets/src/page.tsx",
+        // The plant app the same way (M3d decision 7): both native builds.
+        "apps/dashboards/plant/src/core/**",
+        "apps/dashboards/plant/src/charts/**",
+        "apps/dashboards/plant/src/widgets/**",
+        "apps/dashboards/plant/src/native/**",
+        "apps/dashboards/plant/src/env/native.ts",
+        "apps/dashboards/plant/src/env/hooks.ts",
+        "apps/dashboards/plant/src/slot/native.tsx",
+        "apps/dashboards/plant/src/main.native.tsx",
+        "apps/dashboards/plant/src/main.native-workers.tsx",
+        "apps/dashboards/plant/src/page.tsx"
       ],
       "rules": {
         "no-restricted-imports": [
@@ -57,7 +68,8 @@
           {
             "patterns": [
               {
-                "group": ["@isoloop/**", "**/isoloop/**", "virtual:isoloop/*"],
+                // @isoloop/codec is a dev dependency of the plant's unit tests.
+                "group": ["@isoloop/**", "!@isoloop/codec", "**/isoloop/**", "virtual:isoloop/*"],
                 "message": "Shared and native code stays free of Isoloop (M3b task 15)."
               }
             ]

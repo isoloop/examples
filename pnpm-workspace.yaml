@@ -23,6 +23,7 @@ catalog:
 catalogs:
   isoloop:
     '@isoloop/bus': 0.0.0-next.62ef495
+    '@isoloop/codec': 0.0.0-next.62ef495
     '@isoloop/host': 0.0.0-next.62ef495
     '@isoloop/preact': 0.0.0-next.62ef495
     '@isoloop/protocol': 0.0.0-next.62ef495

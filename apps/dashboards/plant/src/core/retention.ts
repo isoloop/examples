@@ -1,0 +1,40 @@
+// How long each stream keeps its records (M3d decision 5), in every build:
+// the Isoloop build's topics and the native builds' store read this.
+import type { MachineStream, PlantStream } from './streams';
+
+export type Keep = { kind: 'time'; ms: number } | { kind: 'last-n'; n: number } | { kind: 'keyed' };
+
+export const MACHINE_KEEP: Record<MachineStream, Keep> = {
+  // The last 30 s of raw vibration: about 1 MB plant-wide at 1 kHz.
+  vib: { kind: 'time', ms: 30_000 },
+  // 5 minutes of slow signals.
+  scalars: { kind: 'time', ms: 300_000 },
+  spectrum: { kind: 'time', ms: 30_000 },
+  stats: { kind: 'last-n', n: 60 },
+  health: { kind: 'time', ms: 300_000 },
+};
+
+/** Alarms and events: persistent, capped at 10,000 records each, oldest dropped. */
+export const HISTORY_CAP = 10_000;
+
+export const PLANT_KEEP: Record<PlantStream, Keep> = {
+  alarms: { kind: 'last-n', n: HISTORY_CAP },
+  events: { kind: 'last-n', n: HISTORY_CAP },
+  fleet: { kind: 'last-n', n: 300 },
+  timings: { kind: 'last-n', n: 1_000 },
+  noise: { kind: 'last-n', n: 100 },
+  cleared: { kind: 'keyed' },
+};
+
+/** Kept across a reload: OPFS on Isoloop, localStorage on native. */
+export const PERSISTENT: readonly PlantStream[] = ['alarms', 'events', 'cleared'];
+
+export const isPersistent = (s: string): s is PlantStream =>
+  (PERSISTENT as readonly string[]).includes(s);
+
+/** The time a record carries, for time-based retention. */
+export function timeOf(value: unknown): number {
+  if (typeof value !== 'object' || value === null) return 0;
+  const ts: unknown = Reflect.get(value, 'ts') ?? Reflect.get(value, 't0');
+  return typeof ts === 'number' ? ts : 0;
+}

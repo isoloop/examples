@@ -25,6 +25,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@isoloop/codec": "catalog:isoloop",
     "@isoloop/vite": "catalog:isoloop",
     "@playwright/test": "catalog:",
     "@types/react": "catalog:react",
