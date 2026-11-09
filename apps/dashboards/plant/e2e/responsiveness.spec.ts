@@ -88,3 +88,13 @@ for (const build of inScope(BUILDS)) {
     expect(tops, `the first machine's top over time: ${tops.join(' → ')}`).toHaveLength(1);
   });
 }
+
+test('the manual recording gives a result to copy', async ({ page }) => {
+  test.setTimeout(30_000);
+  await page.goto('/native/?rate=2');
+  await page.locator('details.record summary').click();
+  await page.locator('button[name="record"]').click();
+  await page.locator('input[name="echo"]').pressSequentially('hello');
+  await expect(page.locator('pre[data-record]')).toContainText('"rate": 2', { timeout: 15_000 });
+  await expect(page.locator('pre[data-record]')).toContainText('"inputMedianMs":');
+});

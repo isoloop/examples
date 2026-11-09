@@ -1,0 +1,72 @@
+name: Comparison (plant)
+
+# The plant dashboard's recorded comparison (M3d task 11): native, native +
+# workers and each Isoloop placement, at 1, 2 and 5 kHz, one page at a time,
+# on each engine in its own job. Runs on demand, after a `plant-v*` deploy
+# (release.yml) and weekly (weekly.yml). The numbers are uploaded as an
+# artifact, with summary.md in the run's summary; nothing is asserted.
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: chromium
+            project: comparison
+          - browser: firefox
+            project: comparison-firefox
+          - browser: webkit
+            project: comparison-webkit
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/install-browsers
+        with:
+          browsers: ${{ matrix.browser }}
+      # Each run writes its result whether or not the page kept going.
+      - run: pnpm --filter ./apps/dashboards/plant exec playwright test --project=${{ matrix.project }} --workers=1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: plant-comparison-${{ matrix.browser }}
+          path: apps/dashboards/plant/comparison-results
+          retention-days: 90
+
+  summary:
+    needs: engine
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: plant-comparison-*
+          path: apps/dashboards/plant/comparison-results
+          merge-multiple: true
+      - run: node scripts/compare.ts
+        working-directory: apps/dashboards/plant
+      - run: cat apps/dashboards/plant/comparison-results/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: plant-comparison
+          path: apps/dashboards/plant/comparison-results
+          retention-days: 90

@@ -177,3 +177,16 @@ body {
 .categories th:first-child {
   text-align: left;
 }
+.record {
+  padding: 4px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 12px;
+}
+.record summary {
+  cursor: pointer;
+  color: #8ab4f8;
+}
+.record pre {
+  white-space: pre-wrap;
+  user-select: all;
+}

@@ -3,6 +3,7 @@ import { BUILDS, CURRENT } from './builds';
 import { ClearHistory } from './ClearHistory';
 import { CategoryPanel } from './metrics/Categories';
 import { MetricsPanel } from './metrics/Panel';
+import { Record } from './metrics/Record';
 import { Notices } from './Notices';
 import { Responsiveness } from './responsive/Responsiveness';
 import { MACHINES } from './core/machines';
@@ -70,6 +71,7 @@ export function Page() {
       <Responsiveness />
       <MetricsPanel />
       <CategoryPanel widgets={SHOWN} />
+      <Record />
       {fleet.length > 0 && (
         <section className="fleet" aria-label="Fleet">
           <h2>Fleet</h2>

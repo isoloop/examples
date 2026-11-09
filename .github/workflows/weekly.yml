@@ -1,7 +1,8 @@
 name: Weekly
 
 # Catches drift without slowing pull requests: every Monday at 05:00 UTC,
-# check, every E2E test on every build and engine, and the recorded comparison.
+# check, every E2E test on every build and engine, and the recorded
+# comparisons of the markets and the plant dashboards.
 # Its numbers stay an artifact; nothing is committed.
 on:
   schedule:
@@ -25,3 +26,7 @@ jobs:
   compare:
     needs: check
     uses: ./.github/workflows/comparison.yml
+
+  compare-plant:
+    needs: check
+    uses: ./.github/workflows/comparison-plant.yml

@@ -68,6 +68,7 @@
         "apps/dashboards/plant/src/metrics/main-thread.ts",
         "apps/dashboards/plant/src/metrics/Panel.tsx",
         "apps/dashboards/plant/src/metrics/Categories.tsx",
+        "apps/dashboards/plant/src/metrics/Record.tsx",
         "apps/dashboards/plant/src/metrics/updates.ts",
         "apps/dashboards/plant/src/metrics/timing.ts",
         "apps/dashboards/plant/src/host/native.ts"

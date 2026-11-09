@@ -1,0 +1,9 @@
+{
+  "engine": "webkit",
+  "build": "isoloop",
+  "placement": "machine",
+  "rate": 1,
+  "stopped": true,
+  "url": "/isoloop/?rate=1&seed=7&placement=machine",
+  "error": "\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed"
+}
