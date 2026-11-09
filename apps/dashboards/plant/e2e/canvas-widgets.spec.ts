@@ -34,7 +34,11 @@ for (const build of inScope(BUILDS)) {
   }) => {
     test.skip(stopsOn(browserName, build), WEBKIT_STOPS);
     await page.goto(`/${build}/?rate=2&seed=1`);
-    await Promise.all(MACHINES.map((m) => expect(drawn(page, `${m}-spectrum`)).toBeVisible({ timeout: FIRST_DATA })));
+    await Promise.all(
+      MACHINES.map((m) =>
+        expect(drawn(page, `${m}-spectrum`)).toBeVisible({ timeout: FIRST_DATA }),
+      ),
+    );
     // Each waveform draws at the rate.
     await expect
       .poll(() => Promise.all(MACHINES.map((m) => description(page, `${m}-waveform`))), {
