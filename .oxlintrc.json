@@ -62,6 +62,7 @@
         "apps/dashboards/plant/src/main.native-workers.tsx",
         "apps/dashboards/plant/src/page.tsx",
         "apps/dashboards/plant/src/ClearHistory.tsx",
+        "apps/dashboards/plant/src/Notices.tsx",
         "apps/dashboards/plant/src/host/native.ts"
       ],
       "rules": {

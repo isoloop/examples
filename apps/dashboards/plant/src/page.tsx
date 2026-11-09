@@ -1,6 +1,7 @@
 import { Slot } from '#slot';
 import { BUILDS, CURRENT } from './builds';
 import { ClearHistory } from './ClearHistory';
+import { Notices } from './Notices';
 import { MACHINES } from './core/machines';
 import { WIDGETS } from './widgets';
 import { layout, type WidgetName } from './widgets/catalog';
@@ -62,6 +63,7 @@ export function Page() {
         )}
         <ClearHistory />
       </header>
+      <Notices />
       {fleet.length > 0 && (
         <section className="fleet" aria-label="Fleet">
           <h2>Fleet</h2>

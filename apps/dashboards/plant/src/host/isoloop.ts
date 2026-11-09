@@ -3,3 +3,5 @@ import { kernel } from '../isoloop/kernel';
 import { busSource } from '../isoloop/source';
 
 export const hostSource = busSource(kernel);
+
+export { durability, onDurability } from '../isoloop/kernel';
