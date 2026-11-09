@@ -6,6 +6,11 @@ import type { MachineId } from '../core/machines';
 import spectrum from '../isolates/widgets/spectrum?isolate';
 import temps from '../isolates/widgets/temps?isolate';
 import waveform from '../isolates/widgets/waveform?isolate';
+import gauges from '../isolates/widgets/gauges?isolate';
+import health from '../isolates/widgets/health?isolate';
+import alarms from '../isolates/widgets/alarms?isolate';
+import events from '../isolates/widgets/events?isolate';
+import sensors from '../isolates/widgets/sensors?isolate';
 import type { WidgetName } from '../widgets/catalog';
 import { topicName } from './names';
 
@@ -25,4 +30,9 @@ export const ISOLATES: Partial<
   spectrum: { src: spectrum, grants: machine() },
   waveform: { src: waveform, grants: machine() },
   temps: { src: temps, grants: machine() },
+  gauges: { src: gauges, grants: machine() },
+  health: { src: health, grants: machine() },
+  alarms: { src: alarms, grants: machine([topicName('alarms'), topicName('cleared')]) },
+  events: { src: events, grants: machine([topicName('events'), topicName('cleared')]) },
+  sensors: { src: sensors, grants: machine() },
 };

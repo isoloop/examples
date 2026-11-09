@@ -1,7 +1,8 @@
 // The fault schedule (M3d decision 3): a pure function of the seed, the machine
 // and the time, so every build injects the same faults at the same moments.
 //
-// Time is cut into cycles of 3 minutes. In each cycle a machine has a fault or
+// Time is cut into cycles of 3 minutes, shifted by a seeded phase so the
+// seeds between them cover every moment of a cycle. In each cycle a machine has a fault or
 // not (even odds), starting 10 to 120 s in: bearing wear (the bearing tone
 // grows and the bearing warms), overheating (both temperatures climb past
 // their alarm limits) or a trip (the machine stops, then starts again).
@@ -28,25 +29,32 @@ export interface Fault {
 
 const index = (m: MachineId): number => MACHINES.indexOf(m);
 
-/** The machine's fault in cycle `c` (the cycle starting at `c * CYCLE_MS`), if any. */
+/** Where the seed's cycles start, ms after a multiple of CYCLE_MS. */
+const phase = (seed: number): number => Math.floor(hash01(seed, 99) * CYCLE_MS);
+
+/** The cycle `ts` falls in, under `seed`. */
+export const cycleOf = (seed: number, ts: number): number =>
+  Math.floor((ts - phase(seed)) / CYCLE_MS);
+
+/** The machine's fault in cycle `c`, if any. */
 export function faultInCycle(seed: number, machine: MachineId, c: number): Fault | null {
   const i = index(machine);
   if (hash01(seed, i, c, 11) < 0.5) return null;
   const kind = FAULT_KINDS[Math.floor(hash01(seed, i, c, 12) * FAULT_KINDS.length)] ?? 'trip';
-  const start = c * CYCLE_MS + 10_000 + Math.floor(hash01(seed, i, c, 13) * 110_000);
+  const start = c * CYCLE_MS + phase(seed) + 10_000 + Math.floor(hash01(seed, i, c, 13) * 110_000);
   return { machine, kind, start, end: start + FAULT_MS[kind] };
 }
 
 /** The fault the machine has at `ts`, if any. */
 export function faultAt(seed: number, machine: MachineId, ts: number): Fault | null {
-  const f = faultInCycle(seed, machine, Math.floor(ts / CYCLE_MS));
+  const f = faultInCycle(seed, machine, cycleOf(seed, ts));
   return f && ts >= f.start && ts < f.end ? f : null;
 }
 
 /** Every fault starting in [from, to), in start order. */
 export function faultsBetween(seed: number, from: number, to: number): Fault[] {
   const out: Fault[] = [];
-  for (let c = Math.floor(from / CYCLE_MS); c * CYCLE_MS < to; c++) {
+  for (let c = cycleOf(seed, from); c * CYCLE_MS + phase(seed) < to; c++) {
     for (const m of MACHINES) {
       const f = faultInCycle(seed, m, c);
       if (f && f.start >= from && f.start < to) out.push(f);
