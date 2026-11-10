@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { WEBKIT_STOPS, FIRST_DATA } from './scope';
 
-// M3d task 7: the four placements (decision 6), what a block takes down in
+// M3d task 7: the placements (decision 6, plus matched and one), what a block takes down in
 // each (decision 9), and the persistent alarms and events (decision 5).
 const MACHINE_WIDGETS = [
   'spectrum',
@@ -16,13 +16,21 @@ const MACHINE_WIDGETS = [
 const T3_WIDGETS = MACHINE_WIDGETS.map((w) => `T3-${w}`);
 const T3_DATA = ['feed-T3', 'fft-T3', 'stats-T3', 'health-T3'];
 
-/** What a blocked T3-gauges takes down with it, by placement. */
-const BLAST: Record<string, string[]> = {
+/**
+ * What a blocked T3-gauges takes down with it, by placement: a list of
+ * isolates, or `pool`, every member of T3-gauges' pool (in `matched` all 72
+ * widgets, in `one` every isolate on the page).
+ */
+const BLAST: Record<string, string[] | 'pool'> = {
   split: T3_WIDGETS,
   machine: [...T3_WIDGETS, ...T3_DATA],
   'shared-engines': T3_WIDGETS,
   own: ['T3-gauges'],
+  matched: 'pool',
+  one: 'pool',
 };
+/** Placements where T4's gauges share the blocked pool, so they stall too. */
+const T4_SHARES = new Set(['matched', 'one']);
 
 declare global {
   interface Window {
@@ -49,6 +57,17 @@ for (const [placement, blast] of Object.entries(BLAST)) {
       timeout: 20_000,
     });
     await expect(at(page, 'T4-gauges', '.gauges')).toHaveAttribute('data-ts', /\d/);
+    const expected =
+      blast === 'pool'
+        ? await page.evaluate(() => {
+            const pool = window.kernel.isolates().find((i) => i.id === 'T3-gauges')?.pool;
+            return window.kernel
+              .isolates()
+              .filter((i) => i.pool !== undefined && i.pool === pool)
+              .map((i) => i.id);
+          })
+        : blast;
+    if (blast === 'pool') expect(expected.length).toBeGreaterThanOrEqual(72);
     await page.evaluate(() => {
       window.crashed = [];
       window.kernel.on('isolate:crash', (e) => {
@@ -60,10 +79,12 @@ for (const [placement, blast] of Object.entries(BLAST)) {
     // The kernel kills a loop busy for 2 s; the block lasts 3 s.
     await expect
       .poll(() => page.evaluate(() => window.crashed.toSorted()), { timeout: 10_000 })
-      .toEqual(blast.toSorted());
-    // Another machine kept going all along.
-    const t4 = await ts(page, 'T4-gauges');
-    await expect.poll(() => ts(page, 'T4-gauges')).toBeGreaterThan(t4);
+      .toEqual(expected.toSorted());
+    // Another machine kept going all along, unless its widgets share the pool.
+    if (!T4_SHARES.has(placement)) {
+      const t4 = await ts(page, 'T4-gauges');
+      await expect.poll(() => ts(page, 'T4-gauges')).toBeGreaterThan(t4);
+    }
     // The pool restarts and catches up: the gauges move again, and the trend
     // and the sensor table come back from the retained topics.
     const t3 = await ts(page, 'T3-gauges').catch(() => 0);

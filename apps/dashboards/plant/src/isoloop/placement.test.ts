@@ -26,6 +26,16 @@ describe('placements', () => {
     expect(workersOf('own', ITEMS)).toBe(105);
   });
 
+  it("runs 10 workers in matched (native + workers' 9 plus one for the widgets) and 1 in one", () => {
+    expect(workersOf('matched', ITEMS)).toBe(10);
+    expect(workersOf('one', ITEMS)).toBe(1);
+    expect(poolOf('matched', { kind: 'widget', machine: 'T3' })).toBe('widgets');
+    expect(poolOf('matched', { kind: 'widget' })).toBe('widgets');
+    expect(poolOf('matched', { kind: 'fft', machine: 'T3' })).toBe('data-T3');
+    expect(poolOf('matched', { kind: 'fleet' })).toBeUndefined();
+    for (const i of ITEMS) expect(poolOf('one', i)).toBe('all');
+  });
+
   it("puts a machine's widgets and data apart in split, together in machine", () => {
     expect(poolOf('split', { kind: 'widget', machine: 'T3' })).toBe('widgets-T3');
     expect(poolOf('split', { kind: 'fft', machine: 'T3' })).toBe('data-T3');
@@ -42,5 +52,7 @@ describe('placements', () => {
     expect(whereOf('machine-T3', 1)).toBe('pool T3');
     expect(whereOf('fleet', 1)).toBe('pool fleet');
     expect(whereOf(undefined, 41)).toBe('worker 41');
+    expect(whereOf('widgets', 1)).toBe('pool widgets');
+    expect(whereOf('all', 1)).toBe('pool all');
   });
 });
