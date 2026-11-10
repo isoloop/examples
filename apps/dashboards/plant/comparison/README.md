@@ -16,6 +16,47 @@ What each run does, and what each figure covers, is in [`e2e/comparison.spec.ts`
 3. 5 keystrokes into T1's event-log filter (a widget).
 4. A 3 s block of T3's gauges, for the fault figures.
 
+## Head-to-head runs (`run.ts`)
+
+`run.ts` runs pairs of configurations against each other, a native build (A) and an Isoloop placement (B), interleaved: A, B, A, B, for N rounds, one page at a time. In each round it reads memory twice, once after the measuring window (about 16 s after navigation) and once at the hold (10 min by default), each time before and after a forced GC in the page and every worker. It writes each run's JSON and `summary.md`, with the median gap B − A per round, as a share of A, and the gap's spread across rounds.
+
+The two pairs it was written for:
+
+- `native` vs `isoloop:one`: everything on one thread against everything in one worker.
+- `native-workers` vs `isoloop:matched`: one data worker per machine and one for the fleet on both sides. Isoloop adds one worker for all 72 widgets, plus the bus's worker, which the worker counts leave out.
+
+```bash
+pnpm --filter ./apps/dashboards/plant compare:pairs \
+  --pair native=isoloop:one --pair native-workers=isoloop:matched \
+  --extra isoloop:split --rates 1,5 --rounds 5 --hold 600 \
+  --engines chromium,firefox --out comparison/matched/results
+```
+
+Arguments are in the header of [`run.ts`](run.ts). `--summary-only` rebuilds `summary.md` from the JSON already in `--out`.
+
+Durations: each run takes about 1 minute plus the hold. The command above has 5 configurations × 2 rates × 5 rounds × 2 engines = 100 runs, at about 11 minutes each, so roughly 18 hours. `--hold 0` skips the 10-minute reading, at about 1 minute a run.
+
+Memory figures (renderer PSS from `/proc`) are Chromium on Linux only. Firefox runs report frames, typing, start-up and the fault figures.
+
+### In Docker, on a dedicated machine
+
+[`Dockerfile`](Dockerfile) is Playwright's official image at the repo's Playwright version (1.64.1, with its browsers), plus Node 26 and pnpm through corepack. From a clone of `isoloop/examples` used only for this:
+
+```bash
+docker build -t plant-compare apps/dashboards/plant/comparison
+docker run --rm --init --cpuset-cpus=0-3 --shm-size=2g \
+  -v "$PWD":/work -w /work plant-compare \
+  bash -lc 'pnpm install --frozen-lockfile && pnpm --filter ./apps/dashboards/plant compare:pairs \
+    --pair native=isoloop:one --pair native-workers=isoloop:matched \
+    --extra isoloop:split --rates 1,5 --rounds 5 --hold 600 \
+    --engines chromium,firefox --out comparison/matched/results'
+```
+
+- `--cpuset-cpus=0-3` pins the run to 4 cores, as `taskset` does locally.
+- `--shm-size=2g` gives Chromium enough shared memory; Docker's default of 64 MB is too small for it.
+- The results land in `apps/dashboards/plant/comparison/matched/results/`, owned by root, because the container runs as root.
+- `run.json` there records the arguments and the CPUs the run was allowed.
+
 ## Chromium, 4 cores, 1 kHz and 5 kHz
 
 | Rate | Build | Workers | Late frames (of 600) | Typing (median) | Main-thread CPU | Renderer CPU, all threads | Renderer memory | Recovery after a 3 s block | Data gap, T3 | Data gap, other machines |

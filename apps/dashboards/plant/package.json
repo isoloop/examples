@@ -11,6 +11,7 @@
     "test": "vitest run --passWithNoTests",
     "e2e": "playwright test",
     "compare": "playwright test --project=comparison --project=comparison-firefox --project=comparison-webkit --workers=1; node scripts/compare.ts",
+    "compare:pairs": "node comparison/run.ts",
     "dev:native": "vite --mode native",
     "dev:native-workers": "vite --mode native-workers"
   },
