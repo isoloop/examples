@@ -13,7 +13,18 @@ import { expect, test, type Browser, type CDPSession, type Page } from '@playwri
 //   the keystroke until the widget has rendered the text.
 // - Main-thread CPU (CDP `Performance.getMetrics` TaskDuration), renderer CPU
 //   across all threads and GPU CPU (`SystemInfo.getProcessInfo`), renderer
-//   memory (PSS, Linux): Chromium only, as % of one core and MB.
+//   memory (PSS, Linux): Chromium only, as % of one core and MB. Memory is
+//   also read after a forced GC in the page and every worker (CDP
+//   HeapProfiler.collectGarbage, twice), so garbage timing doesn't decide it.
+// - Hold (`COMPARE_HOLD_MS`, e.g. 600000): after typing, the page keeps
+//   running until that long after navigation, then memory is read again, with
+//   and without a GC, before the fault.
+// - Runs (`COMPARE_RUNS`, default 1): every configuration that many times,
+//   one page at a time, interleaved: round 1 runs each configuration once,
+//   then round 2, and so on (A, B, A, B), so drift on the machine falls on
+//   both sides of a pair. Result files get a `-run<k>` suffix when it's over 1.
+// - Durations: `COMPARE_WARM_MS` (default 6000) and `COMPARE_WINDOW_MS`
+//   (default 10000). `comparison/run.ts` sets all of these from its arguments.
 // - Workers: as the metrics panel counts them (pools once).
 // - Start-up: from navigation to the first gauges on screen (first data), and
 //   to every one of the 72 widgets showing data.
@@ -36,10 +47,14 @@ const ALL = [
   'isoloop:machine',
   'isoloop:shared-engines',
   'isoloop:own',
+  'isoloop:matched',
+  'isoloop:one',
 ];
 const CONFIGS = process.env['COMPARE_CONFIGS']?.split(',') ?? ALL;
-const WARM_MS = 6_000;
-const WINDOW_MS = 10_000;
+const RUNS = Number(process.env['COMPARE_RUNS'] ?? 1);
+const HOLD_MS = Number(process.env['COMPARE_HOLD_MS'] ?? 0);
+const WARM_MS = Number(process.env['COMPARE_WARM_MS'] ?? 6_000);
+const WINDOW_MS = Number(process.env['COMPARE_WINDOW_MS'] ?? 10_000);
 const SAMPLES = 5;
 const LATE_FRAME_MS = 25;
 const VIEWPORT = { width: 1400, height: 900 };
@@ -89,6 +104,62 @@ function pssMb(pids: number[]): number | null {
     kb += Number(m?.[1] ?? 0);
   }
   return Math.round(kb / 1024);
+}
+
+/**
+ * Forces a GC in the page and in every worker, twice (a worker's first
+ * collection can leave garbage the second frees), over non-flattened target
+ * sessions, as the plant memory investigation's probes do.
+ */
+async function gcAll(browser: Browser): Promise<void> {
+  const b = await browser.newBrowserCDPSession();
+  const pending = new Map<number, () => void>();
+  let next = 1;
+  b.on('Target.receivedMessageFromTarget', (e: { message: string }) => {
+    const m: unknown = JSON.parse(e.message);
+    const id: unknown = typeof m === 'object' && m !== null ? Reflect.get(m, 'id') : undefined;
+    if (typeof id !== 'number') return;
+    pending.get(id)?.();
+    pending.delete(id);
+  });
+  try {
+    for (let round = 0; round < 2; round++) {
+      // oxlint-disable-next-line no-await-in-loop -- rounds in order
+      const { targetInfos } = (await b.send('Target.getTargets')) as {
+        targetInfos: { targetId: string; type: string }[];
+      };
+      for (const t of targetInfos.filter((x) => x.type === 'worker' || x.type === 'page')) {
+        // oxlint-disable-next-line no-await-in-loop -- one target at a time
+        const { sessionId } = await b.send('Target.attachToTarget', {
+          targetId: t.targetId,
+          flatten: false,
+        });
+        const id = next++;
+        const done = new Promise<void>((resolve) => pending.set(id, resolve));
+        // oxlint-disable-next-line no-await-in-loop -- one target at a time
+        await b.send('Target.sendMessageToTarget', {
+          sessionId,
+          message: JSON.stringify({ id, method: 'HeapProfiler.collectGarbage', params: {} }),
+        });
+        // oxlint-disable-next-line no-await-in-loop -- one target at a time
+        await Promise.race([done, new Promise((r) => setTimeout(r, 5_000))]);
+        // oxlint-disable-next-line no-await-in-loop -- one target at a time
+        await b.send('Target.detachFromTarget', { sessionId }).catch(() => {});
+      }
+    }
+  } finally {
+    await b.detach();
+  }
+}
+
+/** Renderer PSS now and after a forced GC, MB (Chromium on Linux). */
+async function memory(browser: Browser): Promise<{ pss: number | null; pssGc: number | null }> {
+  const pids = (): Promise<number[]> =>
+    processes(browser).then((ps) => [...cpuOf(ps, 'renderer').keys()]);
+  const pss = pssMb(await pids());
+  await gcAll(browser);
+  await new Promise((r) => setTimeout(r, 1_000));
+  return { pss, pssGc: pssMb(await pids()) };
 }
 
 const filter = (page: Page) => page.locator('[data-slot="T1-events"] input[name="event-text"]');
@@ -171,127 +242,147 @@ async function recovered(page: Page, since: number, timeoutMs: number): Promise<
 }
 
 for (const rate of RATES) {
-  for (const config of CONFIGS) {
-    const [build = 'native', placement] = config.split(':');
-    const name = `${placement ? `${build}-${placement}` : build}-${rate}khz`;
-    test(`compare: ${config} at ${rate} kHz`, async ({ browser, baseURL, browserName }) => {
-      test.setTimeout(240_000);
-      const engine = browserName;
-      const dir = `${OUT}/${engine}`;
-      mkdirSync(dir, { recursive: true });
-      const write = (result: object): void => {
-        writeFileSync(
-          `${dir}/${name}.json`,
-          `${JSON.stringify({ engine, build, placement: placement ?? null, rate, ...result }, null, 2)}\n`,
-        );
-      };
-      const context = await browser.newContext({
-        ...(baseURL === undefined ? {} : { baseURL }),
-        viewport: VIEWPORT,
-      });
-      const page = await context.newPage();
-      const chromium = engine === 'chromium';
-      const cdp = chromium ? await context.newCDPSession(page) : null;
-      await cdp?.send('Performance.enable', { timeDomain: 'timeTicks' });
-      const isoloop = build === 'isoloop';
-      const url = `/${build}/?rate=${rate}&seed=7${placement ? `&placement=${placement}` : ''}`;
-      try {
-        const t0 = Date.now();
-        await page.goto(url);
-        await expect(page.locator('[data-metric="first-data"] dd')).toHaveText(/ms$/, {
-          timeout: 30_000,
+  for (let run = 1; run <= RUNS; run++) {
+    for (const config of CONFIGS) {
+      const [build = 'native', placement] = config.split(':');
+      const name = `${placement ? `${build}-${placement}` : build}-${rate}khz${RUNS > 1 ? `-run${run}` : ''}`;
+      test(`compare: ${config} at ${rate} kHz${RUNS > 1 ? `, run ${run}` : ''}`, async ({
+        browser,
+        baseURL,
+        browserName,
+      }) => {
+        test.setTimeout(240_000 + HOLD_MS);
+        const engine = browserName;
+        const dir = `${OUT}/${engine}`;
+        mkdirSync(dir, { recursive: true });
+        const write = (result: object): void => {
+          writeFileSync(
+            `${dir}/${name}.json`,
+            `${JSON.stringify({ engine, build, placement: placement ?? null, rate, ...result }, null, 2)}\n`,
+          );
+        };
+        const context = await browser.newContext({
+          ...(baseURL === undefined ? {} : { baseURL }),
+          viewport: VIEWPORT,
         });
-        // Every widget showing data, polled from navigation.
-        let allMs: number | null = null;
-        while (Date.now() - t0 < 30_000) {
-          // oxlint-disable-next-line no-await-in-loop -- polling
-          if ((await page.evaluate(() => window.slotsWithData())) >= 72) {
-            allMs = Date.now() - t0;
-            break;
+        const page = await context.newPage();
+        const chromium = engine === 'chromium';
+        const cdp = chromium ? await context.newCDPSession(page) : null;
+        await cdp?.send('Performance.enable', { timeDomain: 'timeTicks' });
+        const isoloop = build === 'isoloop';
+        const url = `/${build}/?rate=${rate}&seed=7${placement ? `&placement=${placement}` : ''}`;
+        try {
+          const t0 = Date.now();
+          await page.goto(url);
+          await expect(page.locator('[data-metric="first-data"] dd')).toHaveText(/ms$/, {
+            timeout: 30_000,
+          });
+          // Every widget showing data, polled from navigation.
+          let allMs: number | null = null;
+          while (Date.now() - t0 < 30_000) {
+            // oxlint-disable-next-line no-await-in-loop -- polling
+            if ((await page.evaluate(() => window.slotsWithData())) >= 72) {
+              allMs = Date.now() - t0;
+              break;
+            }
+            // oxlint-disable-next-line no-await-in-loop -- polling
+            await page.waitForTimeout(100);
           }
-          // oxlint-disable-next-line no-await-in-loop -- polling
-          await page.waitForTimeout(100);
+          await page.waitForTimeout(WARM_MS);
+
+          const m0 = cdp ? await pageMetrics(cdp) : {};
+          const p0 = chromium ? await processes(browser) : [];
+          const frames0 = await page.evaluate(() => window.tape.frames);
+          await page.waitForTimeout(WINDOW_MS);
+          const m1 = cdp ? await pageMetrics(cdp) : {};
+          const p1 = chromium ? await processes(browser) : [];
+          const tape = await page.evaluate(() => ({
+            frames: window.tape.frames,
+            gaps: window.tape.gaps,
+          }));
+          const longTasks = await metric(page, 'long-tasks');
+          const memAtMs = Date.now() - t0;
+          const mem = chromium ? await memory(browser) : { pss: null, pssGc: null };
+          const categories = await page.evaluate(() => window.categories());
+          const seconds = cdp
+            ? (m1['Timestamp'] ?? 0) - (m0['Timestamp'] ?? 0) || WINDOW_MS / 1000
+            : WINDOW_MS / 1000;
+          const delta = (k: string): number => (m1[k] ?? 0) - (m0[k] ?? 0);
+          const frameGaps = tape.gaps.slice(-(tape.frames - frames0));
+
+          await latency(page, 'x');
+          const typing: number[] = [];
+          for (let i = 0; i < SAMPLES; i++) {
+            // oxlint-disable-next-line no-await-in-loop
+            typing.push(await latency(page, `x${i}`));
+          }
+          await filter(page).fill('');
+
+          // The hold: memory once the page has run for HOLD_MS.
+          let held: { pss: number | null; pssGc: number | null } | null = null;
+          if (HOLD_MS > 0) {
+            await page.waitForTimeout(Math.max(0, t0 + HOLD_MS - Date.now()));
+            held = chromium ? await memory(browser) : null;
+          }
+
+          // The fault: block T3's gauges for 3 s.
+          await recordSpectra(page, isoloop);
+          await page.waitForTimeout(2_000);
+          await page.locator('[data-slot="T3-gauges"]').hover();
+          const clicked = Date.now();
+          await page.locator('[data-slot="T3-gauges"] button[name="stress-block"]').click();
+          const recoveryMs = await recovered(page, clicked, 20_000);
+          await page.waitForTimeout(2_000);
+          const dataGaps = await gaps(page, clicked, 256 / rate);
+          const others = Object.entries(dataGaps)
+            .filter(([m]) => m !== 'T3')
+            .map(([, g]) => g);
+
+          write({
+            stopped: false,
+            url,
+            workers: Number(await metric(page, 'workers')),
+            firstDataMs: Number((await metric(page, 'first-data')).replace(/\D+/g, '')),
+            allWidgetsMs: allMs,
+            frames: frameGaps.length,
+            fps: r1(frameGaps.length / (WINDOW_MS / 1000)),
+            frameP95Ms: r1(quantile(frameGaps, 0.95)),
+            framesLate: frameGaps.filter((g) => g > LATE_FRAME_MS).length,
+            longTasks: Number(longTasks),
+            typingMedianMs: median(typing),
+            typing,
+            mainThreadCpuPct: cdp ? r1((delta('TaskDuration') / seconds) * 100) : null,
+            rendererCpuPct: chromium ? r1((cpuDelta(p0, p1, 'renderer') / seconds) * 100) : null,
+            gpuCpuPct: chromium ? r1((cpuDelta(p0, p1, 'GPU') / seconds) * 100) : null,
+            rendererPssMb: chromium ? pssMb([...cpuOf(p1, 'renderer').keys()]) : null,
+            rendererPssGcMb: mem.pssGc,
+            memAtMs,
+            holdMs: HOLD_MS || null,
+            rendererPssHoldMb: held?.pss ?? null,
+            rendererPssHoldGcMb: held?.pssGc ?? null,
+            recoveryMs,
+            dataGapT3S: dataGaps['T3'] ?? null,
+            dataGapOthersS: others.length > 0 ? Math.max(...others) : null,
+            categories,
+            bundle: await metric(page, 'bundle'),
+          });
+        } catch (e) {
+          // A page that stops (WebKit with worker canvases, engine constraint 2)
+          // is a result too.
+          write({
+            stopped: true,
+            url,
+            error: (e instanceof Error ? (e.message.split('\n')[0] ?? '') : String(e)).replace(
+              // oxlint-disable-next-line no-control-regex -- Playwright's terminal colours
+              /\u001b\[[0-9;]*m/g,
+              '',
+            ),
+          });
+        } finally {
+          await cdp?.detach().catch(() => {});
+          await context.close();
         }
-        await page.waitForTimeout(WARM_MS);
-
-        const m0 = cdp ? await pageMetrics(cdp) : {};
-        const p0 = chromium ? await processes(browser) : [];
-        const frames0 = await page.evaluate(() => window.tape.frames);
-        await page.waitForTimeout(WINDOW_MS);
-        const m1 = cdp ? await pageMetrics(cdp) : {};
-        const p1 = chromium ? await processes(browser) : [];
-        const tape = await page.evaluate(() => ({
-          frames: window.tape.frames,
-          gaps: window.tape.gaps,
-        }));
-        const longTasks = await metric(page, 'long-tasks');
-        const categories = await page.evaluate(() => window.categories());
-        const seconds = cdp
-          ? (m1['Timestamp'] ?? 0) - (m0['Timestamp'] ?? 0) || WINDOW_MS / 1000
-          : WINDOW_MS / 1000;
-        const delta = (k: string): number => (m1[k] ?? 0) - (m0[k] ?? 0);
-        const frameGaps = tape.gaps.slice(-(tape.frames - frames0));
-
-        await latency(page, 'x');
-        const typing: number[] = [];
-        for (let i = 0; i < SAMPLES; i++) {
-          // oxlint-disable-next-line no-await-in-loop
-          typing.push(await latency(page, `x${i}`));
-        }
-        await filter(page).fill('');
-
-        // The fault: block T3's gauges for 3 s.
-        await recordSpectra(page, isoloop);
-        await page.waitForTimeout(2_000);
-        await page.locator('[data-slot="T3-gauges"]').hover();
-        const clicked = Date.now();
-        await page.locator('[data-slot="T3-gauges"] button[name="stress-block"]').click();
-        const recoveryMs = await recovered(page, clicked, 20_000);
-        await page.waitForTimeout(2_000);
-        const dataGaps = await gaps(page, clicked, 256 / rate);
-        const others = Object.entries(dataGaps)
-          .filter(([m]) => m !== 'T3')
-          .map(([, g]) => g);
-
-        write({
-          stopped: false,
-          url,
-          workers: Number(await metric(page, 'workers')),
-          firstDataMs: Number((await metric(page, 'first-data')).replace(/\D+/g, '')),
-          allWidgetsMs: allMs,
-          frames: frameGaps.length,
-          fps: r1(frameGaps.length / (WINDOW_MS / 1000)),
-          frameP95Ms: r1(quantile(frameGaps, 0.95)),
-          framesLate: frameGaps.filter((g) => g > LATE_FRAME_MS).length,
-          longTasks: Number(longTasks),
-          typingMedianMs: median(typing),
-          typing,
-          mainThreadCpuPct: cdp ? r1((delta('TaskDuration') / seconds) * 100) : null,
-          rendererCpuPct: chromium ? r1((cpuDelta(p0, p1, 'renderer') / seconds) * 100) : null,
-          gpuCpuPct: chromium ? r1((cpuDelta(p0, p1, 'GPU') / seconds) * 100) : null,
-          rendererPssMb: chromium ? pssMb([...cpuOf(p1, 'renderer').keys()]) : null,
-          recoveryMs,
-          dataGapT3S: dataGaps['T3'] ?? null,
-          dataGapOthersS: others.length > 0 ? Math.max(...others) : null,
-          categories,
-          bundle: await metric(page, 'bundle'),
-        });
-      } catch (e) {
-        // A page that stops (WebKit with worker canvases, engine constraint 2)
-        // is a result too.
-        write({
-          stopped: true,
-          url,
-          error: (e instanceof Error ? (e.message.split('\n')[0] ?? '') : String(e)).replace(
-            // oxlint-disable-next-line no-control-regex -- Playwright's terminal colours
-            /\u001b\[[0-9;]*m/g,
-            '',
-          ),
-        });
-      } finally {
-        await cdp?.detach().catch(() => {});
-        await context.close();
-      }
-    });
+      });
+    }
   }
 }

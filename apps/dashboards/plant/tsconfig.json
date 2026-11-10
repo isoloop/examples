@@ -15,5 +15,5 @@
       "#host": ["./src/host/isoloop.ts"]
     }
   },
-  "include": ["src", "e2e", "scripts", "*.config.ts"]
+  "include": ["src", "e2e", "scripts", "comparison", "*.config.ts"]
 }
