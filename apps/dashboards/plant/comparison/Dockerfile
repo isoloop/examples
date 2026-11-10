@@ -1,7 +1,7 @@
 # The head-to-head comparison's runner (README.md): Playwright's official
 # image, at the repo's Playwright version, with the browsers it ships, plus
-# Node 26 (the repo's engines field, which pnpm enforces) and pnpm through
-# corepack.
+# Node 26 (the repo's engines field, which pnpm enforces) and pnpm, installed
+# with npm at the repo's packageManager version: Node 25+ no longer ships corepack.
 FROM mcr.microsoft.com/playwright:v1.64.1-noble
 RUN set -eux; \
   apt-get update; apt-get install -y --no-install-recommends curl ca-certificates xz-utils; \
@@ -14,5 +14,6 @@ RUN set -eux; \
   tar -xJf "$f" -C /usr/local --strip-components=1; \
   rm -f "$f" SHASUMS256.txt; \
   node --version; \
-  corepack enable
+  npm install -g --no-fund --no-audit pnpm@12.16.1; \
+  pnpm --version
 WORKDIR /work
