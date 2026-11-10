@@ -40,11 +40,11 @@ Memory figures (renderer PSS from `/proc`) are Chromium on Linux only. Firefox r
 
 ### In Docker, on a dedicated machine
 
-[`Dockerfile`](Dockerfile) is Playwright's official image at the repo's Playwright version (1.64.1, with its browsers), plus Node 26 and pnpm through corepack. From a clone of `isoloop/examples` used only for this:
+[`Dockerfile`](Dockerfile) is Playwright's official image at the repo's Playwright version (1.64.1, with its browsers), plus Node 26 and pnpm (installed with npm; Node 25+ no longer ships corepack). From a clone of `isoloop/examples` used only for this:
 
 ```bash
 docker build -t plant-compare apps/dashboards/plant/comparison
-docker run --rm --init --cpuset-cpus=0-3 --shm-size=2g \
+docker run --rm --init --cpuset-cpus=2,4,6,8 --shm-size=2g \
   -v "$PWD":/work -w /work plant-compare \
   bash -lc 'pnpm install --frozen-lockfile && pnpm --filter ./apps/dashboards/plant compare:pairs \
     --pair native=isoloop:one --pair native-workers=isoloop:matched \
@@ -52,7 +52,7 @@ docker run --rm --init --cpuset-cpus=0-3 --shm-size=2g \
     --engines chromium,firefox --out comparison/matched/results'
 ```
 
-- `--cpuset-cpus=0-3` pins the run to 4 cores, as `taskset` does locally.
+- `--cpuset-cpus=2,4,6,8` pins the run to 4 physical cores, one thread each, as `taskset` does locally. On a machine with two threads per core, CPUs 0–3 are only 2 physical cores; `lscpu -e=CPU,CORE` shows the pairing. Core 0 is left out because it takes most interrupts. Drop the flag to use the whole machine.
 - `--shm-size=2g` gives Chromium enough shared memory; Docker's default of 64 MB is too small for it.
 - The results land in `apps/dashboards/plant/comparison/matched/results/`, owned by root, because the container runs as root.
 - `run.json` there records the arguments and the CPUs the run was allowed.
