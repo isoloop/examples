@@ -11,6 +11,9 @@ const CASES: [url: string, slot: string, label: RegExp][] = [
   ['/isoloop/?placement=machine', 'T5-events', /^pool T5$/],
   ['/isoloop/?placement=shared-engines', 'T2-gauges', /^pool T2$/],
   ['/isoloop/?placement=own', 'T8-sensors', /^worker \d+$/],
+  ['/isoloop/?placement=matched', 'T4-spectrum', /^pool widgets$/],
+  ['/isoloop/?placement=matched', 'fleet-status', /^pool widgets$/],
+  ['/isoloop/?placement=one', 'T6-alarms', /^pool all$/],
   ['/native/', 'T1-waveform', /^main thread$/],
   ['/native-workers/', 'fleet-trend', /^main thread$/],
 ];

@@ -7,6 +7,14 @@
 // | `machine`        | pool `machine-T3`   | pool `machine-T3`     | pool `fleet`  | own worker   |
 // | `shared-engines` | pool `widgets-T3`   | feeds in pool `feeds`, every engine in pool `engines` | pool `fleet` | own worker |
 // | `own`            | own workers         | own workers           | own workers   | own worker   |
+// | `matched`        | pool `widgets`      | pool `data-T3`        | pool `widgets`| own worker   |
+// | `one`            | pool `all`          | pool `all`            | pool `all`    | pool `all`   |
+//
+// `matched` runs the native + workers build's 9 data workers (one per machine,
+// one for the fleet) plus one thread for all 72 widgets; `one` runs everything
+// on one worker, the nearest to native's single thread. Both were added for
+// the matched comparison (comparison/matched/). Every placement also runs the
+// bus's own worker, which the worker counts here leave out.
 import type { MachineId } from '../core/machines';
 import type { PlacementName } from '../url';
 import type { JobKind } from './headless';
@@ -15,8 +23,13 @@ import type { JobKind } from './headless';
 export type Item = { kind: 'widget'; machine?: MachineId } | { kind: JobKind; machine?: MachineId };
 
 export function poolOf(p: PlacementName, item: Item): string | undefined {
+  if (p === 'one') return 'all';
   if (p === 'own' || item.kind === 'fleet') return undefined;
   const m = item.machine;
+  if (p === 'matched') {
+    if (item.kind === 'widget') return 'widgets';
+    return m ? `data-${m}` : undefined;
+  }
   if (item.kind === 'widget') {
     if (!m) return 'fleet';
     return p === 'machine' ? `machine-${m}` : `widgets-${m}`;
@@ -33,7 +46,7 @@ export function whereOf(pool: string | undefined, worker: number): string {
   return `pool ${pool.replace(/^(widgets|machine|data)-/, '')}`;
 }
 
-/** Workers a placement runs, for the page's warning and the comparison. */
+/** Workers a placement runs, for the page's warning and the comparison; the bus's worker is not counted. */
 export function workersOf(p: PlacementName, items: readonly Item[]): number {
   const pools = new Set<string>();
   let own = 0;

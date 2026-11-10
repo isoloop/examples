@@ -1,12 +1,12 @@
 // The page URL, the same in every build (M3d decisions 2, 3 and 6):
 // `?rate=1|2|5` (vibration sampling, kHz), `?placement=split|machine|
-// shared-engines|own` (where the Isoloop build runs its isolates) and
+// shared-engines|own|matched|one` (where the Isoloop build runs its isolates) and
 // `?seed=` (the generators' seed). The build switch keeps them.
 
 export const RATES = [1, 2, 5] as const;
 export type Rate = (typeof RATES)[number];
 
-export const PLACEMENTS = ['split', 'machine', 'shared-engines', 'own'] as const;
+export const PLACEMENTS = ['split', 'machine', 'shared-engines', 'own', 'matched', 'one'] as const;
 export type PlacementName = (typeof PLACEMENTS)[number];
 
 export interface Settings {
