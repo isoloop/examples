@@ -12,7 +12,7 @@ import type {
   Scalars,
   Spectrum,
   Stats,
-  Timing,
+  Timings,
   VibChunk,
 } from './schemas';
 
@@ -30,7 +30,7 @@ export interface PlantValues {
   alarms: Alarm;
   events: PlantEvent;
   fleet: Fleet;
-  timings: Timing;
+  timings: Timings;
   noise: Noise;
   cleared: Cleared;
 }

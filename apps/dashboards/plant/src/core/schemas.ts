@@ -162,3 +162,10 @@ export const timing = z.object({
   ts: z.number(),
 });
 export type Timing = z.infer<typeof timing>;
+
+/** Every widget's and engine's timing on one thread for the last second, in one record. */
+export const timings = z.object({
+  ts: z.number(),
+  items: z.array(timing),
+});
+export type Timings = z.infer<typeof timings>;
