@@ -1,0 +1,89 @@
+{
+  "engine": "chromium",
+  "build": "native",
+  "placement": null,
+  "rate": 1,
+  "stopped": false,
+  "url": "/native/?rate=1&seed=7",
+  "workers": 0,
+  "firstDataMs": 303,
+  "allWidgetsMs": 1347,
+  "frames": 600,
+  "fps": 60,
+  "frameP95Ms": 16.7,
+  "framesLate": 0,
+  "longTasks": 0,
+  "typingMedianMs": 33,
+  "typing": [20, 33, 35, 20, 73],
+  "mainThreadCpuPct": 67.8,
+  "rendererCpuPct": 77.7,
+  "gpuCpuPct": 28.8,
+  "rendererPssMb": 192,
+  "rendererPssGcMb": 150,
+  "memAtMs": 17420,
+  "holdMs": 600000,
+  "rendererPssHoldMb": 262,
+  "rendererPssHoldGcMb": 177,
+  "recoveryMs": 3253,
+  "dataGapT3S": 3.8,
+  "dataGapOthersS": 3.8,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 36.520000267028806,
+      "applyMsPerSec": null,
+      "updatesPerSec": 496
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 0.18000001907348634,
+      "applyMsPerSec": null,
+      "updatesPerSec": 40
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 0.039999961853027344,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 1.5600001335144043,
+      "applyMsPerSec": null,
+      "updatesPerSec": 24
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 0.1799999237060547,
+      "applyMsPerSec": null,
+      "updatesPerSec": 9
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 0.33999996185302733,
+      "applyMsPerSec": null,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 0.11999998092651368,
+      "applyMsPerSec": null,
+      "updatesPerSec": 5
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 5.260000801086425,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "81 KB"
+}

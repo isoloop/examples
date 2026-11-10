@@ -1,0 +1,89 @@
+{
+  "engine": "chromium",
+  "build": "isoloop",
+  "placement": "matched",
+  "rate": 1,
+  "stopped": false,
+  "url": "/isoloop/?rate=1&seed=7&placement=matched",
+  "workers": 10,
+  "firstDataMs": 627,
+  "allWidgetsMs": 1547,
+  "frames": 600,
+  "fps": 60,
+  "frameP95Ms": 16.8,
+  "framesLate": 0,
+  "longTasks": 0,
+  "typingMedianMs": 42,
+  "typing": [46, 42, 46, 41, 21],
+  "mainThreadCpuPct": 26.7,
+  "rendererCpuPct": 98.1,
+  "gpuCpuPct": 32.5,
+  "rendererPssMb": 367,
+  "rendererPssGcMb": 245,
+  "memAtMs": 17585,
+  "holdMs": 600000,
+  "rendererPssHoldMb": 612,
+  "rendererPssHoldGcMb": 271,
+  "recoveryMs": 2876,
+  "dataGapT3S": 0,
+  "dataGapOthersS": 0,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 31.61999969482422,
+      "applyMsPerSec": 0.3297608053988891,
+      "updatesPerSec": 504
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 0.31999998092651366,
+      "applyMsPerSec": 2.720528069548831,
+      "updatesPerSec": 40
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 1.3600001335144043,
+      "applyMsPerSec": 0.16488059925227155,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 1.7200003623962403,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 32
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 0.24000005722045897,
+      "applyMsPerSec": 0.41220105588681816,
+      "updatesPerSec": 10
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 0.279999828338623,
+      "applyMsPerSec": 0.020610136329292365,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 0.48000001907348633,
+      "applyMsPerSec": 0.45342113199257594,
+      "updatesPerSec": 5
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 7.1400001525878904,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "165 KB"
+}
