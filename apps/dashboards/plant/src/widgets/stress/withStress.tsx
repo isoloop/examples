@@ -2,6 +2,7 @@
 // in the widget's own code, so on Isoloop they load that widget's thread (its
 // pool's, when pooled) and on native the main thread.
 import { usePublish } from '#env';
+import { timingBatch } from '../../core/timing-batch';
 import {
   useCallback,
   useEffect,
@@ -88,7 +89,7 @@ export function withStress(
     const [crashed, setCrashed] = useState(false);
     const slot = slotOf(config) ?? name;
     const publish = usePublish('timings');
-    // The time this widget spends rendering and drawing, published once a
+    // The time this widget spends rendering and drawing, reported once a
     // second (M3c task 10). Measured on whichever thread runs it.
     const spent = useRef(0);
     // Renders and canvas draws in the last second, counted here, in the
@@ -105,24 +106,28 @@ export function withStress(
     const record = useCallback((ms: number) => {
       spent.current += ms;
     }, []);
-    useEffect(() => {
-      const id = setInterval(() => {
-        publish({
+    // Reported through the thread's batch: one `timings` record a second for
+    // every widget and engine on the same pool, worker or page.
+    useEffect(
+      () =>
+        timingBatch().report(
           slot,
-          widget: name,
-          ms: spent.current,
-          updates: renders.current,
-          ...(draws.current > 0 ? { draws: draws.current } : {}),
-          ts: Date.now(),
-        });
-        spent.current = 0;
-        renders.current = 0;
-        draws.current = 0;
-      }, 1_000);
-      return () => {
-        clearInterval(id);
-      };
-    }, [publish, slot]);
+          () => {
+            const t = {
+              widget: name,
+              ms: spent.current,
+              updates: renders.current,
+              ...(draws.current > 0 ? { draws: draws.current } : {}),
+            };
+            spent.current = 0;
+            renders.current = 0;
+            draws.current = 0;
+            return t;
+          },
+          publish,
+        ),
+      [publish, slot],
+    );
     if (crashed) throw new Error(`stress: ${name} crashed`);
     return (
       <TimingContext.Provider value={record}>

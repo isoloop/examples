@@ -35,7 +35,7 @@ const plantTopics = [
   topic(topicName('alarms'), { schema: s.alarm, ...plant('alarms') }),
   topic(topicName('events'), { schema: s.event, ...plant('events') }),
   topic(topicName('fleet'), { schema: s.fleet, ...plant('fleet') }),
-  topic(topicName('timings'), { schema: s.timing, ...plant('timings') }),
+  topic(topicName('timings'), { schema: s.timings, ...plant('timings') }),
   topic(topicName('noise'), { schema: s.noise, ...plant('noise') }),
   topic(topicName('cleared'), { schema: s.cleared, ...plant('cleared') }),
 ];

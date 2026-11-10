@@ -16,7 +16,7 @@ export const buildMetrics: BuildMetricsSource = {
     store.subscribe(
       'timings',
       (r) => {
-        fn(r.value);
+        for (const t of r.value.items) fn(t);
       },
       'latest',
     ),

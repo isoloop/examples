@@ -20,6 +20,7 @@ import { MACHINES, SCALARS, SENSOR, type MachineId } from './machines';
 import type { Health, Scalars, Spectrum, Summary } from './schemas';
 import { BEARING_ORDER } from './sensors/signals';
 import { of, type Source, type Stoppable } from './streams';
+import { timingBatch } from './timing-batch';
 
 /** Time an engine spends, published to `timings` once a second as `engine-<name>`. */
 export function engineMeter(
@@ -27,10 +28,17 @@ export function engineMeter(
   name: string,
 ): { time: <T>(fn: () => T) => T; stop: () => void } {
   let ms = 0;
-  const id = setInterval(() => {
-    src.publish('timings', { slot: `engine-${name}`, widget: 'engine', ms, ts: Date.now() });
-    ms = 0;
-  }, 1_000);
+  const off = timingBatch().report(
+    `engine-${name}`,
+    () => {
+      const t = { widget: 'engine', ms };
+      ms = 0;
+      return t;
+    },
+    (v) => {
+      src.publish('timings', v);
+    },
+  );
   return {
     time: (fn) => {
       const t0 = performance.now();
@@ -40,9 +48,7 @@ export function engineMeter(
         ms += performance.now() - t0;
       }
     },
-    stop: () => {
-      clearInterval(id);
-    },
+    stop: off,
   };
 }
 
@@ -160,16 +166,22 @@ export function runHealth(src: Source, machine: MachineId): Stoppable {
   let levels: Record<string, Level> = {};
   let running: boolean | undefined;
   let started = false;
+  // Its own last record, read back once on start (a restart), then no more:
+  // left subscribed it would get every record it publishes and ignore it.
+  let ownHealth: (() => void) | undefined = src.subscribe(
+    of(machine, 'health'),
+    (r) => {
+      if (started) return;
+      levels = { ...r.value.levels };
+      running = r.value.running;
+    },
+    'earliest',
+  );
+  const stopOwnHealth = (): void => {
+    ownHealth?.();
+    ownHealth = undefined;
+  };
   const subs = [
-    src.subscribe(
-      of(machine, 'health'),
-      (r) => {
-        if (started) return;
-        levels = { ...r.value.levels };
-        running = r.value.running;
-      },
-      'earliest',
-    ),
     src.subscribe(
       of(machine, 'scalars'),
       (r) => {
@@ -190,6 +202,7 @@ export function runHealth(src: Source, machine: MachineId): Stoppable {
     const s = row;
     meter.time(() => {
       started = true;
+      stopOwnHealth();
       const ts = Date.now();
       const f0 = s.speed / 60;
       const r: Readings = {
@@ -280,7 +293,7 @@ export function runHealth(src: Source, machine: MachineId): Stoppable {
       src.publish(of(machine, 'health'), value);
     });
   }, 1_000);
-  return stopAll(...subs, meter.stop, () => {
+  return stopAll(...subs, stopOwnHealth, meter.stop, () => {
     clearInterval(id);
   });
 }

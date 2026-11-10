@@ -47,7 +47,7 @@ export const buildMetrics: BuildMetricsSource = {
     host.subscribe(
       'timings',
       (r) => {
-        fn(r.value);
+        for (const t of r.value.items) fn(t);
       },
       'latest',
     ),
