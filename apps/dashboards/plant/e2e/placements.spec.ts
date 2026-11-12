@@ -105,6 +105,55 @@ for (const [placement, blast] of Object.entries(BLAST)) {
   });
 }
 
+/** The temperature trend's held rows and the time of its first one. */
+const trend = async (page: Page): Promise<{ rows: number; from: number }> => {
+  const d =
+    (await at(page, 'T3-temps', 'canvas')
+      .getAttribute('data-drawn')
+      .catch(() => null)) ?? '';
+  const [, rows, from] = /rows (\d+) from (\d+)/.exec(d) ?? [];
+  return { rows: Number(rows ?? 0), from: Number(from ?? 0) };
+};
+/** The sensor table's 60 s minimum of the bearing temperature, as shown. */
+const bearingMin = async (page: Page): Promise<number> => {
+  const cells = await at(page, 'T3-sensors', 'tr[data-sensor="bearingTemp"] td')
+    .allInnerTexts()
+    .catch(() => []);
+  // Columns: last, min, p50, p95, p99, max.
+  return Number.parseFloat(cells[1] ?? 'NaN');
+};
+
+test('one: a restarted pool reads its trend and its stats back from the retained topics', async ({
+  page,
+}) => {
+  test.setTimeout(90_000);
+  await page.goto('/isoloop/?placement=one');
+  // Let some history build up first: the trend holds a row every 200 ms.
+  await expect.poll(async () => (await trend(page)).rows, { timeout: 30_000 }).toBeGreaterThan(75);
+  const before = await trend(page);
+  const min = await bearingMin(page);
+  expect(min).not.toBeNaN();
+  await page.evaluate(() => {
+    window.crashed = [];
+    window.kernel.on('isolate:crash', (e) => {
+      window.crashed.push(e.id);
+    });
+  });
+  await page.locator('[data-slot="T3-gauges"]').hover();
+  await at(page, 'T3-gauges', 'button[name="stress-block"]').click();
+  // In `one` the whole pool restarts: the trend and the stats engine with it.
+  await expect
+    .poll(() => page.evaluate(() => window.crashed), { timeout: 10_000 })
+    .toEqual(expect.arrayContaining(['T3-temps', 'stats-T3']));
+  // The restarted trend starts from the same first row: every row since the
+  // page opened is still retained, and it reads them all back.
+  await expect.poll(async () => (await trend(page)).from, { timeout: 20_000 }).toBe(before.from);
+  expect((await trend(page)).rows).toBeGreaterThanOrEqual(before.rows);
+  // The restarted stats engine reads the minute back too, so its minimum
+  // covers the rows from before the block: no higher than before.
+  await expect.poll(() => bearingMin(page), { timeout: 20_000 }).toBeLessThanOrEqual(min);
+});
+
 test('own: the page warns about the worker count', async ({ page }) => {
   await page.goto('/isoloop/?placement=own');
   await expect(page.locator('[data-notice="own"]')).toContainText('over Isoloop');

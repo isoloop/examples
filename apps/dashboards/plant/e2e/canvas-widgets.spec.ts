@@ -67,7 +67,7 @@ for (const build of inScope(BUILDS)) {
     // Each temperature trend's last row is the generator's row at its time.
     await expect.poll(() => description(page, 'T5-temps'), { timeout: 15_000 }).toMatch(/^bearing/);
     const d = (await description(page, 'T5-temps')) ?? '';
-    const [, bearing, exhaust, ts] = /bearing ([\d.]+) exhaust ([\d.]+) at (\d+)/.exec(d) ?? [];
+    const [, bearing, exhaust, ts] = /bearing ([\d.]+) exhaust ([\d.]+) .*at (\d+)$/.exec(d) ?? [];
     const row = scalarsAt(1, 'T5', Number(ts));
     expect(Number(bearing)).toBeCloseTo(row.bearingTemp, 1);
     expect(Number(exhaust)).toBeCloseTo(row.exhaustTemp, 1);
