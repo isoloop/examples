@@ -1,0 +1,89 @@
+{
+  "engine": "chromium",
+  "build": "native",
+  "placement": null,
+  "rate": 1,
+  "stopped": false,
+  "url": "/native/?rate=1&seed=7",
+  "workers": 0,
+  "firstDataMs": 294,
+  "allWidgetsMs": 1276,
+  "frames": 600,
+  "fps": 60,
+  "frameP95Ms": 16.7,
+  "framesLate": 0,
+  "longTasks": 0,
+  "typingMedianMs": 33,
+  "typing": [55, 32, 29, 67, 33],
+  "mainThreadCpuPct": 69.7,
+  "rendererCpuPct": 80,
+  "gpuCpuPct": 28.6,
+  "rendererPssMb": 170,
+  "rendererPssGcMb": 157,
+  "memAtMs": 17360,
+  "holdMs": null,
+  "rendererPssHoldMb": null,
+  "rendererPssHoldGcMb": null,
+  "recoveryMs": 3149,
+  "dataGapT3S": 3.8,
+  "dataGapOthersS": 3.8,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 36.14000043869019,
+      "applyMsPerSec": null,
+      "updatesPerSec": 489
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 0.30000009536743166,
+      "applyMsPerSec": null,
+      "updatesPerSec": 43
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 0.8400002479553222,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 1.640000057220459,
+      "applyMsPerSec": null,
+      "updatesPerSec": 33
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 0.26000022888183594,
+      "applyMsPerSec": null,
+      "updatesPerSec": 8
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 0.25999984741210935,
+      "applyMsPerSec": null,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 0.3799999237060547,
+      "applyMsPerSec": null,
+      "updatesPerSec": 4
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 5.479999828338623,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "82 KB"
+}

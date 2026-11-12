@@ -1,0 +1,89 @@
+{
+  "engine": "chromium",
+  "build": "native",
+  "placement": null,
+  "rate": 5,
+  "stopped": false,
+  "url": "/native/?rate=5&seed=7",
+  "workers": 0,
+  "firstDataMs": 252,
+  "allWidgetsMs": 1239,
+  "frames": 600,
+  "fps": 60,
+  "frameP95Ms": 16.8,
+  "framesLate": 1,
+  "longTasks": 0,
+  "typingMedianMs": 65,
+  "typing": [65, 50, 85, 89, 34],
+  "mainThreadCpuPct": 81.4,
+  "rendererCpuPct": 92.4,
+  "gpuCpuPct": 28.5,
+  "rendererPssMb": 185,
+  "rendererPssGcMb": 164,
+  "memAtMs": 17306,
+  "holdMs": null,
+  "rendererPssHoldMb": null,
+  "rendererPssHoldGcMb": null,
+  "recoveryMs": 3213,
+  "dataGapT3S": 3,
+  "dataGapOthersS": 3,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 76.5399980545044,
+      "applyMsPerSec": null,
+      "updatesPerSec": 480
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 0.15999994277954102,
+      "applyMsPerSec": null,
+      "updatesPerSec": 40
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 0,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 5.559999752044678,
+      "applyMsPerSec": null,
+      "updatesPerSec": 144
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 0.20000009536743163,
+      "applyMsPerSec": null,
+      "updatesPerSec": 8
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 0.340000057220459,
+      "applyMsPerSec": null,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 0,
+      "applyMsPerSec": null,
+      "updatesPerSec": 4
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 19.480000495910645,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "82 KB"
+}

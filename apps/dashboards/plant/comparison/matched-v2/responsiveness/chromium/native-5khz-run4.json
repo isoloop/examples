@@ -1,0 +1,89 @@
+{
+  "engine": "chromium",
+  "build": "native",
+  "placement": null,
+  "rate": 5,
+  "stopped": false,
+  "url": "/native/?rate=5&seed=7",
+  "workers": 0,
+  "firstDataMs": 295,
+  "allWidgetsMs": 1154,
+  "frames": 600,
+  "fps": 60,
+  "frameP95Ms": 16.8,
+  "framesLate": 1,
+  "longTasks": 0,
+  "typingMedianMs": 106,
+  "typing": [57, 100, 106, 109, 112],
+  "mainThreadCpuPct": 88,
+  "rendererCpuPct": 98.3,
+  "gpuCpuPct": 28.3,
+  "rendererPssMb": 192,
+  "rendererPssGcMb": 166,
+  "memAtMs": 17234,
+  "holdMs": null,
+  "rendererPssHoldMb": null,
+  "rendererPssHoldGcMb": null,
+  "recoveryMs": 3223,
+  "dataGapT3S": 3.1,
+  "dataGapOthersS": 3.1,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 72.01999969482422,
+      "applyMsPerSec": null,
+      "updatesPerSec": 464
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 0.2,
+      "applyMsPerSec": null,
+      "updatesPerSec": 40
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 0.3,
+      "applyMsPerSec": null,
+      "updatesPerSec": 9
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 5.899999523162842,
+      "applyMsPerSec": null,
+      "updatesPerSec": 145
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 0.21999998092651368,
+      "applyMsPerSec": null,
+      "updatesPerSec": 9
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 0.25999984741210935,
+      "applyMsPerSec": null,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 0.1,
+      "applyMsPerSec": null,
+      "updatesPerSec": 6
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 19.959998512268065,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "82 KB"
+}

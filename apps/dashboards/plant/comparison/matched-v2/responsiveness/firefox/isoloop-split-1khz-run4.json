@@ -1,0 +1,89 @@
+{
+  "engine": "firefox",
+  "build": "isoloop",
+  "placement": "split",
+  "rate": 1,
+  "stopped": false,
+  "url": "/isoloop/?rate=1&seed=7&placement=split",
+  "workers": 18,
+  "firstDataMs": 1334,
+  "allWidgetsMs": 2559,
+  "frames": 595,
+  "fps": 59.5,
+  "frameP95Ms": 17.2,
+  "framesLate": 6,
+  "longTasks": 0,
+  "typingMedianMs": 83,
+  "typing": [83, 102, 91, 48, 82],
+  "mainThreadCpuPct": null,
+  "rendererCpuPct": null,
+  "gpuCpuPct": null,
+  "rendererPssMb": null,
+  "rendererPssGcMb": null,
+  "memAtMs": 18617,
+  "holdMs": null,
+  "rendererPssHoldMb": null,
+  "rendererPssHoldGcMb": null,
+  "recoveryMs": 3157,
+  "dataGapT3S": 0,
+  "dataGapOthersS": 0,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 594.4,
+      "applyMsPerSec": 1.1410314924691922,
+      "updatesPerSec": 523
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 1.4,
+      "applyMsPerSec": 4.564125969876769,
+      "updatesPerSec": 40
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 1.6,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 21.6,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 32
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 1.2,
+      "applyMsPerSec": 0.4564125969876769,
+      "updatesPerSec": 8
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 1.6,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 1,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 4
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 40.8,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "166 KB"
+}
