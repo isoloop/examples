@@ -22,14 +22,14 @@ catalog:
 # isoloop/isoloop's main (its prerelease.yml); the lockfile pins them.
 catalogs:
   isoloop:
-    '@isoloop/bus': 0.0.0-next.61245db
-    '@isoloop/codec': 0.0.0-next.61245db
-    '@isoloop/host': 0.0.0-next.61245db
-    '@isoloop/preact': 0.0.0-next.61245db
-    '@isoloop/protocol': 0.0.0-next.61245db
-    '@isoloop/react': 0.0.0-next.61245db
-    '@isoloop/runtime': 0.0.0-next.61245db
-    '@isoloop/vite': 0.0.0-next.61245db
+    '@isoloop/bus': 0.0.0-next.d028bc1
+    '@isoloop/codec': 0.0.0-next.d028bc1
+    '@isoloop/host': 0.0.0-next.d028bc1
+    '@isoloop/preact': 0.0.0-next.d028bc1
+    '@isoloop/protocol': 0.0.0-next.d028bc1
+    '@isoloop/react': 0.0.0-next.d028bc1
+    '@isoloop/runtime': 0.0.0-next.d028bc1
+    '@isoloop/vite': 0.0.0-next.d028bc1
   react:
     react: 19.3.1
     react-dom: 19.3.1

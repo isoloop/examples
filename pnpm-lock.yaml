@@ -193,29 +193,29 @@ catalogs:
       version: 4.6.7
   isoloop:
     '@isoloop/bus':
-      specifier: 0.0.0-next.61245db
-      version: 0.0.0-next.61245db
+      specifier: 0.0.0-next.d028bc1
+      version: 0.0.0-next.d028bc1
     '@isoloop/codec':
-      specifier: 0.0.0-next.61245db
-      version: 0.0.0-next.61245db
+      specifier: 0.0.0-next.d028bc1
+      version: 0.0.0-next.d028bc1
     '@isoloop/host':
-      specifier: 0.0.0-next.61245db
-      version: 0.0.0-next.61245db
+      specifier: 0.0.0-next.d028bc1
+      version: 0.0.0-next.d028bc1
     '@isoloop/preact':
-      specifier: 0.0.0-next.61245db
-      version: 0.0.0-next.61245db
+      specifier: 0.0.0-next.d028bc1
+      version: 0.0.0-next.d028bc1
     '@isoloop/protocol':
-      specifier: 0.0.0-next.61245db
-      version: 0.0.0-next.61245db
+      specifier: 0.0.0-next.d028bc1
+      version: 0.0.0-next.d028bc1
     '@isoloop/react':
-      specifier: 0.0.0-next.61245db
-      version: 0.0.0-next.61245db
+      specifier: 0.0.0-next.d028bc1
+      version: 0.0.0-next.d028bc1
     '@isoloop/runtime':
-      specifier: 0.0.0-next.61245db
-      version: 0.0.0-next.61245db
+      specifier: 0.0.0-next.d028bc1
+      version: 0.0.0-next.d028bc1
     '@isoloop/vite':
-      specifier: 0.0.0-next.61245db
-      version: 0.0.0-next.61245db
+      specifier: 0.0.0-next.d028bc1
+      version: 0.0.0-next.d028bc1
   preact:
     preact:
       specifier: 11.1.1
@@ -261,22 +261,22 @@ importers:
     dependencies:
       '@isoloop/bus':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db
+        version: 0.0.0-next.d028bc1
       '@isoloop/host':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        version: 0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@isoloop/preact':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(preact@11.1.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        version: 0.0.0-next.d028bc1(preact@11.1.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@isoloop/protocol':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db
+        version: 0.0.0-next.d028bc1
       '@isoloop/react':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        version: 0.0.0-next.d028bc1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@isoloop/runtime':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        version: 0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       preact:
         specifier: catalog:preact
         version: 11.1.1
@@ -292,7 +292,7 @@ importers:
     devDependencies:
       '@isoloop/vite':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(vite@8.3.5(@types/node@26.6.6))
+        version: 0.0.0-next.d028bc1(vite@8.3.5(@types/node@26.6.6))
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.64.1
@@ -316,19 +316,19 @@ importers:
     dependencies:
       '@isoloop/bus':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db
+        version: 0.0.0-next.d028bc1
       '@isoloop/host':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        version: 0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@isoloop/protocol':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db
+        version: 0.0.0-next.d028bc1
       '@isoloop/react':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        version: 0.0.0-next.d028bc1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@isoloop/runtime':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        version: 0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       react:
         specifier: catalog:react
         version: 19.3.1
@@ -341,10 +341,10 @@ importers:
     devDependencies:
       '@isoloop/codec':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db
+        version: 0.0.0-next.d028bc1
       '@isoloop/vite':
         specifier: catalog:isoloop
-        version: 0.0.0-next.61245db(vite@8.3.5(@types/node@26.6.6))
+        version: 0.0.0-next.d028bc1(vite@8.3.5(@types/node@26.6.6))
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.64.1
@@ -366,42 +366,42 @@ importers:
 
 packages:
 
-  '@isoloop/bus@0.0.0-next.61245db':
-    resolution: {integrity: sha512-sVIK/JO+sC44ccVA3gHiEEG4eNZ1sppEzyejWvJYB4hI0qJXX1xT4S/ADYXrNkHCsGM21qG6b1OibpE5s+7jew==}
+  '@isoloop/bus@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-QvO7dgmXJqD5lAbpskui++Kc4KTP3X9prkmT/L9NG+iALTBj+AwVsMbiCbCllivYoDnUsbdSVIJuRO+Ef+TjVg==}
 
-  '@isoloop/codec@0.0.0-next.61245db':
-    resolution: {integrity: sha512-UDXnFQEUaT9yX+5yyCuKxgDbNS6lBegHNfLNwogl9le27KjHVUnPEj4/N0DB9aGm7VmB2aufNZMTf4Jr0ByPdg==}
+  '@isoloop/codec@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-Ze1Bdd/GLNDUvKGh3H6RC7pxFNeKZJNuVAyQReFOCHGmu9fdvyl2NdAmUMqLlV/1MRfSjJ0TSd/iN39xCbfdmQ==}
 
-  '@isoloop/dom@0.0.0-next.61245db':
-    resolution: {integrity: sha512-yS1XrEBdfSoYKkSpEVXx2zdb39dIEGEaWQm9swxTj2vjAZj992MJjCKL14siu/3nWQz3APN5ZuX7tKUIxFE1QA==}
+  '@isoloop/dom@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-Xx2bUSOCfiII2aoABVtb82rVl0nfR7VBH5I6K1S1fquoLW5tUn6QoCPVo7OtYYkWHQhuittjO5ttfi9SwjFvHw==}
     peerDependencies:
       vitest: 5.0.5
     peerDependenciesMeta:
       vitest:
         optional: true
 
-  '@isoloop/host@0.0.0-next.61245db':
-    resolution: {integrity: sha512-m3qyUICUyTFKrKOo+MfoakJmnnR4cb9UhKorpaq6MF9H3PyryrZJhUr3k7g/f5RDIQ1GCnt4PlttCBrPeNByRQ==}
+  '@isoloop/host@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-qz24KZVlrvoL/YdgGF7s346EH1SVhKKmNOm6dYIcbYjh3O01mjdRFY7mH7Z1x9YNEJcu7ip6vZjbQFgDWjABDw==}
 
-  '@isoloop/preact@0.0.0-next.61245db':
-    resolution: {integrity: sha512-VVaolSY2FrGxvVmtX0FZLO+WeTzo5Kr5mLECdl3h5ehEnBKZCIBB0cNA1RD28iubcXm/IcEQR9ga1tWrGOzI4w==}
+  '@isoloop/preact@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-8z4es10jtAaHkOCaPHVwdo8htYvbpVz3E8DJl+eSO6pT7JbrIprEcCm4ZMSBMV1UL0iSnv1rQ+yHLkVMoWCKEg==}
     peerDependencies:
       preact: ^10 || ^11
 
-  '@isoloop/protocol@0.0.0-next.61245db':
-    resolution: {integrity: sha512-33cKfSwZCJGrCQ73o3NLW1T+HCGwxtvsgFzQIdQJc98lZ1M7F9+I4oWxvoPann0UnZDyWFe7awctSxfn+xb4oA==}
+  '@isoloop/protocol@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-eWlI9on8Hmyev7sbK7K+ojNezx9YOXEwEu8io35VZQNfUBOmfmeMe+IpZvaekF25GLZrqodp4m6g5Ow6savk4g==}
 
-  '@isoloop/react@0.0.0-next.61245db':
-    resolution: {integrity: sha512-62qX0jQY5gwDH9fWmnfwFd2qh/v4dltp4yewQMg1V6gIgFD86NE+i7nzf7qIX8AN8YdS9GsfTkhqYx6HQlH/YA==}
+  '@isoloop/react@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-yqP76I9bBrpoblCP+nxRlF/rgirn0u1lGA0OGWVWeaCUJKO1lIdhdGioHQoEoX87V5+LU3x6imDoaNnx5XAMrA==}
     peerDependencies:
       react: ^18 || ^19
       react-dom: ^18 || ^19
 
-  '@isoloop/runtime@0.0.0-next.61245db':
-    resolution: {integrity: sha512-9Tp7X7m3cTzu7Cn571pdE7nnIlxW8G/cdqWW57XVHIy23OIfTM/zGVKgY/hsykvFMRF1F27b7/ehAXcmqE2xcQ==}
+  '@isoloop/runtime@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-RU6jbKJO+2bke/3OV+RL9rfT+CnPKwyCucooJUUdkZ+piSVrUmPAbi7VDF+TbX4IBrYtnhx6QQ+q7zbFGWfupA==}
 
-  '@isoloop/vite@0.0.0-next.61245db':
-    resolution: {integrity: sha512-PHZzGiHvnNniaFF/eBeRoSJUGPyKe0e15Nzi3bK8GZDIV1akSAbPp3+MmXoMReMDlu2UxsgRsRQG9yn/b0oC0Q==}
+  '@isoloop/vite@0.0.0-next.d028bc1':
+    resolution: {integrity: sha512-yQBebchVjBI5TUZPsNjswrw/+Q9U32iFOZdxENcCG4sPU8oHHkNvTwT4OZu+4df3kaiJKKs8CN3xEqLuKr4j/Q==}
     peerDependencies:
       vite: ^8
 
@@ -1279,51 +1279,51 @@ packages:
 
 snapshots:
 
-  '@isoloop/bus@0.0.0-next.61245db':
+  '@isoloop/bus@0.0.0-next.d028bc1':
     dependencies:
-      '@isoloop/codec': 0.0.0-next.61245db
-      '@isoloop/protocol': 0.0.0-next.61245db
+      '@isoloop/codec': 0.0.0-next.d028bc1
+      '@isoloop/protocol': 0.0.0-next.d028bc1
 
-  '@isoloop/codec@0.0.0-next.61245db': {}
+  '@isoloop/codec@0.0.0-next.d028bc1': {}
 
-  '@isoloop/dom@0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
+  '@isoloop/dom@0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
     optionalDependencies:
       vitest: 5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6))
 
-  '@isoloop/host@0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
+  '@isoloop/host@0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
     dependencies:
-      '@isoloop/dom': 0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
-      '@isoloop/protocol': 0.0.0-next.61245db
+      '@isoloop/dom': 0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+      '@isoloop/protocol': 0.0.0-next.d028bc1
     transitivePeerDependencies:
       - vitest
 
-  '@isoloop/preact@0.0.0-next.61245db(preact@11.1.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
+  '@isoloop/preact@0.0.0-next.d028bc1(preact@11.1.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
     dependencies:
-      '@isoloop/protocol': 0.0.0-next.61245db
-      '@isoloop/runtime': 0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+      '@isoloop/protocol': 0.0.0-next.d028bc1
+      '@isoloop/runtime': 0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       preact: 11.1.1
     transitivePeerDependencies:
       - vitest
 
-  '@isoloop/protocol@0.0.0-next.61245db': {}
+  '@isoloop/protocol@0.0.0-next.d028bc1': {}
 
-  '@isoloop/react@0.0.0-next.61245db(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
+  '@isoloop/react@0.0.0-next.d028bc1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
     dependencies:
-      '@isoloop/protocol': 0.0.0-next.61245db
-      '@isoloop/runtime': 0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+      '@isoloop/protocol': 0.0.0-next.d028bc1
+      '@isoloop/runtime': 0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
     transitivePeerDependencies:
       - vitest
 
-  '@isoloop/runtime@0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
+  '@isoloop/runtime@0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
     dependencies:
-      '@isoloop/dom': 0.0.0-next.61245db(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
-      '@isoloop/protocol': 0.0.0-next.61245db
+      '@isoloop/dom': 0.0.0-next.d028bc1(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+      '@isoloop/protocol': 0.0.0-next.d028bc1
     transitivePeerDependencies:
       - vitest
 
-  '@isoloop/vite@0.0.0-next.61245db(vite@8.3.5(@types/node@26.6.6))':
+  '@isoloop/vite@0.0.0-next.d028bc1(vite@8.3.5(@types/node@26.6.6))':
     dependencies:
       vite: 8.3.5(@types/node@26.6.6)
 
