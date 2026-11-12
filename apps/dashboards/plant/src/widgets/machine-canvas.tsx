@@ -5,6 +5,8 @@
 import { useCanvas, useLatest, useRecent, useRecords } from '#env';
 import { useEffect, useRef, useState } from 'react';
 import { SENSOR } from '../core/machines';
+import { TREND_MS } from '../core/retention';
+import { SCALARS_MS } from '../core/sensors/signals';
 import { drawChart } from '../charts/canvas-chart';
 import { drawSpectrum } from '../charts/spectrum';
 import { drawTrace, type Chunk } from '../charts/trace';
@@ -72,8 +74,8 @@ export function Waveform({ config }: { config?: unknown }) {
   );
 }
 
-/** Two minutes of rows. */
-const TREND_ROWS = 600;
+/** Two minutes of rows, one every SCALARS_MS. */
+const TREND_ROWS = TREND_MS / SCALARS_MS;
 
 export function Temps({ config }: { config?: unknown }) {
   const m = machineOf(config);
@@ -111,7 +113,9 @@ export function Temps({ config }: { config?: unknown }) {
       { title: '', format: (v) => `${v.toFixed(0)} °C`, baseline: SENSOR.exhaustTemp.warn ?? 0 },
     );
     ctx.restore();
-    return `bearing ${last.bearingTemp.toFixed(2)} exhaust ${last.exhaustTemp.toFixed(2)} at ${last.ts}`;
+    // The row count and the first row's time show how much history it holds
+    // (a restart reads it back from the topic); the last row's time ends it.
+    return `bearing ${last.bearingTemp.toFixed(2)} exhaust ${last.exhaustTemp.toFixed(2)} rows ${rows.length} from ${rows[0]?.ts ?? last.ts} at ${last.ts}`;
   };
   return <Plot draw={draw} />;
 }

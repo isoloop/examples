@@ -4,14 +4,26 @@ import type { MachineStream, PlantStream } from './streams';
 
 export type Keep = { kind: 'time'; ms: number } | { kind: 'last-n'; n: number } | { kind: 'keyed' };
 
+/** The temperature trend's window: two minutes of slow-signal rows. */
+export const TREND_MS = 120_000;
+
+/**
+ * How much slow-signal and health history is kept: the longest window any
+ * consumer reads back on start. The trend reads 2 minutes of `scalars`, the
+ * stats engine 60 s, and the fleet engine 2 minutes of `health`
+ * (retention.test.ts checks this against each of them). Keeping more only
+ * makes a restart replay more (docs/investigations/plant-one-pool.md in the
+ * main repo: 5 minutes delayed spectra by about 2 s after a restart in `one`).
+ */
+export const SLOW_KEEP_MS = 120_000;
+
 export const MACHINE_KEEP: Record<MachineStream, Keep> = {
   // The last 30 s of raw vibration: about 1 MB plant-wide at 1 kHz.
   vib: { kind: 'time', ms: 30_000 },
-  // 5 minutes of slow signals.
-  scalars: { kind: 'time', ms: 300_000 },
+  scalars: { kind: 'time', ms: SLOW_KEEP_MS },
   spectrum: { kind: 'time', ms: 30_000 },
   stats: { kind: 'last-n', n: 60 },
-  health: { kind: 'time', ms: 300_000 },
+  health: { kind: 'time', ms: SLOW_KEEP_MS },
 };
 
 /** Alarms and events: persistent, capped at 10,000 records each, oldest dropped. */
