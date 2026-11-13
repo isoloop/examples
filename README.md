@@ -7,6 +7,17 @@ Apps built on [Isoloop](https://github.com/isoloop/isoloop), installed from npm 
 | [`apps/dashboards/markets`](apps/dashboards/markets) | A backend-less markets dashboard: public exchange feeds, cross-market aggregates and alerts, all in the visitor's tab. One code base, five builds (native and Isoloop, each with React and with Preact, plus a mixed React and Preact Isoloop build), in Lite, Normal and Heavy sizes, with live metrics. [Live](https://isoloop.github.io/examples/dashboards/markets/) |
 | [`apps/dashboards/plant`](apps/dashboards/plant) | A telemetry dashboard for a fictional plant of eight machines: 72 widgets on seeded high-rate sensor data. Three builds (native, native with a data worker per machine, Isoloop), and four placements of the Isoloop build's isolates in workers and pools. In progress (M3d). |
 
+## Browser support
+
+Safari 16.4 or later, or a recent Chrome, Edge or Firefox. That's Vite's default build target ("Baseline Widely Available": Chrome and Edge 111, Firefox 114, Safari 16.4), and what the Isoloop builds need: module workers, `OffscreenCanvas` drawn in workers, and adopted stylesheets on a shadow root. The native builds also call ES2023 array methods (`toSorted`, from Safari 16).
+
+On anything older, each page says so instead of staying blank. Every app page carries a plain-HTML notice and a small classic script, `browser-check.js`, both from [`shared/browser-check.ts`](shared/browser-check.ts):
+- the notice shows even when no script runs
+- the script names what's missing and stops the app from starting (`shared/guard.ts`)
+- the app removes the notice once it has loaded
+
+The script is a file, not inline, so it runs under the hosting guide's `script-src 'self'` policy.
+
 ## Setup
 
 Node 26 (`.nvmrc`) and pnpm 12 (`packageManager`), as in the main repository.

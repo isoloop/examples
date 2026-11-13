@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { isoloop } from '@isoloop/vite';
 import { defineConfig } from 'vite';
+import { browserCheck } from '../../../shared/browser-check.ts';
 
 const src = (p: string): string => fileURLToPath(new URL(`./src/${p}`, import.meta.url));
 
@@ -36,7 +37,10 @@ export default defineConfig(({ mode }) => {
         { find: '#host', replacement: src(`host/${kind}.ts`) },
       ],
     },
-    plugins: kind === 'isoloop' ? [isoloop()] : [],
+    plugins: [
+      browserCheck(build === 'isoloop' ? 'isoloop' : build),
+      ...(kind === 'isoloop' ? [isoloop()] : []),
+    ],
     base: './',
     worker: { format: 'es' },
     build: { outDir: `dist/${build}`, emptyOutDir: true },
