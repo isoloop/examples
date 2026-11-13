@@ -1,0 +1,599 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Plant dashboard \u00b7 native",
+    "subtitle": "No isolates: 72 widgets and 33 data jobs on 1 thread",
+    "output": "apps/dashboards/plant/architecture/native.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "Page code on the main thread"
+        },
+        "cloud": {
+          "label": "Store stream (page store)"
+        },
+        "database": {
+          "label": "Durable store (localStorage)"
+        },
+        "external": {
+          "label": "Plain code, not an isolate (count shown)"
+        }
+      }
+    },
+    "repository": {
+      "url": "https://github.com/isoloop/examples",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "8571412e1c106b6bbf1f589660d6a08a4496b261"
+    }
+  },
+  "components": [
+    {
+      "id": "surfaces",
+      "type": "frontend",
+      "label": "Page shell",
+      "sublabel": "72 widget slots",
+      "pos": [40, 40],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/main.native.tsx",
+          "line": 18,
+          "end_line": 20,
+          "label": "React renders the page"
+        }
+      ]
+    },
+    {
+      "id": "clear",
+      "type": "frontend",
+      "label": "Clear history",
+      "sublabel": "button",
+      "pos": [865, 40],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/ClearHistory.tsx",
+          "line": 8,
+          "end_line": 22
+        }
+      ]
+    },
+    {
+      "id": "metrics",
+      "type": "frontend",
+      "label": "Metrics panels",
+      "sublabel": "+ typing box",
+      "pos": [1195, 40],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/metrics/native.ts",
+          "line": 1,
+          "end_line": 20
+        }
+      ]
+    },
+    {
+      "id": "w-canvas",
+      "type": "external",
+      "label": "T3 canvas widgets",
+      "sublabel": "3 components",
+      "pos": [205, 230],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/widgets/machine-canvas.tsx",
+          "line": 20,
+          "end_line": 82
+        }
+      ],
+      "tag": "spectrum \u00b7 waveform \u00b7 temps"
+    },
+    {
+      "id": "w-dom",
+      "type": "external",
+      "label": "T3 DOM widgets",
+      "sublabel": "5 components",
+      "pos": [370, 230],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/widgets/machine-dom.tsx",
+          "line": 57,
+          "end_line": 197
+        }
+      ],
+      "tag": "gauges \u00b7 health \u00b7 +3"
+    },
+    {
+      "id": "w-others",
+      "type": "external",
+      "label": "Other 7 machines",
+      "sublabel": "56 components",
+      "pos": [535, 230],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/widgets/catalog.ts",
+          "line": 6,
+          "end_line": 30,
+          "label": "8 per machine + 8 fleet"
+        }
+      ]
+    },
+    {
+      "id": "w-fleet",
+      "type": "external",
+      "label": "Fleet widgets",
+      "sublabel": "8 components",
+      "pos": [700, 230],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/widgets/fleet.tsx",
+          "line": 18,
+          "end_line": 86
+        }
+      ]
+    },
+    {
+      "id": "t-spectrum",
+      "type": "cloud",
+      "label": "T3 spectrum",
+      "sublabel": "keeps 30 s",
+      "pos": [40, 430],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/core/retention.ts",
+          "line": 20,
+          "end_line": 27,
+          "label": "per-machine retention"
+        }
+      ],
+      "icon": "messagebus"
+    },
+    {
+      "id": "t-raw",
+      "type": "cloud",
+      "label": "T3 vib + scalars",
+      "sublabel": "keeps 30 s / 2 min",
+      "pos": [205, 430],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/isoloop/contracts.ts",
+          "line": 19,
+          "end_line": 27,
+          "label": "per-machine topics"
+        }
+      ],
+      "icon": "messagebus"
+    },
+    {
+      "id": "t-stats",
+      "type": "cloud",
+      "label": "T3 stats",
+      "sublabel": "keeps last 60",
+      "pos": [370, 430],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/core/retention.ts",
+          "line": 25,
+          "end_line": 25
+        }
+      ],
+      "icon": "messagebus"
+    },
+    {
+      "id": "t-health",
+      "type": "cloud",
+      "label": "T3 health",
+      "sublabel": "keeps 2 min",
+      "pos": [535, 430],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/core/retention.ts",
+          "line": 26,
+          "end_line": 26
+        }
+      ],
+      "icon": "messagebus"
+    },
+    {
+      "id": "t-fleet",
+      "type": "cloud",
+      "label": "fleet",
+      "sublabel": "keeps last 300",
+      "pos": [700, 430],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/isoloop/contracts.ts",
+          "line": 34,
+          "end_line": 41,
+          "label": "plant-wide topics"
+        }
+      ],
+      "icon": "messagebus"
+    },
+    {
+      "id": "t-history",
+      "type": "cloud",
+      "label": "alarms + events",
+      "sublabel": "+ cleared \u00b7 cap 10k",
+      "pos": [865, 430],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/core/retention.ts",
+          "line": 29,
+          "end_line": 42,
+          "label": "cap, persistent"
+        }
+      ],
+      "icon": "messagebus"
+    },
+    {
+      "id": "opfs",
+      "type": "database",
+      "label": "localStorage",
+      "sublabel": "alarms \u00b7 events kept",
+      "pos": [1030, 430],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/native/store.ts",
+          "line": 1,
+          "end_line": 4,
+          "label": "Store on localStorage"
+        }
+      ]
+    },
+    {
+      "id": "t-timings",
+      "type": "cloud",
+      "label": "timings + noise",
+      "sublabel": "keeps last 1000",
+      "pos": [1195, 430],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/core/retention.ts",
+          "line": 36,
+          "end_line": 37
+        }
+      ],
+      "icon": "messagebus"
+    },
+    {
+      "id": "e-fft",
+      "type": "external",
+      "label": "T3 FFT",
+      "sublabel": "1 job",
+      "pos": [40, 640],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/main.native.tsx",
+          "line": 11,
+          "end_line": 16,
+          "label": "jobs on the main thread"
+        },
+        {
+          "path": "apps/dashboards/plant/src/core/engines.ts",
+          "line": 66,
+          "end_line": 91
+        }
+      ]
+    },
+    {
+      "id": "e-feed",
+      "type": "external",
+      "label": "T3 feed",
+      "sublabel": "1 job",
+      "pos": [205, 640],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/main.native.tsx",
+          "line": 11,
+          "end_line": 16,
+          "label": "jobs on the main thread"
+        },
+        {
+          "path": "apps/dashboards/plant/src/core/sensors/feed.ts",
+          "line": 39,
+          "end_line": 44,
+          "label": "publishes vib, scalars"
+        }
+      ]
+    },
+    {
+      "id": "e-stats",
+      "type": "external",
+      "label": "T3 stats",
+      "sublabel": "1 job",
+      "pos": [370, 640],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/main.native.tsx",
+          "line": 11,
+          "end_line": 16,
+          "label": "jobs on the main thread"
+        },
+        {
+          "path": "apps/dashboards/plant/src/core/engines.ts",
+          "line": 104,
+          "end_line": 140
+        }
+      ]
+    },
+    {
+      "id": "e-health",
+      "type": "external",
+      "label": "T3 health",
+      "sublabel": "1 job",
+      "pos": [535, 640],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/main.native.tsx",
+          "line": 11,
+          "end_line": 16,
+          "label": "jobs on the main thread"
+        },
+        {
+          "path": "apps/dashboards/plant/src/core/engines.ts",
+          "line": 162,
+          "end_line": 293
+        }
+      ]
+    },
+    {
+      "id": "e-fleet",
+      "type": "external",
+      "label": "Fleet engine",
+      "sublabel": "1 job",
+      "pos": [700, 640],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/main.native.tsx",
+          "line": 11,
+          "end_line": 16,
+          "label": "jobs on the main thread"
+        },
+        {
+          "path": "apps/dashboards/plant/src/core/engines.ts",
+          "line": 304,
+          "end_line": 340
+        },
+        {
+          "path": "apps/dashboards/plant/src/isoloop/headless.ts",
+          "line": 55,
+          "end_line": 64,
+          "label": "reads plant.*.health"
+        }
+      ]
+    },
+    {
+      "id": "e-others",
+      "type": "external",
+      "label": "Other 7 machines",
+      "sublabel": "7 \u00d7 4 jobs",
+      "pos": [1030, 640],
+      "size": [130, 66],
+      "sources": [
+        {
+          "path": "apps/dashboards/plant/src/main.native.tsx",
+          "line": 11,
+          "end_line": 16,
+          "label": "jobs on the main thread"
+        },
+        {
+          "path": "apps/dashboards/plant/src/isoloop/headless.ts",
+          "line": 28,
+          "end_line": 57,
+          "label": "4 jobs per machine"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Main thread \u00b7 1 thread \u00b7 page, 72 widgets, 33 jobs, store",
+      "wraps": [
+        "surfaces",
+        "clear",
+        "metrics",
+        "w-canvas",
+        "w-dom",
+        "w-others",
+        "w-fleet",
+        "t-spectrum",
+        "t-raw",
+        "t-stats",
+        "t-health",
+        "t-fleet",
+        "t-history",
+        "opfs",
+        "t-timings",
+        "e-fft",
+        "e-feed",
+        "e-stats",
+        "e-health",
+        "e-fleet",
+        "e-others"
+      ],
+      "pad": 12
+    }
+  ],
+  "connections": [
+    {
+      "id": "feed-pub",
+      "from": "e-feed",
+      "to": "t-raw",
+      "label": "vib \u00b7 scalars",
+      "variant": "emphasis"
+    },
+    {
+      "id": "raw-fft",
+      "from": "t-raw",
+      "to": "e-fft",
+      "label": "vib"
+    },
+    {
+      "id": "raw-stats",
+      "from": "t-raw",
+      "to": "e-stats",
+      "label": "scalars"
+    },
+    {
+      "id": "raw-health",
+      "from": "t-raw",
+      "to": "e-health"
+    },
+    {
+      "id": "fft-pub",
+      "from": "e-fft",
+      "to": "t-spectrum"
+    },
+    {
+      "id": "spec-stats",
+      "from": "t-spectrum",
+      "to": "e-stats"
+    },
+    {
+      "id": "spec-health",
+      "from": "t-spectrum",
+      "to": "e-health"
+    },
+    {
+      "id": "stats-pub",
+      "from": "e-stats",
+      "to": "t-stats"
+    },
+    {
+      "id": "health-pub",
+      "from": "e-health",
+      "to": "t-health"
+    },
+    {
+      "id": "health-history",
+      "from": "e-health",
+      "to": "t-history",
+      "label": "alarms \u00b7 events"
+    },
+    {
+      "id": "health-fleet",
+      "from": "t-health",
+      "to": "e-fleet",
+      "label": "every machine"
+    },
+    {
+      "id": "fleet-pub",
+      "from": "e-fleet",
+      "to": "t-fleet"
+    },
+    {
+      "id": "raw-canvas",
+      "from": "t-raw",
+      "to": "w-canvas"
+    },
+    {
+      "id": "spec-canvas",
+      "from": "t-spectrum",
+      "to": "w-canvas"
+    },
+    {
+      "id": "raw-dom",
+      "from": "t-raw",
+      "to": "w-dom"
+    },
+    {
+      "id": "stats-dom",
+      "from": "t-stats",
+      "to": "w-dom"
+    },
+    {
+      "id": "health-dom",
+      "from": "t-health",
+      "to": "w-dom"
+    },
+    {
+      "id": "history-dom",
+      "from": "t-history",
+      "to": "w-dom"
+    },
+    {
+      "id": "fleet-widgets",
+      "from": "t-fleet",
+      "to": "w-fleet"
+    },
+    {
+      "id": "history-fleetw",
+      "from": "t-history",
+      "to": "w-fleet"
+    },
+    {
+      "id": "cleared",
+      "from": "clear",
+      "to": "t-history",
+      "label": "cleared"
+    },
+    {
+      "id": "persist",
+      "from": "t-history",
+      "to": "opfs",
+      "variant": "dashed"
+    },
+    {
+      "id": "timings-widgets",
+      "from": "w-fleet",
+      "to": "t-timings",
+      "label": "1/s per thread",
+      "variant": "dashed"
+    },
+    {
+      "id": "timings-metrics",
+      "from": "t-timings",
+      "to": "metrics"
+    },
+    {
+      "id": "render",
+      "from": "w-dom",
+      "to": "surfaces",
+      "label": "React renders",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "How to read it",
+      "items": [
+        "A box is a thread. A card is plain code: React components or data jobs, with the count on the card; there are no isolates in the native builds.",
+        "T3 is shown in full and stands for every machine; T1, T2 and T4\u2013T8 are grouped.",
+        "Arrows show records written to and read from the page's store."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "When something blocks",
+      "items": [
+        "A widget's code runs on the main thread, so a block stalls the whole page.",
+        "In native the data jobs stall too; in native + workers they keep running in their workers."
+      ]
+    }
+  ]
+}

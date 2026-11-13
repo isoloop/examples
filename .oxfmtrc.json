@@ -5,5 +5,10 @@
   "printWidth": 100,
   "trailingComma": "all",
   "sortPackageJson": false,
-  "ignorePatterns": ["pnpm-lock.yaml", "**/*.md"]
+  "ignorePatterns": [
+    "pnpm-lock.yaml",
+    "**/*.md",
+    "apps/dashboards/plant/architecture/*.html",
+    "apps/dashboards/plant/architecture/viewer-*.js"
+  ]
 }

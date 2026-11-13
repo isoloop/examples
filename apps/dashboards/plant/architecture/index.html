@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Architecture · Plant · Isoloop examples</title>
+<style>
+  body {
+    font:
+      16px/1.5 system-ui,
+      sans-serif;
+    max-width: 44rem;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  h2 {
+    font-size: 1.05rem;
+    margin: 1.75rem 0 0.25rem;
+  }
+  ul {
+    padding-left: 1.2rem;
+  }
+  li {
+    margin: 0.35rem 0;
+  }
+</style>
+<h1>What runs where in the plant dashboard</h1>
+<p>
+  One diagram per build: which thread each widget and data job runs on, and how records move between
+  them. A box is a thread; a card inside it is an isolate or a group of isolates, with its count.
+  Machine T3 is drawn in full and stands for each of the eight machines. The builds come in pairs
+  that run on about the same number of threads.
+</p>
+
+<h2>Everything on one thread</h2>
+<ul>
+  <li><a href="./native.html">Native</a>: the page, all 72 widgets and the 33 data jobs share the main thread, with a store on the page.</li>
+  <li><a href="./one.html">Isoloop <code>one</code></a>: the same 105 pieces become isolates in one pool, so they move off the main thread to one worker, with the bus on its own worker.</li>
+</ul>
+
+<h2>Data on workers</h2>
+<ul>
+  <li><a href="./native-workers.html">Native + workers</a>: each machine's data jobs run on their own worker (9 workers in all); the 72 widgets stay on the main thread.</li>
+  <li><a href="./matched.html">Isoloop <code>matched</code></a> (the default): the same 9 data threads, and the 72 widgets move to one visual pool off the main thread: 10 threads plus the bus.</li>
+</ul>
+
+<h2>More threads</h2>
+<ul>
+  <li><a href="./split.html">Isoloop <code>split</code></a>: compared with <code>matched</code>, each machine's widgets get their own visual pool and the fleet widgets another, so a blocked widget stalls only its machine: 18 threads plus the bus.</li>
+  <li><a href="./own.html">Isoloop <code>own</code></a>: every isolate on its own worker, 105 threads plus the bus, so a block stops only that isolate.</li>
+</ul>
+
+<p><a href="../">Back to the plant dashboard</a></p>
+<p><small>Runs in Safari 16.4 or later, or a recent Chrome, Edge or Firefox.</small></p>
+</html>
