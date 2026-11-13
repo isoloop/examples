@@ -4,6 +4,8 @@
 #   /dashboards/            -> lists the dashboards
 #   /dashboards/markets/    -> the markets dashboard, every build under it
 #   /dashboards/plant/      -> the plant dashboard, every build under it
+#   /dashboards/plant/architecture/ -> its architecture diagrams (Archify,
+#                              rendered and committed; see the folder's README)
 #   /markets/**             -> redirects from the old paths (before the
 #                              dashboards/ grouping), query string and hash kept
 set -euo pipefail
@@ -16,6 +18,9 @@ rm -rf "$site"
 mkdir -p "$site/dashboards"
 cp -r "$markets" "$site/dashboards/markets"
 cp -r "$plant" "$site/dashboards/plant"
+mkdir -p "$site/dashboards/plant/architecture"
+cp apps/dashboards/plant/architecture/*.html apps/dashboards/plant/architecture/*.js \
+  "$site/dashboards/plant/architecture/"
 
 page() { # title, body
   printf '%s\n' '<!doctype html><html lang="en"><meta charset="utf-8">' \

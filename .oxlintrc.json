@@ -88,5 +88,10 @@
         ]
       }
     }
+  ],
+  // Archify output, rendered and committed (apps/dashboards/plant/architecture/README.md).
+  "ignorePatterns": [
+    "apps/dashboards/plant/architecture/*.js",
+    "apps/dashboards/plant/architecture/*.mjs"
   ]
 }

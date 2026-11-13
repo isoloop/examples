@@ -11,6 +11,15 @@ import { WIDGETS } from './widgets';
 import { layout, type WidgetName } from './widgets/catalog';
 import { PLACEMENTS, RATES, SETTINGS, buildHref, withParam } from './url';
 
+/** The diagram of what runs where in this build (architecture/ next to the builds). */
+const DRAWN: ReadonlySet<string> = new Set(['one', 'matched', 'split', 'own']);
+function architectureHref(): string {
+  if (CURRENT !== 'isoloop') return `../architecture/${CURRENT}.html`;
+  return DRAWN.has(SETTINGS.placement)
+    ? `../architecture/${SETTINGS.placement}.html`
+    : '../architecture/';
+}
+
 /** The page shell, the same in every build; only what a slot holds differs. */
 const SHOWN = Object.keys(WIDGETS).filter((w): w is WidgetName => w in WIDGETS);
 
@@ -66,6 +75,9 @@ export function Page() {
           </nav>
         )}
         <ClearHistory />
+        <a className="architecture" href={architectureHref()}>
+          Architecture
+        </a>
       </header>
       <Notices />
       <Responsiveness />
