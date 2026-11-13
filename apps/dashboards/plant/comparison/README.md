@@ -1,5 +1,17 @@
 # The recorded comparison
 
+## Recorded runs, newest first
+
+- [`final/`](final/README.md): the figures that ship with `plant-v0.1.0`, on the dedicated machine with `@isoloop/*@0.0.0-next.b8ffdcf`.
+- [`phone/ikko-mindone-focus156/`](phone/ikko-mindone-focus156/README.md): a mid-range phone, Firefox Focus 156.
+- [`phone/galaxy-fold6-chrome157/`](phone/galaxy-fold6-chrome157/README.md): a flagship phone, Chrome 157.
+- [`matched-v2/`](matched-v2/README.md): the dedicated machine with combined commits. Includes the 10-minute memory figures.
+- [`cpu-baseline/`](cpu-baseline/README.md): the per-thread CPU probe after the metrics sampler fix.
+- [`matched-q6/`](matched-q6/README.md): after the timings fix.
+- [`matched/`](matched/README.md): the first matched head-to-head on the dedicated machine.
+- [`desktop-4core/`](desktop-4core/summary.md): the first local run, described below.
+
+
 The plant dashboard (M3d task 11). It compares native, native + workers and the Isoloop build in each placement, at 1, 2 and 5 kHz vibration. Results are measured on Chromium, Firefox and WebKit, one page at a time.
 
 **This recording:** a local desktop under WSL2, restricted to 4 cores with `taskset -c 0-3` to stand in for decision 10's 4-core desktop. Playwright 1.64.1, headless, no GPU, seed 7, 2026-11-09. The raw numbers are in [`desktop-4core/`](desktop-4core/) and the tables in [`desktop-4core/summary.md`](desktop-4core/summary.md).

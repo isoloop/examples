@@ -1,0 +1,89 @@
+{
+  "engine": "chromium",
+  "build": "native",
+  "placement": null,
+  "rate": 1,
+  "stopped": false,
+  "url": "/native/?rate=1&seed=7",
+  "workers": 0,
+  "firstDataMs": 248,
+  "allWidgetsMs": 1389,
+  "frames": 600,
+  "fps": 60,
+  "frameP95Ms": 16.8,
+  "framesLate": 0,
+  "longTasks": 0,
+  "typingMedianMs": 31,
+  "typing": [31, 30, 31, 67, 48],
+  "mainThreadCpuPct": 67.6,
+  "rendererCpuPct": 77.5,
+  "gpuCpuPct": 29,
+  "rendererPssMb": 164,
+  "rendererPssGcMb": 151,
+  "memAtMs": 17449,
+  "holdMs": null,
+  "rendererPssHoldMb": null,
+  "rendererPssHoldGcMb": null,
+  "recoveryMs": 3168,
+  "dataGapT3S": 3.8,
+  "dataGapOthersS": 3.8,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 35.119999980926515,
+      "applyMsPerSec": null,
+      "updatesPerSec": 496
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 0.15999984741210938,
+      "applyMsPerSec": null,
+      "updatesPerSec": 40
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 0.08000001907348633,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 1.640000057220459,
+      "applyMsPerSec": null,
+      "updatesPerSec": 32
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 0.039999961853027344,
+      "applyMsPerSec": null,
+      "updatesPerSec": 8
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 0.2600001335144043,
+      "applyMsPerSec": null,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 0.07999992370605469,
+      "applyMsPerSec": null,
+      "updatesPerSec": 4
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 4.819999885559082,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "82 KB"
+}
