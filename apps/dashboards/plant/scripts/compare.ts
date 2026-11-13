@@ -38,6 +38,8 @@ const ORDER = [
   'isoloop:machine',
   'isoloop:shared-engines',
   'isoloop:own',
+  'isoloop:matched',
+  'isoloop:one',
 ];
 const LABEL: Record<string, string> = {
   native: 'Native',
@@ -46,6 +48,8 @@ const LABEL: Record<string, string> = {
   'isoloop:machine': 'Isoloop, machine',
   'isoloop:shared-engines': 'Isoloop, shared-engines',
   'isoloop:own': 'Isoloop, own',
+  'isoloop:matched': 'Isoloop, matched',
+  'isoloop:one': 'Isoloop, one',
 };
 const keyOf = (r: Result): string => (r.placement ? `${r.build}:${r.placement}` : r.build);
 
@@ -103,7 +107,10 @@ for (const engine of engines) {
       results.find((r) => r.engine === engine && r.rate === rate && keyOf(r) === k);
     const native = find('native');
     const workers = find('native-workers');
-    const iso = find('isoloop:split');
+    // The default placement, or split for results recorded before it changed.
+    const isoKey = find('isoloop:matched') ? 'isoloop:matched' : 'isoloop:split';
+    const iso = find(isoKey);
+    const isoName = LABEL[isoKey] ?? isoKey;
     if (!native || !iso) continue;
     const parts: string[] = [];
     parts.push(
@@ -111,10 +118,10 @@ for (const engine of engines) {
         ? `native keeps headroom (${v(native.framesLate)} late frames, typing ${v(native.typingMedianMs, ' ms')}): falsified on this machine`
         : `native loses headroom (${v(native.framesLate)} late frames, typing ${v(native.typingMedianMs, ' ms')})`,
     );
-    if (iso.stopped) parts.push('Isoloop split: page stopped');
+    if (iso.stopped) parts.push(`${isoName}: page stopped`);
     else {
       parts.push(
-        `Isoloop split: ${v(iso.framesLate)} late frames, typing ${v(iso.typingMedianMs, ' ms')}`,
+        `${isoName}: ${v(iso.framesLate)} late frames, typing ${v(iso.typingMedianMs, ' ms')}`,
       );
       if (workers && !workers.stopped) {
         const better =

@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { WEBKIT_STOPS } from './scope';
 
-// M3d task 10: Isoloop's input budget in its default placement (split) at
+// M3d task 10: Isoloop's input budget in its default placement (matched) at
 // each rate (decision 12), as a regression check. Each test types into T1's
 // event log filter, a widget, on the Isoloop build and then on both native
 // builds, one page after the other. Isoloop's median is asserted; the native

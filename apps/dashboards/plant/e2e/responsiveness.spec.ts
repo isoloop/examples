@@ -39,9 +39,9 @@ for (const build of inScope(BUILDS)) {
     await expect(metric(page, 'input')).toHaveText(/^\d+ ms$/, soon);
     await expect(metric(page, 'worker-lag')).toHaveText(isoloop ? /^\d+ ms$/ : 'n/a', soon);
     await expect(metric(page, 'bus')).toHaveText(isoloop ? /^\d+ rec\/s$/ : 'n/a', soon);
-    // split: 18 workers; native + workers: 9; native: none.
+    // matched (the default): 10 workers; native + workers: 9; native: none.
     await expect(metric(page, 'workers')).toHaveText(
-      { isoloop: '18', native: '0', 'native-workers': '9' }[build],
+      { isoloop: '10', native: '0', 'native-workers': '9' }[build],
       soon,
     );
     await expect(metric(page, 'memory')).toHaveText('unavailable', soon);
