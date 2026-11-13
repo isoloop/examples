@@ -1,0 +1,21 @@
+{
+  "build": "native",
+  "placement": null,
+  "rate": 1,
+  "fps": 57.9,
+  "frameP95Ms": 28,
+  "framesLate": 36,
+  "longTasks": 0,
+  "inputMedianMs": 19.999999999992724,
+  "inputWorstMs": 47,
+  "firstDataMs": 1221,
+  "workers": 0,
+  "cores": 4,
+  "deviceMemoryGb": null,
+  "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_7_16 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6.2 Mobile/15E148 Safari/604.1",
+  "at": "2026-11-13T18:37:52.388Z",
+  "page": "native/?rate=1",
+  "round": 2,
+  "typing": "typing",
+  "synthetic": true
+}
