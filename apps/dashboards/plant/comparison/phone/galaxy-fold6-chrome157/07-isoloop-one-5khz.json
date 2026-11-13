@@ -1,0 +1,17 @@
+{
+  "build": "isoloop",
+  "placement": "one",
+  "rate": 5,
+  "fps": 61.1,
+  "frameP95Ms": 16.7,
+  "framesLate": 0,
+  "longTasks": 0,
+  "inputMedianMs": 10.3,
+  "inputWorstMs": 19.8,
+  "firstDataMs": 374,
+  "workers": 1,
+  "cores": 8,
+  "deviceMemoryGb": 8,
+  "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36",
+  "at": "2026-11-13T10:34:17.133Z"
+}

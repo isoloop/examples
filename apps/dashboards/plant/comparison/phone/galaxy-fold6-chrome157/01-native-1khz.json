@@ -1,0 +1,17 @@
+{
+  "build": "native",
+  "placement": null,
+  "rate": 1,
+  "fps": 61.3,
+  "frameP95Ms": 16.8,
+  "framesLate": 0,
+  "longTasks": 0,
+  "inputMedianMs": 12.1,
+  "inputWorstMs": 24.4,
+  "firstDataMs": 685,
+  "workers": 0,
+  "cores": 8,
+  "deviceMemoryGb": 8,
+  "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36",
+  "at": "2026-11-13T09:49:49.371Z"
+}
