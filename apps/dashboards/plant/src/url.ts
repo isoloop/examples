@@ -1,13 +1,18 @@
 // The page URL, the same in every build (M3d decisions 2, 3 and 6):
-// `?rate=1|2|5` (vibration sampling, kHz), `?placement=split|machine|
-// shared-engines|own|matched|one` (where the Isoloop build runs its isolates) and
-// `?seed=` (the generators' seed). The build switch keeps them.
+// `?rate=1|2|5` (vibration sampling, kHz), `?placement=matched|split|one|
+// machine|shared-engines|own` (where the Isoloop build runs its isolates,
+// `matched` by default) and `?seed=` (the generators' seed). The build switch
+// keeps them.
 
 export const RATES = [1, 2, 5] as const;
 export type Rate = (typeof RATES)[number];
 
-export const PLACEMENTS = ['split', 'machine', 'shared-engines', 'own', 'matched', 'one'] as const;
+// `matched` is the default (M3d decision 6, revised 2026-11-13): on a mid-range
+// phone `split` was the slowest Isoloop placement, and on the desktop server
+// `matched` used fewer workers, less memory and less CPU for the same frames.
+export const PLACEMENTS = ['matched', 'split', 'one', 'machine', 'shared-engines', 'own'] as const;
 export type PlacementName = (typeof PLACEMENTS)[number];
+export const DEFAULT_PLACEMENT: PlacementName = 'matched';
 
 export interface Settings {
   rate: Rate;
@@ -17,7 +22,7 @@ export interface Settings {
 
 export function settingsFrom(params: URLSearchParams): Settings {
   const rate = RATES.find((r) => String(r) === params.get('rate')) ?? 1;
-  const placement = PLACEMENTS.find((p) => p === params.get('placement')) ?? 'split';
+  const placement = PLACEMENTS.find((p) => p === params.get('placement')) ?? DEFAULT_PLACEMENT;
   const seed = Number(params.get('seed'));
   return { rate, placement, seed: Number.isInteger(seed) && seed > 0 ? seed : 1 };
 }

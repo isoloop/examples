@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { buildHref, settingsFrom, withParam } from './url';
 
 describe('settingsFrom', () => {
-  it('defaults to 1 kHz, split placement, seed 1', () => {
+  it('defaults to 1 kHz, matched placement, seed 1', () => {
     expect(settingsFrom(new URLSearchParams(''))).toEqual({
       rate: 1,
-      placement: 'split',
+      placement: 'matched',
       seed: 1,
     });
   });
@@ -19,7 +19,7 @@ describe('settingsFrom', () => {
   it('ignores values it does not know', () => {
     expect(settingsFrom(new URLSearchParams('rate=3&placement=x&seed=-1'))).toEqual({
       rate: 1,
-      placement: 'split',
+      placement: 'matched',
       seed: 1,
     });
   });
