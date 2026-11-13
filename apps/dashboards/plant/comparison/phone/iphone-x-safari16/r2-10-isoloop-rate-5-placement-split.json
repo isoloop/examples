@@ -1,0 +1,21 @@
+{
+  "build": "isoloop",
+  "placement": "split",
+  "rate": 5,
+  "fps": 8.9,
+  "frameP95Ms": 181,
+  "framesLate": 89,
+  "longTasks": 42,
+  "inputMedianMs": 117.00000000000728,
+  "inputWorstMs": 218,
+  "firstDataMs": 6014,
+  "workers": 18,
+  "cores": 4,
+  "deviceMemoryGb": null,
+  "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_7_16 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6.2 Mobile/15E148 Safari/604.1",
+  "at": "2026-11-13T18:44:42.005Z",
+  "page": "isoloop/?rate=5&placement=split",
+  "round": 2,
+  "typing": "typing",
+  "synthetic": true
+}
