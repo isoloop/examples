@@ -1,0 +1,17 @@
+{
+  "build": "native-workers",
+  "placement": null,
+  "rate": 5,
+  "fps": 47.2,
+  "frameP95Ms": 33.1,
+  "framesLate": 48,
+  "longTasks": 2,
+  "inputMedianMs": 50,
+  "inputWorstMs": 575,
+  "firstDataMs": 683,
+  "workers": 9,
+  "cores": 8,
+  "deviceMemoryGb": null,
+  "userAgent": "Mozilla/5.0 (Android 15; Mobile; rv:156.0) Gecko/156.0 Firefox/156.0",
+  "at": "2026-11-13T13:41:42.167Z"
+}

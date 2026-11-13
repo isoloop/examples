@@ -1,0 +1,17 @@
+{
+  "build": "isoloop",
+  "placement": "split",
+  "rate": 5,
+  "fps": 32.2,
+  "frameP95Ms": 66.3,
+  "framesLate": 143,
+  "longTasks": 11,
+  "inputMedianMs": 199,
+  "inputWorstMs": 1365,
+  "firstDataMs": 2177,
+  "workers": 18,
+  "cores": 8,
+  "deviceMemoryGb": null,
+  "userAgent": "Mozilla/5.0 (Android 15; Mobile; rv:156.0) Gecko/156.0 Firefox/156.0",
+  "at": "2026-11-13T13:43:13.504Z"
+}
