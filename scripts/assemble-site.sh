@@ -22,7 +22,8 @@ page() { # title, body
     '<meta name="viewport" content="width=device-width, initial-scale=1">' \
     "<title>$1</title>" \
     '<style>body{font:16px/1.5 system-ui,sans-serif;max-width:40rem;margin:2rem auto;padding:0 1rem}</style>' \
-    "$2"
+    "$2" \
+    '<p><small>Runs in Safari 16.4 or later, or a recent Chrome, Edge or Firefox.</small></p>'
 }
 
 page 'Isoloop examples' \

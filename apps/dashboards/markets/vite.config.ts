@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { isoloop } from '@isoloop/vite';
 import { defineConfig, type Alias } from 'vite';
+import { browserCheck } from '../../../shared/browser-check.ts';
 
 const src = (p: string): string => fileURLToPath(new URL(`./src/${p}`, import.meta.url));
 
@@ -80,7 +81,7 @@ export default defineConfig(({ mode }) => {
         ...(preact ? PREACT : []),
       ],
     },
-    plugins,
+    plugins: [browserCheck(native ? 'native' : 'isoloop'), ...plugins],
     base: './',
     build: {
       outDir: build === 'mixed-preact' ? 'dist/mixed/preact' : `dist/${build}`,
