@@ -1,0 +1,17 @@
+{
+  "build": "native-workers",
+  "placement": null,
+  "rate": 1,
+  "fps": 61.1,
+  "frameP95Ms": 16.7,
+  "framesLate": 0,
+  "longTasks": 0,
+  "inputMedianMs": 12.4,
+  "inputWorstMs": 18.7,
+  "firstDataMs": 763,
+  "workers": 9,
+  "cores": 8,
+  "deviceMemoryGb": 8,
+  "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36",
+  "at": "2026-11-13T09:52:37.498Z"
+}
