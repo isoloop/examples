@@ -1,0 +1,89 @@
+{
+  "engine": "chromium",
+  "build": "isoloop",
+  "placement": "one",
+  "rate": 5,
+  "stopped": false,
+  "url": "/isoloop/?rate=5&seed=7&placement=one",
+  "workers": 1,
+  "firstDataMs": 548,
+  "allWidgetsMs": 2373,
+  "frames": 600,
+  "fps": 60,
+  "frameP95Ms": 16.8,
+  "framesLate": 0,
+  "longTasks": 0,
+  "typingMedianMs": 26,
+  "typing": [19, 52, 21, 42, 26],
+  "mainThreadCpuPct": 23.1,
+  "rendererCpuPct": 105.1,
+  "gpuCpuPct": 33.3,
+  "rendererPssMb": 293,
+  "rendererPssGcMb": 205,
+  "memAtMs": 18401,
+  "holdMs": null,
+  "rendererPssHoldMb": null,
+  "rendererPssHoldGcMb": null,
+  "recoveryMs": 3380,
+  "dataGapT3S": 2.5,
+  "dataGapOthersS": 2.5,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 76.56000080108643,
+      "applyMsPerSec": 0.33311147094699456,
+      "updatesPerSec": 480
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 0.13999996185302735,
+      "applyMsPerSec": 2.1097047472434283,
+      "updatesPerSec": 40
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 0.08000001907348633,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 5.1600010871887205,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 144
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 0.2,
+      "applyMsPerSec": 0.1998666707817618,
+      "updatesPerSec": 8
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 0.2800000190734863,
+      "applyMsPerSec": 0.0444147921974543,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 0.019999980926513672,
+      "applyMsPerSec": 0.3331112591605596,
+      "updatesPerSec": 4
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 21.64000072479248,
+      "applyMsPerSec": 0,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "167 KB"
+}

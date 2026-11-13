@@ -1,0 +1,17 @@
+{
+  "started": "2026-11-13T14:07:14.496Z",
+  "args": {
+    "pair": ["native=isoloop:one", "native-workers=isoloop:matched"],
+    "extra": ["isoloop:split"],
+    "rates": "1,5",
+    "rounds": "5",
+    "hold": "0",
+    "engines": "chromium,firefox",
+    "out": "comparison/final/responsiveness",
+    "warm": "6",
+    "window": "10",
+    "summary-only": false
+  },
+  "configs": ["native", "isoloop:one", "native-workers", "isoloop:matched", "isoloop:split"],
+  "cpus": "2,4,6,8"
+}

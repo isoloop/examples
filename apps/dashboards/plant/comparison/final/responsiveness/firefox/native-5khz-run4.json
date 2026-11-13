@@ -1,0 +1,89 @@
+{
+  "engine": "firefox",
+  "build": "native",
+  "placement": null,
+  "rate": 5,
+  "stopped": false,
+  "url": "/native/?rate=5&seed=7",
+  "workers": 0,
+  "firstDataMs": 390,
+  "allWidgetsMs": 1271,
+  "frames": 474,
+  "fps": 47.4,
+  "frameP95Ms": 33.4,
+  "framesLate": 126,
+  "longTasks": 0,
+  "typingMedianMs": 128,
+  "typing": [128, 174, 139, 101, 113],
+  "mainThreadCpuPct": null,
+  "rendererCpuPct": null,
+  "gpuCpuPct": null,
+  "rendererPssMb": null,
+  "rendererPssGcMb": null,
+  "memAtMs": 17348,
+  "holdMs": null,
+  "rendererPssHoldMb": null,
+  "rendererPssHoldGcMb": null,
+  "recoveryMs": 3329,
+  "dataGapT3S": 3.1,
+  "dataGapOthersS": 3.1,
+  "categories": [
+    {
+      "category": "raw · canvas",
+      "slots": 16,
+      "workMsPerSec": 428,
+      "applyMsPerSec": null,
+      "updatesPerSec": 432
+    },
+    {
+      "category": "raw · dom",
+      "slots": 8,
+      "workMsPerSec": 0.2,
+      "applyMsPerSec": null,
+      "updatesPerSec": 40
+    },
+    {
+      "category": "filtered · dom",
+      "slots": 16,
+      "workMsPerSec": 0.2,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "aggregated · canvas",
+      "slots": 8,
+      "workMsPerSec": 36.6,
+      "applyMsPerSec": null,
+      "updatesPerSec": 152
+    },
+    {
+      "category": "aggregated · dom",
+      "slots": 16,
+      "workMsPerSec": 0.4,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "combined · canvas",
+      "slots": 2,
+      "workMsPerSec": 1.2,
+      "applyMsPerSec": null,
+      "updatesPerSec": 2
+    },
+    {
+      "category": "combined · dom",
+      "slots": 6,
+      "workMsPerSec": 0.6,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    },
+    {
+      "category": "engines",
+      "slots": 25,
+      "workMsPerSec": 27,
+      "applyMsPerSec": null,
+      "updatesPerSec": 0
+    }
+  ],
+  "bundle": "82 KB"
+}
