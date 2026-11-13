@@ -1,5 +1,14 @@
 import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { expect, test, type Browser, type CDPSession, type Page } from '@playwright/test';
+import {
+  _android,
+  expect,
+  test,
+  type AndroidDevice,
+  type Browser,
+  type BrowserContext,
+  type CDPSession,
+  type Page,
+} from '@playwright/test';
 
 // The recorded comparison (M3d task 11): the two native builds and each
 // Isoloop placement, at each rate, one page at a time, on the engine of the
@@ -162,6 +171,127 @@ async function memory(browser: Browser): Promise<{ pss: number | null; pssGc: nu
   return { pss, pssGc: pssMb(await pids()) };
 }
 
+// Android (`COMPARE_ANDROID=<adb serial>`): Chrome on a phone through
+// Playwright's `_android`, against the deployed pages (`LIVE_URL`). There's no
+// browser-level CDP there, so process CPU comes from /proc/<pid>/stat and
+// memory from `dumpsys meminfo` (PSS) over adb, and the forced GC goes
+// through the page's own session, attaching to its workers. Chrome's
+// renderers are its `sandboxed_process` processes and its GPU process is
+// `privileged_process`.
+const ANDROID = process.env['COMPARE_ANDROID'];
+let device: AndroidDevice | undefined;
+async function androidDevice(): Promise<AndroidDevice> {
+  if (device) return device;
+  const all = await _android.devices();
+  device = all.find((d) => d.serial() === ANDROID);
+  if (!device) throw new Error(`no adb device ${ANDROID}`);
+  return device;
+}
+const shell = async (d: AndroidDevice, cmd: string): Promise<string> =>
+  (await d.shell(cmd)).toString();
+async function androidProcesses(d: AndroidDevice): Promise<Proc[]> {
+  const ps = await shell(d, 'ps -A -o PID,NAME');
+  const procs: Proc[] = [];
+  for (const line of ps.split('\n')) {
+    const [pid, name = ''] = line.trim().split(/\s+/);
+    if (!name.startsWith('com.android.chrome')) continue;
+    const type = name.includes(':sandboxed_process')
+      ? 'renderer'
+      : name.includes(':privileged_process')
+        ? 'GPU'
+        : 'browser';
+    // oxlint-disable-next-line no-await-in-loop -- a handful of processes
+    const stat = await shell(d, `cat /proc/${pid}/stat 2>/dev/null`);
+    // After the command name: utime and stime are the 12th and 13th fields, in ticks of 1/100 s.
+    const f = stat.slice(stat.lastIndexOf(')') + 2).split(' ');
+    const ticks = Number(f[11] ?? 0) + Number(f[12] ?? 0);
+    procs.push({ type, id: Number(pid), cpuTime: ticks / 100 });
+  }
+  return procs;
+}
+async function androidPssMb(d: AndroidDevice, pids: number[]): Promise<number | null> {
+  if (pids.length === 0) return null;
+  let kb = 0;
+  for (const pid of pids) {
+    // oxlint-disable-next-line no-await-in-loop -- one process at a time
+    const m = /TOTAL PSS:\s+(\d+)/.exec(await shell(d, `dumpsys meminfo ${pid}`));
+    if (!m) return null;
+    kb += Number(m[1]);
+  }
+  return Math.round(kb / 1024);
+}
+/** A forced GC in the page and its workers, twice, through the page's own session. */
+async function gcPage(cdp: CDPSession): Promise<void> {
+  const sessions = new Set<string>();
+  const onAttach = (e: { sessionId: string; targetInfo: { type: string } }): void => {
+    if (e.targetInfo.type === 'worker') sessions.add(e.sessionId);
+  };
+  cdp.on('Target.attachedToTarget', onAttach);
+  await cdp.send('Target.setAutoAttach', {
+    autoAttach: true,
+    waitForDebuggerOnStart: false,
+    flatten: false,
+  });
+  await new Promise((r) => setTimeout(r, 500));
+  for (let round = 0; round < 2; round++) {
+    // oxlint-disable-next-line no-await-in-loop -- rounds in order
+    await cdp.send('HeapProfiler.collectGarbage');
+    for (const sessionId of sessions) {
+      // oxlint-disable-next-line no-await-in-loop -- one worker at a time
+      await cdp
+        .send('Target.sendMessageToTarget', {
+          sessionId,
+          message: JSON.stringify({ id: 1, method: 'HeapProfiler.collectGarbage', params: {} }),
+        })
+        .catch(() => {});
+    }
+    // oxlint-disable-next-line no-await-in-loop -- let the workers finish
+    await new Promise((r) => setTimeout(r, 1_000));
+  }
+  cdp.off('Target.attachedToTarget', onAttach);
+}
+
+/** Where a run happens: a desktop browser from Playwright, or Chrome on an Android device. */
+type Target = {
+  engine: string;
+  newContext: () => Promise<BrowserContext>;
+  /** The URL to open for a path (Android contexts have no baseURL). */
+  url: (path: string) => string;
+  procs: (() => Promise<Proc[]>) | null;
+  pss: (renderers: number[]) => Promise<number | null>;
+  memory: (cdp: CDPSession | null) => Promise<{ pss: number | null; pssGc: number | null }>;
+};
+function desktopTarget(browser: Browser, engine: string, baseURL: string | undefined): Target {
+  const chromium = engine === 'chromium';
+  return {
+    engine,
+    newContext: () =>
+      browser.newContext({ ...(baseURL === undefined ? {} : { baseURL }), viewport: VIEWPORT }),
+    url: (path) => path,
+    procs: chromium ? () => processes(browser) : null,
+    pss: (pids) => Promise.resolve(chromium ? pssMb(pids) : null),
+    memory: () => (chromium ? memory(browser) : Promise.resolve({ pss: null, pssGc: null })),
+  };
+}
+async function androidTarget(baseURL: string | undefined): Promise<Target> {
+  const d = await androidDevice();
+  const renderers = async (): Promise<number[]> =>
+    (await androidProcesses(d)).filter((p) => p.type === 'renderer').map((p) => p.id);
+  return {
+    engine: 'android-chrome',
+    newContext: () => d.launchBrowser(),
+    url: (path) => new URL(path.replace(/^\//, ''), `${baseURL ?? ''}/`).toString(),
+    procs: () => androidProcesses(d),
+    pss: (pids) => androidPssMb(d, pids),
+    memory: async (cdp) => {
+      const pss = await androidPssMb(d, await renderers());
+      if (cdp) await gcPage(cdp);
+      await new Promise((r) => setTimeout(r, 1_000));
+      return { pss, pssGc: await androidPssMb(d, await renderers()) };
+    },
+  };
+}
+
 const filter = (page: Page) => page.locator('[data-slot="T1-events"] input[name="event-text"]');
 const rendered = (page: Page) => page.locator('[data-slot="T1-events"] .events');
 async function latency(page: Page, text: string): Promise<number> {
@@ -246,13 +376,10 @@ for (const rate of RATES) {
     for (const config of CONFIGS) {
       const [build = 'native', placement] = config.split(':');
       const name = `${placement ? `${build}-${placement}` : build}-${rate}khz${RUNS > 1 ? `-run${run}` : ''}`;
-      test(`compare: ${config} at ${rate} kHz${RUNS > 1 ? `, run ${run}` : ''}`, async ({
-        browser,
-        baseURL,
-        browserName,
-      }) => {
+      const title = `compare: ${config} at ${rate} kHz${RUNS > 1 ? `, run ${run}` : ''}`;
+      const body = async (target: Target): Promise<void> => {
         test.setTimeout(240_000 + HOLD_MS);
-        const engine = browserName;
+        const engine = target.engine;
         const dir = `${OUT}/${engine}`;
         mkdirSync(dir, { recursive: true });
         const write = (result: object): void => {
@@ -261,19 +388,16 @@ for (const rate of RATES) {
             `${JSON.stringify({ engine, build, placement: placement ?? null, rate, ...result }, null, 2)}\n`,
           );
         };
-        const context = await browser.newContext({
-          ...(baseURL === undefined ? {} : { baseURL }),
-          viewport: VIEWPORT,
-        });
-        const page = await context.newPage();
-        const chromium = engine === 'chromium';
+        const context = await target.newContext();
+        const page = context.pages()[0] ?? (await context.newPage());
+        const chromium = engine === 'chromium' || engine === 'android-chrome';
         const cdp = chromium ? await context.newCDPSession(page) : null;
         await cdp?.send('Performance.enable', { timeDomain: 'timeTicks' });
         const isoloop = build === 'isoloop';
         const url = `/${build}/?rate=${rate}&seed=7${placement ? `&placement=${placement}` : ''}`;
         try {
           const t0 = Date.now();
-          await page.goto(url);
+          await page.goto(target.url(url));
           await expect(page.locator('[data-metric="first-data"] dd')).toHaveText(/ms$/, {
             timeout: 30_000,
           });
@@ -291,18 +415,18 @@ for (const rate of RATES) {
           await page.waitForTimeout(WARM_MS);
 
           const m0 = cdp ? await pageMetrics(cdp) : {};
-          const p0 = chromium ? await processes(browser) : [];
+          const p0 = target.procs ? await target.procs() : [];
           const frames0 = await page.evaluate(() => window.tape.frames);
           await page.waitForTimeout(WINDOW_MS);
           const m1 = cdp ? await pageMetrics(cdp) : {};
-          const p1 = chromium ? await processes(browser) : [];
+          const p1 = target.procs ? await target.procs() : [];
           const tape = await page.evaluate(() => ({
             frames: window.tape.frames,
             gaps: window.tape.gaps,
           }));
           const longTasks = await metric(page, 'long-tasks');
           const memAtMs = Date.now() - t0;
-          const mem = chromium ? await memory(browser) : { pss: null, pssGc: null };
+          const mem = await target.memory(cdp);
           const categories = await page.evaluate(() => window.categories());
           const seconds = cdp
             ? (m1['Timestamp'] ?? 0) - (m0['Timestamp'] ?? 0) || WINDOW_MS / 1000
@@ -322,7 +446,7 @@ for (const rate of RATES) {
           let held: { pss: number | null; pssGc: number | null } | null = null;
           if (HOLD_MS > 0) {
             await page.waitForTimeout(Math.max(0, t0 + HOLD_MS - Date.now()));
-            held = chromium ? await memory(browser) : null;
+            held = chromium ? await target.memory(cdp) : null;
           }
 
           // The fault: block T3's gauges for 3 s.
@@ -354,7 +478,7 @@ for (const rate of RATES) {
             mainThreadCpuPct: cdp ? r1((delta('TaskDuration') / seconds) * 100) : null,
             rendererCpuPct: chromium ? r1((cpuDelta(p0, p1, 'renderer') / seconds) * 100) : null,
             gpuCpuPct: chromium ? r1((cpuDelta(p0, p1, 'GPU') / seconds) * 100) : null,
-            rendererPssMb: chromium ? pssMb([...cpuOf(p1, 'renderer').keys()]) : null,
+            rendererPssMb: chromium ? await target.pss([...cpuOf(p1, 'renderer').keys()]) : null,
             rendererPssGcMb: mem.pssGc,
             memAtMs,
             holdMs: HOLD_MS || null,
@@ -382,7 +506,15 @@ for (const rate of RATES) {
           await cdp?.detach().catch(() => {});
           await context.close();
         }
-      });
+      };
+      // An Android run never asks for the `browser` fixture, so no desktop
+      // browser starts; the desktop run is unchanged.
+      if (ANDROID) test(title, async ({ baseURL }) => body(await androidTarget(baseURL)));
+      else {
+        test(title, async ({ browser, baseURL, browserName }) =>
+          body(desktopTarget(browser, browserName, baseURL)),
+        );
+      }
     }
   }
 }

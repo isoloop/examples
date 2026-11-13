@@ -20,6 +20,12 @@
 //   --engines       chromium, firefox, webkit (default chromium,firefox).
 //   --out           results folder (default comparison/results).
 //   --summary-only  rebuild summary.md from the JSON already in --out.
+//   --android S     run on Chrome on the Android device with adb serial S,
+//                   through Playwright's _android and the adb server on this
+//                   machine, against the deployed pages (--url). Replaces
+//                   --engines; results go under <out>/android-chrome/.
+//   --url           deployed plant pages for --android (default the public
+//                   GitHub Pages copy).
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -38,6 +44,8 @@ const { values: args } = parseArgs({
     engines: { type: 'string', default: 'chromium,firefox' },
     out: { type: 'string', default: 'comparison/results' },
     'summary-only': { type: 'boolean', default: false },
+    android: { type: 'string' },
+    url: { type: 'string', default: 'https://isoloop.github.io/examples/dashboards/plant' },
   },
 });
 
@@ -50,11 +58,13 @@ const pairs = args.pair.map((p) => {
 });
 const configs = [...new Set([...pairs.flatMap((p) => [p.a, p.b]), ...args.extra])];
 const rounds = Number(args.rounds);
-const engines = args.engines.split(',');
+const engines = args.android ? ['android'] : args.engines.split(',');
 const PROJECT: Record<string, string> = {
   chromium: 'comparison',
   firefox: 'comparison-firefox',
   webkit: 'comparison-webkit',
+  // The spec takes no desktop browser when COMPARE_ANDROID is set.
+  android: 'comparison',
 };
 
 if (!args['summary-only']) {
@@ -69,6 +79,7 @@ if (!args['summary-only']) {
     COMPARE_HOLD_MS: String(Number(args.hold) * 1000),
     COMPARE_WARM_MS: String(Number(args.warm) * 1000),
     COMPARE_WINDOW_MS: String(Number(args.window) * 1000),
+    ...(args.android ? { COMPARE_ANDROID: args.android, LIVE_URL: args.url } : {}),
   };
   writeFileSync(
     join(OUT, 'run.json'),
