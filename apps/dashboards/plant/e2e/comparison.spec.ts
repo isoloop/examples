@@ -279,7 +279,12 @@ async function androidTarget(baseURL: string | undefined): Promise<Target> {
     (await androidProcesses(d)).filter((p) => p.type === 'renderer').map((p) => p.id);
   return {
     engine: 'android-chrome',
-    newContext: () => d.launchBrowser(),
+    // A Chrome that's already running ignores the command line Playwright
+    // writes (its debugging socket), so each run starts from a stopped Chrome.
+    newContext: async () => {
+      await shell(d, 'am force-stop com.android.chrome');
+      return d.launchBrowser();
+    },
     url: (path) => new URL(path.replace(/^\//, ''), `${baseURL ?? ''}/`).toString(),
     procs: () => androidProcesses(d),
     pss: (pids) => androidPssMb(d, pids),
