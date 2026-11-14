@@ -2,6 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-11-14
+- **Amended:** 2026-11-14, by ADR 0003 (decision 1) and for the approved design (decisions 2, 3, 4, 7 and 11; see [the amendment](#amended-for-the-approved-design-2026-11-14))
 - **Answers:** what `apps/site` is built with, which pages it has, what may run on them, how it shows the examples and the library's diagrams, and what its copy may claim. Where it lives and how it deploys is [ADR 0001](0001-what-this-repo-is.md); its look is [ADR 0003](0003-design-system.md).
 
 ## Context
@@ -148,10 +149,62 @@ One `site` job on PRs and pushes to main, when `apps/site`, `packages/ui`, `apps
 - **The interface's shape is left to M4.** It will need more than source → HTML: front matter, a table of contents, code highlighting, API pages.
 - **The engine is chosen by M4's ADR here,** together with how the guides and TSDoc are fetched from `isoloop/isoloop` at the release tag.
 
+### Amended for the approved design (2026-11-14)
+
+A second design round (concept A, "the recording") replaced the first layout, and the positioning broadened from dashboards to web apps in general. This changes decisions 2, 3, 4, 7 and 11. Where this section and the decisions above disagree, this section wins.
+
+**Pages (decision 2):** adds `/features/`.
+
+| Path | Page |
+| --- | --- |
+| `/` | Landing |
+| `/features/` | What Isoloop gives, one section per feature |
+| `/how-it-works/` | The core diagrams |
+| `/examples/` | The hub |
+| `/404.html` | Not found |
+
+The nav reads Home, Features, How it works, Examples, GitHub.
+
+**The landing page (decision 3),** in this order:
+1. **Introduction:** the headline "Event-loop isolation for web apps", one sentence on what Isoloop does (each part of an app on its own worker or in a shared pool, a message bus that keeps its records, restarted when it fails; React, Preact or plain DOM), and two actions: "See the features" and "Examples".
+2. **The recording:** a live timeline of basic running (decision 4 below), with Block C, Crash A and Block the main thread.
+3. **What it's for:** five uses, one line each: live dashboards and data-heavy UIs; apps built from many teams' parts; third-party or less-trusted widgets; backend-less apps; heavy work next to a UI.
+4. **Features:** one line per feature, each linking its section on `/features/`.
+5. **What it gives:** the behaviour table.
+6. **What it costs:** the device table (decision 7).
+7. **Limits:** "What Isoloop can't hide".
+8. **How it works:** a short pointer to the diagrams.
+9. **Examples:** basic, plant, markets.
+10. **Install:** `@isoloop/*@next`, labelled pre-0.1.
+11. **Footer.**
+
+The principle "Code that shares data shouldn't share an event loop" opens `/features/` instead of the landing page.
+
+**`/features/`:** nine sections, in this order: containment; restart and catch-up; the message bus; retention and replay; durable history; placement; your framework; safety; what it costs.
+- **Live demos, three only:** containment, the bus, replay. Each starts when scrolled into view and pauses out of view, and with `prefers-reduced-motion` it updates without animating.
+- **The rest are static figures or code.** The code samples are compiled and type-checked in CI, so they can't drift from the API.
+
+**What runs live (decision 4):** the landing recording and the three feature demos draw **basic's real activity**, not a simulation.
+- **Basic runs in an iframe** kept rendered but out of view. Not `display: none`, which stops its frames. Its own panes stay visible at `/examples/basic/`, and the demos link there.
+- **Basic reports what really happens,** using only Isoloop's public API:
+  - each isolate publishes a small record to a memory topic, `activity.v1`, as it works, so a blocked isolate shows as a real gap
+  - the bus track shows the records actually published, including a publish the schema rejects
+  - "stuck" and restarts come from the kernel's `isolate:state` and `isolate:crash` events
+  - the main-thread track measures frame gaps
+- **Basic posts these to the parent page with `postMessage`.** The parent sends back the controls (block, crash, block the main thread). Both sides check `event.origin` against their own origin and `event.source` against the expected window. A message in any other shape is ignored. The format is basic's, versioned (`isoloop-demo@1`), and documented in its README.
+- **A same-origin iframe shares the page's main thread.** So "Block the main thread" really freezes the recording too, and the gap appears in it afterwards. The text says so.
+- **Replay shows what basic does:** D subscribes from `earliest` and re-reads the retained notes after a restart. The text explains the three start positions (`latest`, `earliest`, `committed`) as the library implements them: after an isolate restarts, each subscription starts where its `from` says, and only `committed` reads on after its last commit.
+- **The site still imports no `@isoloop/*` package.** It draws what basic reports.
+
+**Measurements (decision 7):** the markets figures are left out until M3f (markets parity) measures markets against native with workers and pooled placements, as the plant was. Until then the markets card says so.
+
+**CI (decision 11):** the smoke test also covers `/features/`, and checks that the recording receives basic's activity: a track draws, Block C produces a stuck span for C and D and then a restart, and a message from another origin or in another shape is ignored.
+
 ## Consequences
 
 **Good**
 
+- (Amendment) The demos show Isoloop actually running, with nothing simulated. A regression in containment or restart shows up on the front page and in its smoke test.
 - No framework or template engine to learn, update or replace. The only build tool is Vite, which the repo already uses, plus our own short plugins.
 - The site follows the hosting guide's policy itself, and the smoke test fails on any violation.
 - The live demo is the real basic example, so there's one demo to keep working, and its E2E covers it.
@@ -161,6 +214,8 @@ One `site` job on PRs and pushes to main, when `apps/site`, `packages/ui`, `apps
 
 **Bad**
 
+- (Amendment) The demos depend on basic's message format, so a change to basic can break the landing page. The format is versioned, and the smoke test covers both sides.
+- (Amendment) A hidden iframe running basic costs the landing page basic's workers: three plus the bus, on every visit.
 - Our own plugins for partials, the hub and the diagrams are code we maintain, where a static-site framework would ship them.
 - No syntax highlighting until the M4 docs engine. Code on these pages is plain `<pre>`.
 - The live demo only shows what basic does. The plant's scale is a click away, not on the page.
@@ -185,3 +240,6 @@ One `site` job on PRs and pushes to main, when `apps/site`, `packages/ui`, `apps
 - **Fetching measurements from the dashboards' result files at build time:** one source of truth, but for four rows whose source can't change after its tag.
 - **Analytics** (Plausible, GoatCounter, GA): a third-party script against `default-src 'self'`. GitHub's repo traffic and npm downloads cover what we'd learn before 0.1. Revisit at the launch.
 - **Screenshots taken in CI:** live data makes every run's images differ, so they'd change in every PR.
+- **(Amendment) Simulated demos,** as in the design prototype: easy to control and to slow down, but they would show a drawing of Isoloop, not Isoloop. With a real library behind the page, the front page would sell a sketch.
+- **(Amendment) A telemetry API in the library for the site:** the kernel's events and the bus already carry what the demos need, so the site needs nothing the library doesn't already offer every app.
+- **(Amendment) Showing basic's own panes next to the recording:** two views of the same four isolates compete for attention. The recording is the demo, and the panes are one click away.
