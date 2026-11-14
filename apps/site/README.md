@@ -9,7 +9,7 @@ isoloop.dev's own pages ([ADR 0002](../../docs/adr/0002-site-build.md)): the lan
 | --- | --- |
 | `index.html`, `how-it-works/index.html`, `examples/index.html`, `404.html` | One-line stubs (`<!-- page:home -->`) that `build/plugin.ts` turns into whole documents |
 | `src/pages/` | The pages, by name (`src/pages/index.ts`) |
-| `src/copy.ts` | **Every text on the site.** Draft until plan task 9; pages carry `data-copy="draft"` until then |
+| `src/copy.ts` | **Every text on the site,** with the source of each figure in a comment above it (ADR 0002, decision 10) |
 | `build/plugin.ts` | Renders the stubs, copies the hub's screenshots and the diagrams into the build |
 | `build/examples.ts` | Reads and validates every app's `example.json` (a zod schema); a bad one fails the build, naming the file and the field |
 | `build/diagrams.ts` | Rewrites the library's Archify pages to run under the site's policy |

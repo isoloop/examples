@@ -2,7 +2,7 @@
 import type { VNode } from 'preact';
 import { Card } from 'ui/components';
 import type { Example } from '../../build/examples.ts';
-import { COPY_STATUS, examplesPage } from '../copy.ts';
+import { examplesPage } from '../copy.ts';
 import type { Page, SiteData } from './types.ts';
 
 /** An example's links: live first, then source, results and architecture. */
@@ -37,7 +37,7 @@ export function ExampleLinks({ example }: { example: Example }): VNode {
 
 function Examples({ examples }: SiteData): VNode {
   return (
-    <main class="ui-shell" data-copy={COPY_STATUS}>
+    <main class="ui-shell">
       <section class="ui-section" aria-labelledby="title">
         <h1 id="title">{examplesPage.heading}</h1>
         <p>{examplesPage.intro}</p>

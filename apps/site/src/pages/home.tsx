@@ -1,7 +1,7 @@
 /** @jsxImportSource preact */
 import type { VNode } from 'preact';
 import { Button, Card, Frame, Table } from 'ui/components';
-import { COPY_STATUS, home, site } from '../copy.ts';
+import { home, site } from '../copy.ts';
 import type { Page, SiteData } from './types.ts';
 import { ExampleLinks } from './examples.tsx';
 
@@ -11,7 +11,7 @@ const PLANT_SOURCE = 'https://github.com/isoloop/web/tree/main/apps/dashboards/p
 function Home({ examples, diagrams }: SiteData): VNode {
   const topology = diagrams[0];
   return (
-    <main class="ui-shell" data-copy={COPY_STATUS}>
+    <main class="ui-shell">
       <section class="ui-hero" aria-labelledby="hero">
         <h1 id="hero">{home.hero.heading}</h1>
         <ul>

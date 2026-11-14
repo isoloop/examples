@@ -1,12 +1,12 @@
 /** @jsxImportSource preact */
 import type { VNode } from 'preact';
 import { Callout, Frame } from 'ui/components';
-import { COPY_STATUS, howItWorks } from '../copy.ts';
+import { howItWorks } from '../copy.ts';
 import type { Page, SiteData } from './types.ts';
 
 function HowItWorks({ diagrams, pin }: SiteData): VNode {
   return (
-    <main class="ui-shell" data-copy={COPY_STATUS}>
+    <main class="ui-shell">
       <section class="ui-section" aria-labelledby="title">
         <h1 id="title">{howItWorks.heading}</h1>
         <p>{howItWorks.intro}</p>
