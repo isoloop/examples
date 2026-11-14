@@ -2,6 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-11-14
+- **Amended:** 2026-11-14, for the approved design (decisions 3, 5, 6 and 7; see [the amendment](#amended-for-the-approved-design-2026-11-14))
 - **Answers:** what the site and the examples share so they read as one site, how it's built, and how it changes. Grilled 2026-11-14. Amends [ADR 0002](0002-site-build.md), decision 1.
 
 ## Context
@@ -136,10 +137,70 @@ A private workspace package, `ui`, in `packages/ui`. It isn't published and has 
 - **The contract** is the component props, the `ui-` class names, the semantic token names, and the markup `Bar` and `Header` produce. Changing any of these updates every user in that PR.
 - **When `packages/ui` changes,** CI runs the site job (ADR 0002, decision 11) and basic's E2E. A change to `Bar` also runs the dashboards' checks.
 
+### Amended for the approved design (2026-11-14)
+
+The first round of directions changed only colours on one layout, and read as generic. The approved design is concept A, "the recording", from a second round made with Anthropic's `frontend-design` guidance. It changes decisions 3, 5, 6 and 7, and adds a layout rule and a motion rule. Where this section and the decisions above disagree, this section wins.
+
+**One typeface, self-hosted (decision 5).** Decision 5 said system fonts only and no web fonts. Now:
+- **Archivo** (variable: weight 100–900, width 62–125%), under the SIL Open Font License 1.1, is the only typeface.
+- **It's self-hosted** as one same-origin `woff2` file (latin subset, about 90 KB) with its licence next to it in `packages/ui`. Same-origin keeps it within `default-src 'self'` (ADR 0002, decision 8). It loads with `font-display: swap` and one preload.
+- **Its width axis carries the hierarchy:**
+  - the headline at 68% width and weight 820
+  - section headings at 80%
+  - labels, nav, table heads and track names at 87%
+  - body text at 100%
+
+  Figures are tabular wherever numbers line up.
+- **Code stays in the system monospace stack.** Monospace is used only for code, never for labels.
+- **The wordmark** is "Isol∞p" set in Archivo, with the ∞ as an inline SVG, until the logo (plan task 5) replaces it.
+
+**Palette (decision 3).** The token layers and names stay as they are. The values come from concept A: a cool paper ground, near-black ink, and one colour per part of the system. The values below are hex for reference; `tokens.css` holds them in `oklch()`.
+
+| Token | Light | Dark | Used for |
+| --- | --- | --- | --- |
+| `--ui-bg` | `#f6f7f9` | `#161c2c` | page |
+| `--ui-surface` | `#ffffff` | `#1d2436` | panels, the recording, tables |
+| `--ui-text` | `#14161c` | `#e9ecf3` | text |
+| `--ui-text-muted` | `#4a5160` | `#aab2c3` | secondary text |
+| `--ui-border` | `#d5dae2` | `#34405a` | rules, grid |
+| `--ui-accent` | `#2f57cc` | `#8aa5ff` | links, the primary action |
+| `--ui-part-host` | `#5d6472` | `#9aa2b2` | the main thread, the host |
+| `--ui-part-bus` | `#a62f68` | `#e58ab4` | the bus |
+| `--ui-part-isolate` | `#0b7480` | `#4cc6d3` | an isolate on its own worker (the recording's second isolate, B, takes `--ui-accent`, so the two own-worker tracks stay apart) |
+| `--ui-part-pool` | `#6e46c2` | `#b79af6` | a pool |
+| `--ui-bad` | `#b3261e` | `#ff8f86` | a rejected record, a failure |
+
+- **The `--ui-part-*` tokens are new,** and they're information, not decoration. The same colour always means the same part of the system: in the recording's tracks, the bars beside feature lines, and the section headings on `/features/`.
+- **The contrast test (decision 8)** gains each part colour against `--ui-bg` and `--ui-surface` at 3:1, and `--ui-bad` at 4.5:1.
+
+**Layout: a gutter of labels (decision 6).**
+- **Pages are a two-column grid:** a left gutter and a body. The gutter holds section headings, which stay in view as their section scrolls past, the way the recording's tracks hold their names.
+- **No card grids.** Content is lists with rules, tables and figures.
+- **No eyebrow labels, no numbered markers** (features aren't a sequence), and no all-caps labels.
+- **New classes:** `ui-intro`, `ui-gutter`, `ui-uses`, `ui-strip`, `ui-recording`. They join decision 6's list in `@layer ui`.
+
+**Motion.**
+- **The one memorable thing is the recording,** and the feature demos are the same kind of thing. Only they move.
+- **Nothing else moves:** no entrance or scroll animations, no hover transitions on content.
+- **The demos run only while on screen.** With `prefers-reduced-motion` they update without animating.
+- **The one other transition** is the theme switch's knob, which jumps instead when motion is reduced.
+
+**Header (decision 7).**
+- **`Header` is sticky:** full width, an opaque `--ui-bg` background, a bottom rule in `--ui-border`, and its contents aligned with the page column.
+- **`--ui-bar-h`** (4.75rem; 5.7rem below 760 px, where the nav takes a second row) sets `scroll-padding-top` and the sticky offset of the gutter headings, so anchors and headings stop below it.
+- **The nav reads** Home, Features, How it works, Examples, GitHub.
+- **`Bar` on the dashboards is unchanged:** thin, fixed dark, not sticky. The dashboards manage their own scrolling.
+
+**The theme switch (decision 4).**
+- **`ThemeToggle` becomes a switch:** `role="switch"`, named "Dark theme", with `aria-checked` true in dark mode.
+- **The look:** a sun and a moon inside a pill, and a knob that slides behind the active one.
+- **It's operated** by click, Space and Enter. Its state comes from `theme.js`, as before.
+
 ## Consequences
 
 **Good**
 
+- (Amendment) The site has a point of view drawn from its subject: tracks, loops and parts of the system. It isn't a palette swap on a generic layout.
 - The site, the hub and basic share one source for their look. The dashboards share a way back without changing their own look or bundles.
 - Visitors get static HTML and CSS: no framework code, no hydration, nothing that needs JS to read.
 - Markup from data is typed and escaped, and a wrong prop fails `tsc`.
@@ -149,6 +210,8 @@ A private workspace package, `ui`, in `packages/ui`. It isn't published and has 
 
 **Bad**
 
+- (Amendment) One web font now loads on every site page, about 90 KB, which decision 5 avoided. It's same-origin, subset and swapped, but it's a request and a reflow that system fonts don't have.
+- (Amendment) Part colours make a vocabulary readers have to learn. The recording's legend teaches it once, and the colours are never the only signal: every part is also named in text.
 - One new dependency, `preact-render-to-string`. `preact` is already in the catalog.
 - Our own plugin, contrast test and `oklch` conversion are code we maintain.
 - Copy written as JSX text is less pleasant to edit than plain HTML or Markdown. M4's docs will be Markdown.
@@ -169,3 +232,6 @@ A private workspace package, `ui`, in `packages/ui`. It isn't published and has 
 - **One theme (dark, like the dashboards):** simpler, but a front page and docs are read in daylight too, and the system preference is what visitors expect.
 - **The bar following the visitor's theme on the dashboards:** a light bar on a dark dashboard would look like two things joined, which is what this design system exists to avoid.
 - **A versioned or published `ui` package:** nothing outside this repo uses it, and the workspace already gives one version.
+- **(Amendment) The first round of directions** (slate & signal, paper & ink, night signal): the same layout with three palettes. Two of them sat on well-known generic looks (cream with serif and terracotta; near-black with one acid accent).
+- **(Amendment) A typeface per role** (a display face plus a text face): Archivo's width axis gives the contrast between headline and text from one family, with one file.
+- **(Amendment) Concepts B (two loops) and C (the log)** as the landing page: B's ∞ didn't show the bus or replay, and C needed reading before it landed. C's log lives on as the bus demo on `/features/`.
