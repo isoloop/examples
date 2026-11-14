@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { isoloop } from '@isoloop/vite';
+import { ui } from 'ui/vite';
 import { defineConfig } from 'vite';
 import { browserCheck } from '../../../shared/browser-check.ts';
 
@@ -40,6 +41,8 @@ export default defineConfig(({ mode }) => {
     plugins: [
       browserCheck(build === 'isoloop' ? 'isoloop' : build),
       ...(kind === 'isoloop' ? [isoloop()] : []),
+      // The thin bar back to the site, fixed dark (ADR 0003, decision 7).
+      ui({ bar: true }),
     ],
     base: './',
     worker: { format: 'es' },

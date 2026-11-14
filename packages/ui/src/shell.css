@@ -84,6 +84,96 @@
     padding: var(--ui-space-4);
   }
 
+  .ui-card-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: var(--ui-space-3);
+    border-radius: var(--ui-radius-s);
+    border: 1px solid var(--ui-border);
+  }
+  .ui-card > h2,
+  .ui-card > h3 {
+    margin-top: 0;
+  }
+
+  /* A row of cards that wraps to one column on phones. */
+  .ui-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--ui-space-4);
+  }
+
+  /* The landing page's opening: one line, three points, the main action. */
+  .ui-hero {
+    padding: var(--ui-space-7) 0 var(--ui-space-6);
+  }
+  .ui-hero h1 {
+    font-size: var(--ui-text-3xl);
+    line-height: 1.15;
+    margin: 0 0 var(--ui-space-4);
+    max-width: 22ch;
+  }
+  .ui-hero ul {
+    padding-left: var(--ui-space-5);
+  }
+  .ui-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ui-space-3);
+    align-items: center;
+    margin-top: var(--ui-space-5);
+  }
+
+  .ui-table-wrap {
+    overflow-x: auto;
+    margin: var(--ui-space-4) 0;
+  }
+  .ui-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: var(--ui-text-s);
+  }
+  .ui-table caption {
+    text-align: left;
+    color: var(--ui-text-muted);
+    padding-bottom: var(--ui-space-2);
+  }
+  .ui-table th,
+  .ui-table td {
+    text-align: left;
+    vertical-align: top;
+    padding: var(--ui-space-2) var(--ui-space-3);
+    border-bottom: 1px solid var(--ui-border);
+  }
+  .ui-table thead th {
+    border-bottom-width: 2px;
+  }
+
+  .ui-frame {
+    margin: var(--ui-space-4) 0;
+  }
+  .ui-frame iframe {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius-m);
+    background: var(--ui-bg);
+  }
+  .ui-frame figcaption {
+    margin-top: var(--ui-space-2);
+    font-size: var(--ui-text-s);
+  }
+
+  .ui-code {
+    display: block;
+    overflow-x: auto;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius-s);
+    padding: var(--ui-space-3);
+  }
+
   .ui-callout {
     border-left: 4px solid var(--ui-accent);
     background: var(--ui-surface);
@@ -92,6 +182,8 @@
 
   .ui-button,
   .ui-toggle {
+    display: inline-block;
+    text-decoration: none;
     font: inherit;
     font-size: var(--ui-text-s);
     padding: var(--ui-space-1) var(--ui-space-3);
@@ -124,6 +216,9 @@
     .ui-bar,
     .ui-footer,
     .ui-card,
+    .ui-table th,
+    .ui-table td,
+    .ui-frame iframe,
     .ui-button,
     .ui-toggle {
       border-color: CanvasText;

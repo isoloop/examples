@@ -9,6 +9,8 @@ on:
     outputs:
       apps:
         value: ${{ jobs.check.outputs.apps }}
+      site:
+        value: ${{ jobs.check.outputs.site }}
 
 permissions:
   contents: read
@@ -18,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       apps: ${{ steps.apps.outputs.apps }}
+      site: ${{ steps.site.outputs.site }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -39,8 +42,9 @@ jobs:
         run: |
           # An app is a folder under apps/ with a package.json, at any depth
           # (apps/<name> or apps/<group>/<name>); its id is that path below apps/.
+          # The site has no E2E of its own; its smoke test is the site job.
           all=$(find apps -name package.json -not -path '*/node_modules/*' \
-            | xargs -n1 dirname | sed 's#^apps/##' | sort)
+            | xargs -n1 dirname | sed 's#^apps/##' | grep -vx site | sort)
           if [ -z "$BASE" ]; then
             apps="$all"
           else
@@ -57,3 +61,19 @@ jobs:
             fi
           fi
           echo "apps=$(printf '%s\n' $apps | jq -Rnc '[inputs | select(length > 0)]')" >> "$GITHUB_OUTPUT"
+      - id: site
+        env:
+          # The pull request's base, or the push's previous commit.
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          # The site job (ADR 0002, decision 11) runs when the site, the design
+          # system, basic (which the landing page embeds) or any example.json
+          # changes; or when there's nothing to compare against.
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE" 2>/dev/null; then
+            site=true
+          elif git diff --name-only "$BASE" HEAD | grep -qE '^(apps/site|packages/ui|apps/basic)/|(^|/)example\.json$|^scripts/assemble-site\.sh$|^\.github/workflows/site\.yml$'; then
+            site=true
+          else
+            site=false
+          fi
+          echo "site=$site" >> "$GITHUB_OUTPUT"

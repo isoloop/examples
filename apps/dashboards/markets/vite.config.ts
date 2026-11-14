@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { isoloop } from '@isoloop/vite';
+import { ui } from 'ui/vite';
 import { defineConfig, type Alias } from 'vite';
 import { browserCheck } from '../../../shared/browser-check.ts';
 
@@ -81,7 +82,8 @@ export default defineConfig(({ mode }) => {
         ...(preact ? PREACT : []),
       ],
     },
-    plugins: [browserCheck(native ? 'native' : 'isoloop'), ...plugins],
+    // The thin bar back to the site, fixed dark (ADR 0003, decision 7).
+    plugins: [browserCheck(native ? 'native' : 'isoloop'), ...plugins, ui({ bar: true })],
     base: './',
     build: {
       outDir: build === 'mixed-preact' ? 'dist/mixed/preact' : `dist/${build}`,

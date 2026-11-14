@@ -1,0 +1,16 @@
+{
+  "title": "Plant dashboard",
+  "summary": "Telemetry from a fictional plant: 8 machines, 72 widgets on high-rate sensor data, built native, native with workers, and on Isoloop in several placements.",
+  "order": 20,
+  "result": {
+    "line": "Blocking one widget for 3 s stalls the whole native page and loses 3.8 s of data; in Isoloop's default placement the widgets' pool restarts and no data is lost. On a desktop that placement costs +11 to +19 points of CPU and +41 to +51 MB against native with workers.",
+    "tag": "plant-v0.1.0"
+  },
+  "links": {
+    "live": "/examples/dashboards/plant/",
+    "source": "https://github.com/isoloop/web/tree/main/apps/dashboards/plant",
+    "results": "https://github.com/isoloop/web/tree/main/apps/dashboards/plant/comparison",
+    "architecture": "/examples/dashboards/plant/architecture/"
+  },
+  "screenshot": "screenshot.webp"
+}

@@ -1,0 +1,12 @@
+/*
+ * The site's own few rules; everything else comes from packages/ui (ADR 0003).
+ * Unlayered, so it wins over @layer ui where it needs to.
+ */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -28,3 +28,6 @@ comparison-results/
 
 # The comparison writes here; the recorded results are copied to comparison/
 apps/dashboards/markets/comparison-results/
+
+# The assembled site (scripts/assemble-site.sh)
+/site/

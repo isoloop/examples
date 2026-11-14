@@ -3,10 +3,11 @@ name: Release
 # A `markets-v*`, `plant-v*` or `basic-v*` tag ships that public demo: check,
 # every E2E test of that app on every build and engine, deploy (every app, and
 # the live smoke tests), then the recorded comparison of that dashboard (basic
-# has none).
+# has none). A `site-v*` tag ships the site (ADR 0001, decision 5): check, the
+# site job, deploy; the first one switches the site on (assemble-site.sh).
 on:
   push:
-    tags: ['markets-v*', 'plant-v*', 'basic-v*']
+    tags: ['markets-v*', 'plant-v*', 'basic-v*', 'site-v*']
 
 permissions:
   contents: read
@@ -17,14 +18,22 @@ jobs:
 
   e2e:
     needs: check
+    if: ${{ !startsWith(github.ref_name, 'site-v') }}
     uses: ./.github/workflows/e2e.yml
     with:
       # The tag's prefix names the app: plant-v0.1.0 -> dashboards/plant.
       apps: ${{ startsWith(github.ref_name, 'plant-v') && '["dashboards/plant"]' || startsWith(github.ref_name, 'basic-v') && '["basic"]' || '["dashboards/markets"]' }}
       scope: full
 
+  site:
+    needs: check
+    if: startsWith(github.ref_name, 'site-v')
+    uses: ./.github/workflows/site.yml
+
   deploy:
-    needs: e2e
+    needs: [e2e, site]
+    # One of the two runs, the other is skipped.
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && contains(needs.*.result, 'success') }}
     permissions:
       contents: read
       pages: write

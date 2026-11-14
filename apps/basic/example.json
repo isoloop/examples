@@ -4,5 +4,7 @@
   "links": {
     "live": "/examples/basic/",
     "source": "https://github.com/isoloop/web/tree/main/apps/basic"
-  }
+  },
+  "order": 10,
+  "screenshot": "screenshot.webp"
 }

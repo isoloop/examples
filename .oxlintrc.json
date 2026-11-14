@@ -99,6 +99,9 @@
   ],
   // Archify output, rendered and committed (apps/dashboards/plant/architecture/README.md).
   "ignorePatterns": [
+    // The pinned isoloop/isoloop checkout behind the site's diagrams, and the assembled site.
+    "apps/site/.library/**",
+    "site/**",
     "apps/dashboards/plant/architecture/*.js",
     "apps/dashboards/plant/architecture/*.mjs"
   ]

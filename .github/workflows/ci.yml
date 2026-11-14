@@ -6,8 +6,9 @@ name: CI
 
 # Pull requests: check, then E2E for the apps they touch (every build on
 # Chromium, the React pair on Firefox and WebKit). Pushes to main: check only;
-# the pull request already ran E2E. Tags, releases and the weekly run are in
-# release.yml and weekly.yml.
+# the pull request already ran E2E. The site job (build, link check, smoke
+# test) runs on both when the site's inputs change (ADR 0002, decision 11).
+# Tags, releases and the weekly run are in release.yml and weekly.yml.
 
 on:
   pull_request:
@@ -32,3 +33,8 @@ jobs:
     with:
       apps: ${{ needs.check.outputs.apps }}
       scope: pr
+
+  site:
+    needs: check
+    if: needs.check.outputs.site == 'true'
+    uses: ./.github/workflows/site.yml
