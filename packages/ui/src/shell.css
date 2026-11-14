@@ -1,0 +1,142 @@
+/*
+ * The shell (ADR 0003, decision 6): the ui- classes, all in @layer ui, so an
+ * app's own unlayered CSS always wins without specificity fights. Colours,
+ * spacing and type come only from the semantic tokens (tokens.css). Rules on
+ * plain elements (body, links, focus) are in base.css, which only pages with
+ * the full header get, so the dashboards' bar adds no global styles.
+ */
+@layer ui {
+  .ui-shell {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 var(--ui-space-4);
+  }
+
+  /* The full header: wordmark, nav, theme toggle. */
+  .ui-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ui-space-2) var(--ui-space-5);
+    align-items: center;
+    padding: var(--ui-space-3) var(--ui-space-4);
+    border-bottom: 1px solid var(--ui-border);
+  }
+  .ui-wordmark {
+    color: var(--ui-text);
+    font-size: var(--ui-text-l);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .ui-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ui-space-4);
+  }
+  .ui-nav a {
+    color: var(--ui-text);
+    text-decoration: none;
+  }
+  .ui-nav a:hover,
+  .ui-nav a[aria-current='page'] {
+    color: var(--ui-accent);
+    text-decoration: underline;
+  }
+  .ui-header .ui-toggle {
+    margin-left: auto;
+  }
+
+  /* The thin bar on the dashboards, fixed dark by its own data-theme. */
+  .ui-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ui-space-4);
+    padding: var(--ui-space-1) var(--ui-space-4);
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    font: var(--ui-text-s) / 1.5 var(--ui-font-sans);
+    border-bottom: 1px solid var(--ui-border);
+  }
+  .ui-bar a {
+    color: var(--ui-text);
+  }
+
+  .ui-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ui-space-4);
+    padding: var(--ui-space-5) var(--ui-space-4);
+    color: var(--ui-text-muted);
+    font-size: var(--ui-text-s);
+    border-top: 1px solid var(--ui-border);
+  }
+  .ui-footer a {
+    color: var(--ui-text-muted);
+  }
+
+  .ui-section {
+    padding: var(--ui-space-6) 0;
+  }
+
+  .ui-card {
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius-m);
+    padding: var(--ui-space-4);
+  }
+
+  .ui-callout {
+    border-left: 4px solid var(--ui-accent);
+    background: var(--ui-surface);
+    padding: var(--ui-space-3) var(--ui-space-4);
+  }
+
+  .ui-button,
+  .ui-toggle {
+    font: inherit;
+    font-size: var(--ui-text-s);
+    padding: var(--ui-space-1) var(--ui-space-3);
+    border-radius: var(--ui-radius-s);
+    border: 1px solid var(--ui-border);
+    background: var(--ui-surface);
+    color: var(--ui-text);
+    cursor: pointer;
+  }
+  .ui-button[data-primary] {
+    background: var(--ui-accent);
+    border-color: var(--ui-accent);
+    color: var(--ui-on-accent);
+  }
+  .ui-toggle[aria-pressed='true']::before {
+    content: '● ';
+  }
+  .ui-toggle[aria-pressed='false']::before {
+    content: '○ ';
+  }
+
+  /* Inside an iframe (?embed=1, set by theme.js): content only. */
+  [data-embed] .ui-header,
+  [data-embed] .ui-footer {
+    display: none;
+  }
+
+  @media (forced-colors: active) {
+    .ui-header,
+    .ui-bar,
+    .ui-footer,
+    .ui-card,
+    .ui-button,
+    .ui-toggle {
+      border-color: CanvasText;
+    }
+    :focus-visible {
+      outline-color: Highlight;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

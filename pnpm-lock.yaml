@@ -179,6 +179,9 @@ catalogs:
     oxlint-tsgolint:
       specifier: 7.0.2005
       version: 7.0.2005
+    preact-render-to-string:
+      specifier: 6.8.2
+      version: 6.8.2
     typescript:
       specifier: 7.0.2
       version: 7.0.2
@@ -279,7 +282,7 @@ importers:
         version: 0.0.0-next.b8ffdcf(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       preact:
         specifier: catalog:preact
-        version: 11.1.1
+        version: 11.1.1(preact-render-to-string@6.8.2)
       react:
         specifier: catalog:react
         version: 19.3.1
@@ -354,6 +357,28 @@ importers:
       '@types/react-dom':
         specifier: catalog:react
         version: 19.3.0(@types/react@19.3.0)
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vite:
+        specifier: 'catalog:'
+        version: 8.3.5(@types/node@26.6.6)
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6))
+
+  packages/ui:
+    dependencies:
+      preact:
+        specifier: catalog:preact
+        version: 11.1.1(preact-render-to-string@6.8.2)
+      preact-render-to-string:
+        specifier: 'catalog:'
+        version: 6.8.2(preact@11.1.1)
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.6
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
@@ -1129,6 +1154,11 @@ packages:
     resolution: {integrity: sha512-LJlKCCAUFKOuZxipUdYw1NzIITEsPcgyOG9LkvRJvuKj/bRzbuRY0ARXvL0pWGpsZvn8jku+LMep2eU0seHp8g==}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact-render-to-string@6.8.2:
+    resolution: {integrity: sha512-Hdx7cKD3AMYgt795TdddBpUbuGEFoL/VeA6s7VrBt9Gjt0r6rCy5wMp5xkDjQ9cbKj62frHsEx1x8yV6EjoOpg==}
+    peerDependencies:
+      preact: '>=10 || >= 11.0.0-0'
+
   preact@11.1.1:
     resolution: {integrity: sha512-vpFVfai437pbuLri7XVeslCPfrEZX6Z1S2gV+MOFrA/kji+NKUXvH7y01EnVjA1guLigfkVp77Sqipd4SIllCg==}
     peerDependencies:
@@ -1301,7 +1331,7 @@ snapshots:
     dependencies:
       '@isoloop/protocol': 0.0.0-next.b8ffdcf
       '@isoloop/runtime': 0.0.0-next.b8ffdcf(vitest@5.0.5(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
-      preact: 11.1.1
+      preact: 11.1.1(preact-render-to-string@6.8.2)
     transitivePeerDependencies:
       - vitest
 
@@ -1765,7 +1795,13 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.2
 
-  preact@11.1.1: {}
+  preact-render-to-string@6.8.2(preact@11.1.1):
+    dependencies:
+      preact: 11.1.1(preact-render-to-string@6.8.2)
+
+  preact@11.1.1(preact-render-to-string@6.8.2):
+    optionalDependencies:
+      preact-render-to-string: 6.8.2(preact@11.1.1)
 
   react-dom@19.3.1(react@19.3.1):
     dependencies:

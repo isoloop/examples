@@ -1,0 +1,33 @@
+/*
+ * Element rules for pages that are the site's own (the site, the hub, basic):
+ * ui({ header }) adds this file; ui({ bar }) doesn't, so a dashboard keeps
+ * its own body and link styles. In @layer ui, like shell.css.
+ */
+@layer ui {
+  body {
+    margin: 0;
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    font: var(--ui-text-m) / 1.5 var(--ui-font-sans);
+  }
+
+  a {
+    color: var(--ui-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ui-focus);
+    outline-offset: 2px;
+  }
+
+  code,
+  pre,
+  .ui-code {
+    font-family: var(--ui-font-mono);
+    font-size: var(--ui-text-s);
+  }
+
+  [data-embed] body {
+    background: transparent;
+  }
+}

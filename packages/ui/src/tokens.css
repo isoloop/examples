@@ -1,0 +1,108 @@
+/*
+ * Design tokens (ADR 0003, decision 3), the single source: no build step.
+ *
+ * Two layers, all prefixed --ui- so they never meet an app's own properties:
+ * - primitives: a neutral and an accent scale, 1 (lightest) to 12 (darkest);
+ * - semantic tokens, the only ones components and apps use.
+ * Themes switch only the semantic layer. `theme.js` sets <html data-theme>
+ * before first paint; without JS, the media query below follows the system.
+ *
+ * These values are neutral placeholders until the design pick (plan task 7b).
+ * contrast.test.ts checks every declared pair against WCAG AA in both themes,
+ * and that the two dark blocks match.
+ */
+
+:root {
+  --ui-gray-1: oklch(0.99 0.003 260);
+  --ui-gray-2: oklch(0.97 0.004 260);
+  --ui-gray-3: oklch(0.93 0.005 260);
+  --ui-gray-4: oklch(0.86 0.006 260);
+  --ui-gray-5: oklch(0.78 0.007 260);
+  --ui-gray-6: oklch(0.68 0.008 260);
+  --ui-gray-7: oklch(0.6 0.009 260);
+  --ui-gray-8: oklch(0.52 0.01 260);
+  --ui-gray-9: oklch(0.44 0.01 260);
+  --ui-gray-10: oklch(0.32 0.01 260);
+  --ui-gray-11: oklch(0.24 0.01 260);
+  --ui-gray-12: oklch(0.18 0.01 260);
+
+  --ui-accent-1: oklch(0.98 0.015 255);
+  --ui-accent-2: oklch(0.95 0.03 255);
+  --ui-accent-3: oklch(0.9 0.05 255);
+  --ui-accent-4: oklch(0.82 0.08 255);
+  --ui-accent-5: oklch(0.75 0.11 255);
+  --ui-accent-6: oklch(0.68 0.14 255);
+  --ui-accent-7: oklch(0.6 0.16 255);
+  --ui-accent-8: oklch(0.52 0.17 255);
+  --ui-accent-9: oklch(0.46 0.16 255);
+  --ui-accent-10: oklch(0.38 0.13 255);
+  --ui-accent-11: oklch(0.3 0.1 255);
+  --ui-accent-12: oklch(0.22 0.07 255);
+
+  --ui-space-1: 0.25rem;
+  --ui-space-2: 0.5rem;
+  --ui-space-3: 0.75rem;
+  --ui-space-4: 1rem;
+  --ui-space-5: 1.5rem;
+  --ui-space-6: 2rem;
+  --ui-space-7: 3rem;
+  --ui-space-8: 4rem;
+
+  --ui-radius-s: 0.25rem;
+  --ui-radius-m: 0.5rem;
+  --ui-radius-l: 1rem;
+
+  --ui-font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ui-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* A 1.25 scale from 1rem; the largest steps scale with the viewport. */
+  --ui-text-xs: 0.8rem;
+  --ui-text-s: 0.9rem;
+  --ui-text-m: 1rem;
+  --ui-text-l: 1.25rem;
+  --ui-text-xl: clamp(1.25rem, 1.1rem + 0.6vw, 1.563rem);
+  --ui-text-2xl: clamp(1.5rem, 1.25rem + 1vw, 1.953rem);
+  --ui-text-3xl: clamp(1.75rem, 1.35rem + 1.8vw, 2.441rem);
+}
+
+/* light */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --ui-bg: var(--ui-gray-1);
+  --ui-surface: var(--ui-gray-2);
+  --ui-text: var(--ui-gray-12);
+  --ui-text-muted: var(--ui-gray-9);
+  --ui-border: var(--ui-gray-7);
+  --ui-accent: var(--ui-accent-9);
+  --ui-on-accent: var(--ui-gray-1);
+  --ui-focus: var(--ui-accent-8);
+}
+
+/* dark */
+[data-theme='dark'] {
+  color-scheme: dark;
+  --ui-bg: var(--ui-gray-12);
+  --ui-surface: var(--ui-gray-11);
+  --ui-text: var(--ui-gray-2);
+  --ui-text-muted: var(--ui-gray-5);
+  --ui-border: var(--ui-gray-8);
+  --ui-accent: var(--ui-accent-5);
+  --ui-on-accent: var(--ui-gray-12);
+  --ui-focus: var(--ui-accent-5);
+}
+
+/* dark, without JS: the same block as above (contrast.test.ts checks they match) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --ui-bg: var(--ui-gray-12);
+    --ui-surface: var(--ui-gray-11);
+    --ui-text: var(--ui-gray-2);
+    --ui-text-muted: var(--ui-gray-5);
+    --ui-border: var(--ui-gray-8);
+    --ui-accent: var(--ui-accent-5);
+    --ui-on-accent: var(--ui-gray-12);
+    --ui-focus: var(--ui-accent-5);
+  }
+}

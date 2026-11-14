@@ -40,6 +40,14 @@
   // never import Isoloop, so /native is an idiomatic app with none of it.
   "overrides": [
     {
+      // Content goes through Preact's escaping (ADR 0003, decision 2): no raw
+      // HTML in the design system or the site. M4's docs rendering will add
+      // one allow-listed file here.
+      "files": ["packages/ui/**", "apps/site/**"],
+      "plugins": ["react"],
+      "rules": { "react/no-danger": "error", "react/react-in-jsx-scope": "off" }
+    },
+    {
       "files": [
         "apps/dashboards/markets/src/core/**",
         "apps/dashboards/markets/src/charts/**",
