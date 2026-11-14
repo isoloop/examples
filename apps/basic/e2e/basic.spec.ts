@@ -97,6 +97,19 @@ test('?embed=1 shows the demo without the header and footer', async ({ page }) =
   await expect(page.locator('html')).toHaveAttribute('data-embed', '');
   await expect(page.locator('.ui-header')).toBeHidden();
   await expect(page.locator('.ui-footer')).toBeHidden();
+  // The landing page explains the demo above the iframe, so basic's intro is hidden.
+  await expect(page.locator('.intro > p')).toBeHidden();
+  await expect(page.locator('.intro .rules')).toBeHidden();
+  // The controls and the pool's caption stay.
+  await expect(page.locator('#block-main')).toBeVisible();
+  await expect(page.locator('.pool .caption')).toBeVisible();
+});
+
+test('without ?embed=1 the intro is shown', async ({ page }) => {
+  await page.goto('./');
+  await ready(page);
+  await expect(page.locator('.intro > p')).toBeVisible();
+  await expect(page.locator('.intro .rules')).toBeVisible();
 });
 
 test('the theme follows a change made on another page, live, with no reload', async ({ page }) => {

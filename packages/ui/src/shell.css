@@ -77,6 +77,16 @@
     padding: var(--ui-space-6) 0;
   }
 
+  /* Prose keeps a readable measure; tables, grids and frames keep the full width. */
+  .ui-hero > p,
+  .ui-hero > ul,
+  .ui-hero > ol,
+  .ui-section > p,
+  .ui-section > ul,
+  .ui-section > ol {
+    max-width: 70ch;
+  }
+
   .ui-card {
     background: var(--ui-surface);
     border: 1px solid var(--ui-border);

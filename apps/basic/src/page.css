@@ -105,6 +105,9 @@
 [data-embed] .basic {
   padding-bottom: 0;
 }
-[data-embed] .intro h1 {
+[data-embed] .intro h1,
+[data-embed] .intro > p,
+[data-embed] .intro .rules {
+  /* The landing page says this just above the iframe. */
   display: none;
 }
