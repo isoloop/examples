@@ -2,7 +2,8 @@ name: Check
 
 # Format, lint, types, unit tests and every app's build, including its bundle
 # checks (no Isoloop code in native bundles, no React DOM in Preact ones).
-# `apps` lists the apps a pull request touches (all of them otherwise).
+# `apps` lists the apps a pull request touches (all of them otherwise, none for
+# a change to docs only).
 on:
   workflow_call:
     outputs:
@@ -43,8 +44,11 @@ jobs:
           if [ -z "$BASE" ]; then
             apps="$all"
           else
-            changed=$(git diff --name-only "$BASE" HEAD)
-            if echo "$changed" | grep -qvE '^apps/'; then
+            # Docs-only changes (docs/** and Markdown anywhere) need no E2E.
+            changed=$(git diff --name-only "$BASE" HEAD | grep -vE '^docs/|\.md$' || true)
+            if [ -z "$changed" ]; then
+              apps=""
+            elif echo "$changed" | grep -qvE '^apps/'; then
               apps="$all"
             else
               apps=$(for app in $all; do

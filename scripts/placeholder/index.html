@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'" />
+    <title>Isoloop</title>
+    <meta
+      name="description"
+      content="Isoloop runs each part of a web app in its own worker, with a message bus, restart and catch-up, and durable history."
+    />
+    <link rel="stylesheet" href="./placeholder.css" />
+  </head>
+  <body>
+    <!-- Until the site lands (website plan, task 8; ADR 0002). -->
+    <main>
+      <h1>Isoloop</h1>
+      <p>
+        A toolchain for web apps whose parts shouldn't share an event loop: each part runs in its
+        own worker or a pool, talks over a message bus with retention and replay, and restarts and
+        catches up on its own. It works with React, Preact or plain DOM code.
+      </p>
+      <p>The site is on its way. Until then:</p>
+      <ul>
+        <li><a href="./examples/">The examples</a>, live in your browser</li>
+        <li><a href="https://github.com/isoloop/isoloop">Isoloop on GitHub</a></li>
+      </ul>
+    </main>
+  </body>
+</html>
