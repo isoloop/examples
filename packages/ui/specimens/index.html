@@ -9,6 +9,18 @@
   <body>
     <!-- ui:header -->
     <main class="ui-shell">
+      <section class="ui-hero" aria-labelledby="hero">
+        <h1 id="hero">A hero heading, one line on what the page is</h1>
+        <ul>
+          <li>A first point</li>
+          <li>A second point</li>
+          <li>A third point</li>
+        </ul>
+        <div class="ui-actions">
+          <a class="ui-button" data-primary href="#cards">The main action</a>
+          <a href="#tables">A secondary link</a>
+        </div>
+      </section>
       <section class="ui-section" aria-labelledby="type">
         <h1 id="type">Specimens</h1>
         <p>
@@ -25,6 +37,53 @@
           <button type="button" class="ui-button">Button</button>
           <button type="button" class="ui-button" data-primary>Primary button</button>
         </div>
+      </section>
+      <section class="ui-section" aria-labelledby="grid">
+        <h2 id="grid">A grid of cards</h2>
+        <div class="ui-grid">
+          <article class="ui-card">
+            <h3>One</h3>
+            <p>Wraps to one column on phones.</p>
+          </article>
+          <article class="ui-card">
+            <h3>Two</h3>
+            <p>Each card keeps its own heading.</p>
+          </article>
+          <article class="ui-card">
+            <h3>Three</h3>
+            <p>Links inside: <a href="#grid">here</a>.</p>
+          </article>
+        </div>
+      </section>
+      <section class="ui-section" aria-labelledby="tables">
+        <h2 id="tables">Tables and code</h2>
+        <div class="ui-table-wrap" tabindex="0" role="region" aria-label="A table">
+          <table class="ui-table">
+            <caption>
+              A table, with headings on both axes
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Build</th>
+                <th scope="col">Frames/s</th>
+                <th scope="col">Typing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">First</th>
+                <td>60</td>
+                <td>15 ms</td>
+              </tr>
+              <tr>
+                <th scope="row">Second</th>
+                <td>58</td>
+                <td>19 ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <pre class="ui-code"><code>pnpm add @isoloop/host@next</code></pre>
       </section>
       <section class="ui-section" aria-labelledby="bar">
         <h2 id="bar">The dashboards' bar</h2>

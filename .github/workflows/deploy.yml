@@ -1,6 +1,7 @@
 name: Deploy
 
-# The site to GitHub Pages (isoloop.dev, ADR 0001): a placeholder at /, basic at
+# The site to GitHub Pages (isoloop.dev, ADR 0001): the site at / once a
+# site-v* tag is reachable (before that a placeholder), basic at
 # <pages url>/examples/basic/ (website plan task 4b), and the dashboards at <pages url>/examples/dashboards/markets/ (M3b task 19; the old
 # <pages url>/examples/markets/ paths redirect there) and
 # <pages url>/examples/dashboards/plant/ (M3d), then each one's smoke test
@@ -22,13 +23,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The tags, so assemble-site.sh can tell whether a site-v* tag is
+          # reachable and the site goes in.
+          fetch-depth: 0
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter "./apps/dashboards/*" --filter ./apps/basic build
+      - run: pnpm --filter "./apps/dashboards/*" --filter ./apps/basic --filter ./apps/site build
       - name: Assemble the site
         run: scripts/assemble-site.sh site
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0

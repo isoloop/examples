@@ -4,16 +4,16 @@
   "type": "module",
   "description": "A telemetry dashboard for a fictional plant of eight machines: native, native with workers, and on Isoloop.",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && vite build --mode native && vite build --mode native-workers && node scripts/index-page.ts && node scripts/check-builds.ts && node scripts/build-stats.ts",
-    "preview": "vite preview --outDir dist",
+    "dev": "vite --configLoader runner",
+    "build": "vite build --configLoader runner && vite build --configLoader runner --mode native && vite build --configLoader runner --mode native-workers && node scripts/index-page.ts && node scripts/check-builds.ts && node scripts/build-stats.ts",
+    "preview": "vite preview --configLoader runner --outDir dist",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "e2e": "playwright test",
     "compare": "playwright test --project=comparison --project=comparison-firefox --project=comparison-webkit --workers=1; node scripts/compare.ts",
     "compare:pairs": "node comparison/run.ts",
-    "dev:native": "vite --mode native",
-    "dev:native-workers": "vite --mode native-workers"
+    "dev:native": "vite --configLoader runner --mode native",
+    "dev:native-workers": "vite --configLoader runner --mode native-workers"
   },
   "dependencies": {
     "@isoloop/bus": "catalog:isoloop",
@@ -32,6 +32,7 @@
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "typescript": "catalog:",
+    "ui": "workspace:*",
     "vite": "catalog:",
     "vitest": "catalog:"
   }

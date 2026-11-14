@@ -1,0 +1,29 @@
+{
+  "name": "site",
+  "private": true,
+  "type": "module",
+  "description": "isoloop.dev: the landing page, how it works and the examples hub (ADR 0002). Preact at build time only; no framework code in the browser.",
+  "scripts": {
+    "dev": "vite --configLoader runner",
+    "build": "vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
+    "fetch-library": "node scripts/fetch-library.ts",
+    "linkcheck": "node scripts/linkcheck.ts",
+    "serve": "node scripts/serve.ts",
+    "screenshots": "node scripts/screenshots.ts",
+    "smoke": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "catalog:",
+    "@playwright/test": "catalog:",
+    "@types/node": "catalog:",
+    "preact": "catalog:preact",
+    "typescript": "catalog:",
+    "ui": "workspace:*",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "zod": "catalog:"
+  }
+}

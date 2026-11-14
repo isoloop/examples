@@ -6,10 +6,11 @@ The [Isoloop](https://github.com/isoloop/isoloop) website, its examples and its 
 - **Plans** are in [`docs/plans`](docs/plans), starting with the [website plan](docs/plans/site.md).
 - **Apps** are packages under `apps/`, grouped by kind (`apps/dashboards/<name>`). The live examples are at [isoloop.dev/examples](https://isoloop.dev/examples/).
 
-Until the site lands, [isoloop.dev](https://isoloop.dev/) shows a placeholder that links to the examples.
+Until the site's first tag (`site-v0.1.0`), [isoloop.dev](https://isoloop.dev/) shows a placeholder that links to the examples.
 
 | App | What it shows |
 | --- | --- |
+| [`apps/site`](apps/site) | isoloop.dev itself: the landing page, how it works (the library's diagrams) and the examples hub, built from each app's `example.json`. Preact at build time only; no framework code reaches the browser. |
 | [`apps/basic`](apps/basic) | The smallest example: four vanilla isolates on three event loops, A and B on their own workers, C and D sharing a pool. Block or crash any of them; a pool is a unit of failure. It's embedded on the landing page. [Live](https://isoloop.dev/examples/basic/) |
 | [`apps/dashboards/markets`](apps/dashboards/markets) | A backend-less markets dashboard: public exchange feeds, cross-market aggregates and alerts, all in the visitor's tab. One code base, five builds (native and Isoloop, each with React and with Preact, plus a mixed React and Preact Isoloop build), in Lite, Normal and Heavy sizes, with live metrics. [Live](https://isoloop.dev/examples/dashboards/markets/) |
 | [`apps/dashboards/plant`](apps/dashboards/plant) | A telemetry dashboard for a fictional plant of eight machines: 72 widgets on seeded high-rate sensor data. Three builds (native, native with a data worker per machine, Isoloop), and placements of the Isoloop build's isolates in workers and pools. [Live](https://isoloop.dev/examples/dashboards/plant/) |

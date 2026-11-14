@@ -5,6 +5,6 @@ import type { VNode } from 'preact';
 import { renderToStaticMarkup } from 'preact-render-to-string';
 
 /** Static HTML for a Preact tree: no hydration markers, every string escaped. */
-export function render(node: VNode): string {
+export function render<P>(node: VNode<P>): string {
   return renderToStaticMarkup(node);
 }

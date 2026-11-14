@@ -9,6 +9,8 @@
     "pnpm-lock.yaml",
     "**/*.md",
     "apps/dashboards/plant/architecture/*.html",
-    "apps/dashboards/plant/architecture/viewer-*.js"
+    "apps/dashboards/plant/architecture/viewer-*.js",
+    "apps/site/.library/**",
+    "site/**"
   ]
 }

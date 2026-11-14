@@ -4,15 +4,15 @@
   "type": "module",
   "description": "A backend-less markets dashboard, as an idiomatic native app and on Isoloop.",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && vite build --mode native && vite build --mode isoloop-preact && vite build --mode native-preact && vite build --mode mixed && vite build --mode mixed-preact && node scripts/index-page.ts && node scripts/check-builds.ts && node scripts/build-stats.ts",
-    "preview": "vite preview --outDir dist",
+    "dev": "vite --configLoader runner",
+    "build": "vite build --configLoader runner && vite build --configLoader runner --mode native && vite build --configLoader runner --mode isoloop-preact && vite build --configLoader runner --mode native-preact && vite build --configLoader runner --mode mixed && vite build --configLoader runner --mode mixed-preact && node scripts/index-page.ts && node scripts/check-builds.ts && node scripts/build-stats.ts",
+    "preview": "vite preview --configLoader runner --outDir dist",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "e2e": "playwright test",
     "compare": "playwright test --project=comparison --workers=1 && node scripts/compare.ts",
     "record": "node scripts/record.ts",
-    "dev:native": "vite --mode native"
+    "dev:native": "vite --configLoader runner --mode native"
   },
   "dependencies": {
     "@isoloop/bus": "catalog:isoloop",
@@ -32,6 +32,7 @@
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "typescript": "catalog:",
+    "ui": "workspace:*",
     "vite": "catalog:",
     "vitest": "catalog:"
   }

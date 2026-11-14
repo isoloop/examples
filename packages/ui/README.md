@@ -4,7 +4,7 @@ The design system shared by the site and the examples ([ADR 0003](../../docs/adr
 
 | Export | What it is |
 | --- | --- |
-| `ui/components` | `Header`, `Bar`, `Footer`, `ThemeToggle`: Preact, rendered to static HTML at build time only |
+| `ui/components` | `Head`, `Header`, `Bar`, `Footer`, `Card`, `Table`, `Callout`, `Frame`, `Button`, `ThemeToggle`: Preact, rendered to static HTML at build time only |
 | `ui/render` | `render(node): string`, the only file that imports `preact-render-to-string`; `render.test.tsx` is its conformance suite |
 | `ui/tokens.css` | the `--ui-*` tokens: primitives, and the semantic layer per theme |
 | `ui/shell.css` | the `ui-` classes, in `@layer ui` |
@@ -23,7 +23,9 @@ export default defineConfig({ plugins: [ui({ header: { current: 'examples' }, fo
 
 An app that imports `ui/vite` runs Vite with `--configLoader runner` (in its `dev`, `build` and `preview` scripts). Vite's default config loader hands a linked workspace package to Node, and Node can't load the components' `.tsx`. The runner transforms them as it loads them. Its `tsconfig.json` also needs `"jsx": "react-jsx"` and `"jsxImportSource": "preact"`, so `tsc` can follow the import.
 
-Put `<!-- ui:header -->`, `<!-- ui:bar -->` or `<!-- ui:footer -->` in a page to choose where a partial goes. Otherwise the header and bar go first in `<body>` and the footer last.
+Put `<!-- ui:header -->`, `<!-- ui:bar -->` or `<!-- ui:footer -->` in a page to choose where a partial goes. Otherwise the header and bar go first in `<body>` and the footer last. An app with several sections names the page's section in the marker, `<!-- ui:header:how-it-works -->`, which wins over the option's `current` (the site does this).
+
+The dashboards take `ui({ bar: true })`. Their configs load through Vite's runner (`--configLoader runner`), which follows this package's TypeScript and Preact sources.
 
 ## Checks
 

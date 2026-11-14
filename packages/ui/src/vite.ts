@@ -69,9 +69,12 @@ export function uiAssets(opts: UiOptions): {
   return { css, theme, favicon };
 }
 
-/** The partials, rendered. */
-export function uiPartials(opts: UiOptions): Record<'header' | 'bar' | 'footer', string | null> {
-  const current = typeof opts.header === 'object' ? opts.header.current : undefined;
+/** The partials, rendered. `current` (from a page's marker) wins over the option's. */
+export function uiPartials(
+  opts: UiOptions,
+  section?: Current,
+): Record<'header' | 'bar' | 'footer', string | null> {
+  const current = section ?? (typeof opts.header === 'object' ? opts.header.current : undefined);
   return {
     header: opts.header ? render(h(Header, current ? { current } : {})) : null,
     bar: opts.bar ? render(h(Bar, {})) : null,
@@ -85,6 +88,22 @@ export function assetPrefix(base: string, pagePath: string): string {
     return base.endsWith('/') ? base : `${base}/`;
   const depth = pagePath.split('/').filter(Boolean).length - 1;
   return depth > 0 ? '../'.repeat(depth) : './';
+}
+
+const CURRENTS: ReadonlySet<string> = new Set<Current>(['home', 'how-it-works', 'examples']);
+const isCurrent = (s: string): s is Current => CURRENTS.has(s);
+
+/**
+ * A page can name its section in the header marker, `<!-- ui:header:examples -->`,
+ * for apps with several sections (the site). Returns that section and the html
+ * with the plain marker.
+ */
+export function pageCurrent(html: string): { html: string; current: Current | undefined } {
+  const m = /<!-- ui:header:([a-z-]+) -->/.exec(html);
+  if (!m) return { html, current: undefined };
+  const name = m[1] ?? '';
+  if (!isCurrent(name)) throw new Error(`ui: unknown header section "${name}"`);
+  return { html: html.replace(m[0], '<!-- ui:header -->'), current: name };
 }
 
 /** Puts each partial at its marker comment, or first (last for the footer) in <body>. */
@@ -119,8 +138,9 @@ export function ui(opts: UiOptions = {}): Plugin {
     transformIndexHtml(html, ctx) {
       const { css, theme, favicon } = uiAssets(opts);
       const prefix = assetPrefix(base, ctx.path);
+      const page = pageCurrent(html);
       return {
-        html: placePartials(html, uiPartials(opts)),
+        html: placePartials(page.html, uiPartials(opts, page.current)),
         tags: [
           ...(theme
             ? [

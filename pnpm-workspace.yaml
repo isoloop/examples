@@ -19,6 +19,8 @@ catalog:
   zod: 4.6.7
   # packages/ui renders Preact components to static HTML at build time (ADR 0003).
   preact-render-to-string: 6.8.2
+  # The site's smoke test checks accessibility with axe, behind expectAccessible() (ADR 0002, decision 9).
+  '@axe-core/playwright': 4.14.0
 
 # Isoloop itself, installed from npm like any app would. One version for every
 # package (they release as one fixed group, ADR 0012), so all apps move to a
