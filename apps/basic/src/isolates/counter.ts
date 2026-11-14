@@ -1,21 +1,26 @@
 import { defineIsolate } from '@isoloop/runtime';
 import { count } from '../topics';
-import { el, faults } from './dom';
+import { el, faults, reporter, reporting } from './dom';
 
 // A · Counter, on its own worker. Its count is on the bus, read from the
-// start, so after a restart A picks up where it was.
+// start, so after a restart A picks up where it was. Embedded in the site's
+// demo, it also counts on its own every 0.6 s and reports each task.
 export default defineIsolate<HTMLElement>({
   start(ctx) {
     const { root } = ctx;
     if (!root) return;
+    const report = reporter(ctx);
     let n = 0;
     const big = el('div', { class: 'big', 'data-value': '' }, '0');
     const inc = el('button', { class: 'primary' }, 'Increment');
-    inc.addEventListener('click', () => {
-      n++;
-      big.textContent = String(n);
-      void ctx.bus.publish(count, { value: n });
-    });
+    const increment = (): void => {
+      report(() => {
+        n++;
+        big.textContent = String(n);
+        void ctx.bus.publish(count, { value: n });
+      });
+    };
+    inc.addEventListener('click', increment);
     ctx.bus.subscribe(
       count,
       (r) => {
@@ -25,6 +30,7 @@ export default defineIsolate<HTMLElement>({
       },
       { from: 'earliest' },
     );
+    if (reporting(ctx)) setInterval(increment, 600);
     root.append(
       el(
         'div',

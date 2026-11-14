@@ -12,3 +12,5 @@ function handle<T extends { name: string }>(name: T['name']): T {
 export const count: typeof C.count = handle('count.v1');
 export const note: typeof C.note = handle('note.v1');
 export const primes: typeof C.primes = handle('primes.v1');
+export const activity: typeof C.activity = handle('activity.v1');
+export const control: typeof C.control = handle('control.v1');
