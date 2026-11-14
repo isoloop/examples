@@ -1,0 +1,110 @@
+/* The page around the panes. Colours and spacing come from ui's tokens (ADR 0003). */
+.basic {
+  padding-bottom: var(--ui-space-6);
+}
+.intro {
+  max-width: 48rem;
+  padding: var(--ui-space-5) 0 var(--ui-space-4);
+}
+.intro h1 {
+  font-size: var(--ui-text-3xl);
+  margin: 0 0 var(--ui-space-3);
+}
+.rules {
+  padding-left: var(--ui-space-5);
+}
+.rules li {
+  margin: var(--ui-space-1) 0;
+}
+.main-thread {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-3);
+  align-items: center;
+}
+.chip {
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-l);
+  font-size: var(--ui-text-s);
+  font-variant-numeric: tabular-nums;
+}
+.mono {
+  font-family: var(--ui-font-mono);
+}
+
+.loops {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr));
+  gap: var(--ui-space-5);
+}
+.group h2 {
+  font-size: var(--ui-text-l);
+  margin: 0 0 var(--ui-space-2);
+}
+.pool {
+  border: 2px dashed var(--ui-accent);
+  border-radius: var(--ui-radius-l);
+  padding: var(--ui-space-3);
+}
+.caption {
+  margin: 0 0 var(--ui-space-3);
+  color: var(--ui-text-muted);
+  font-size: var(--ui-text-s);
+}
+.panes {
+  display: grid;
+  gap: var(--ui-space-3);
+}
+
+.pane {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-m);
+  overflow: hidden;
+}
+.pane[data-state='blocked'],
+.pane[data-state='crashed'] {
+  border-color: var(--ui-accent);
+  border-width: 2px;
+}
+.pane-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-1) var(--ui-space-3);
+  align-items: baseline;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-bottom: 1px solid var(--ui-border);
+}
+.pane-name {
+  margin: 0;
+  font-size: var(--ui-text-m);
+}
+.where,
+.restarts {
+  color: var(--ui-text-muted);
+  font-size: var(--ui-text-xs);
+}
+.status {
+  margin-left: auto;
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-text-xs);
+}
+.pane-body {
+  min-height: 9rem;
+  padding: var(--ui-space-3);
+}
+.pane-foot {
+  padding: 0 var(--ui-space-3) var(--ui-space-2);
+}
+.small {
+  font-size: var(--ui-text-xs);
+}
+
+/* In an iframe on the landing page (?embed=1): the demo only. */
+[data-embed] .basic {
+  padding-bottom: 0;
+}
+[data-embed] .intro h1 {
+  display: none;
+}

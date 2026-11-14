@@ -3,7 +3,8 @@
 # (deploy.yml):
 #   /                                -> a placeholder until the site lands
 #                                       (scripts/placeholder/, plan task 3)
-#   /examples/                       -> links to the example groups
+#   /examples/                       -> links to the examples
+#   /examples/basic/                 -> basic: four isolates, two of them pooled
 #   /examples/dashboards/            -> lists the dashboards
 #   /examples/dashboards/markets/    -> the markets dashboard, every build under it
 #   /examples/dashboards/plant/      -> the plant dashboard, every build under it
@@ -18,6 +19,7 @@ set -euo pipefail
 site=${1:-site}
 markets=apps/dashboards/markets/dist
 plant=apps/dashboards/plant/dist
+basic=apps/basic/dist
 
 ex=$site/examples
 
@@ -26,6 +28,7 @@ mkdir -p "$ex/dashboards"
 cp scripts/placeholder/* "$site/"
 cp -r "$markets" "$ex/dashboards/markets"
 cp -r "$plant" "$ex/dashboards/plant"
+cp -r "$basic" "$ex/basic"
 mkdir -p "$ex/dashboards/plant/architecture"
 cp apps/dashboards/plant/architecture/*.html apps/dashboards/plant/architecture/*.js \
   "$ex/dashboards/plant/architecture/"
@@ -40,7 +43,7 @@ page() { # title, body
 }
 
 page 'Isoloop examples' \
-  '<h1>Isoloop examples</h1><ul><li><a href="./dashboards/">Dashboards</a></li></ul>' \
+  '<h1>Isoloop examples</h1><ul><li><a href="./basic/">Basic</a>: four isolates on three event loops, two of them sharing a pool. Block or crash any of them and watch what keeps running.</li><li><a href="./dashboards/">Dashboards</a></li></ul>' \
   > "$ex/index.html"
 
 page 'Dashboards · Isoloop examples' \

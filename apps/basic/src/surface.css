@@ -1,0 +1,81 @@
+/*
+ * Adopted into every isolate's shadow root. The --ui-* custom properties
+ * inherit from the page through the shadow boundary, so the surfaces follow
+ * the theme live, with no restart.
+ */
+* {
+  box-sizing: border-box;
+}
+:host {
+  color: var(--ui-text);
+  font: var(--ui-text-s) / 1.5 var(--ui-font-sans);
+}
+button,
+input {
+  font: inherit;
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-radius: var(--ui-radius-s);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-bg);
+  color: var(--ui-text);
+}
+button {
+  cursor: pointer;
+}
+button.primary {
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+  color: var(--ui-on-accent);
+}
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--ui-focus);
+  outline-offset: 2px;
+}
+input {
+  min-width: 0;
+  flex: 1;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-2);
+  align-items: flex-start;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-2);
+  width: 100%;
+}
+.faults {
+  padding-top: var(--ui-space-2);
+  border-top: 1px dashed var(--ui-border);
+}
+.big {
+  font-size: var(--ui-text-2xl);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.mono {
+  font-family: var(--ui-font-mono);
+}
+.muted {
+  margin: 0;
+  color: var(--ui-text-muted);
+  font-size: var(--ui-text-xs);
+}
+p {
+  margin: 0;
+}
+.log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  font: var(--ui-text-xs) var(--ui-font-mono);
+}
+.log li {
+  padding: 2px 0;
+  border-bottom: 1px dashed var(--ui-border);
+}

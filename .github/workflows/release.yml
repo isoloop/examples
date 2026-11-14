@@ -1,11 +1,12 @@
 name: Release
 
-# A `markets-v*` or `plant-v*` tag ships that public demo: check, every E2E
-# test of that app on every build and engine, deploy (every dashboard, and the
-# live smoke tests), then the recorded comparison of that app.
+# A `markets-v*`, `plant-v*` or `basic-v*` tag ships that public demo: check,
+# every E2E test of that app on every build and engine, deploy (every app, and
+# the live smoke tests), then the recorded comparison of that dashboard (basic
+# has none).
 on:
   push:
-    tags: ['markets-v*', 'plant-v*']
+    tags: ['markets-v*', 'plant-v*', 'basic-v*']
 
 permissions:
   contents: read
@@ -19,7 +20,7 @@ jobs:
     uses: ./.github/workflows/e2e.yml
     with:
       # The tag's prefix names the app: plant-v0.1.0 -> dashboards/plant.
-      apps: ${{ startsWith(github.ref_name, 'plant-v') && '["dashboards/plant"]' || '["dashboards/markets"]' }}
+      apps: ${{ startsWith(github.ref_name, 'plant-v') && '["dashboards/plant"]' || startsWith(github.ref_name, 'basic-v') && '["basic"]' || '["dashboards/markets"]' }}
       scope: full
 
   deploy:

@@ -1,11 +1,11 @@
 name: Deploy
 
-# The site to GitHub Pages (isoloop.dev, ADR 0001): a placeholder at /, and the
-# dashboards at <pages url>/examples/dashboards/markets/ (M3b task 19; the old
+# The site to GitHub Pages (isoloop.dev, ADR 0001): a placeholder at /, basic at
+# <pages url>/examples/basic/ (website plan task 4b), and the dashboards at <pages url>/examples/dashboards/markets/ (M3b task 19; the old
 # <pages url>/examples/markets/ paths redirect there) and
 # <pages url>/examples/dashboards/plant/ (M3d), then each one's smoke test
 # against the live URL. Pages serves one site, so every deploy builds every app. Only
-# from a `markets-v*` or `plant-v*` tag (release.yml) or by hand: the public
+# from a `markets-v*`, `plant-v*` or `basic-v*` tag (release.yml) or by hand: the public
 # demos change when someone decides they should.
 #
 # GitHub Pages can't set COOP/COEP headers, so the metrics panel's memory figure
@@ -28,7 +28,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter "./apps/dashboards/*" build
+      - run: pnpm --filter "./apps/dashboards/*" --filter ./apps/basic build
       - name: Assemble the site
         run: scripts/assemble-site.sh site
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
@@ -61,7 +61,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [markets, plant]
+        app: [dashboards/markets, dashboards/plant, basic]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
@@ -73,6 +73,6 @@ jobs:
       - uses: ./.github/actions/install-browsers
         with:
           browsers: chromium
-      - run: pnpm --filter ./apps/dashboards/${{ matrix.app }} e2e --project=live
+      - run: pnpm --filter ./apps/${{ matrix.app }} e2e --project=live
         env:
-          LIVE_URL: ${{ needs.deploy.outputs.url }}examples/dashboards/${{ matrix.app }}/
+          LIVE_URL: ${{ needs.deploy.outputs.url }}examples/${{ matrix.app }}/
