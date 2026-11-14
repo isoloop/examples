@@ -1,7 +1,7 @@
 # Ubuntu only, actions pinned by commit SHA (isoloop/isoloop ADR 0009, rules 9
 # and 12). `check` runs on everything; `e2e` runs per app and engine, only for
 # the apps a pull request touches (all of them when the shared setup changes,
-# and on every push to main).
+# none when only docs or Markdown change).
 name: CI
 
 # Pull requests: check, then E2E for the apps they touch (every build on

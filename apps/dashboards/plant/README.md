@@ -2,7 +2,7 @@
 
 A telemetry dashboard for a fictional plant: 8 machines, 72 widgets, and sensor data heavy enough to matter. Vibration is sampled at 1, 2 or 5 kHz, with spectra, percentiles, correlations and persistent alarms. It's built three ways from the same widgets and the same seeded data: **native** (everything on the main thread), **native + workers** (a data worker per machine, the way a careful team would write it, with the widgets on the main thread) and **Isoloop**. The Isoloop build places its isolates several ways, chosen with `?placement=`.
 
-Live at **https://isoloop.github.io/examples/dashboards/plant/** (`?rate=1|2|5`; `?placement=matched|split|one|machine|shared-engines|own` on the Isoloop build).
+Live at **https://isoloop.dev/examples/dashboards/plant/** (`?rate=1|2|5`; `?placement=matched|split|one|machine|shared-engines|own` on the Isoloop build).
 
 Isoloop isn't a way to make a native page faster: it adds threads, a message bus and a kernel, and that costs CPU and memory. What it gives for that cost is the whole package: containment, restart and catch-up, a broker with retention, replay and durable history, and placement chosen with a switch. This page puts what each build does first and what it costs second, both as measured.
 

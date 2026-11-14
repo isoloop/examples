@@ -21,7 +21,7 @@ const WS = args.ws ?? 'ws://localhost:9222/devtools/page/1';
 const ROUNDS = Number(args.rounds ?? 2);
 const WAIT_S = Number(args.wait ?? 25);
 const OUT = args.out ?? 'results';
-const BASE = 'https://isoloop.github.io/examples/dashboards/plant/';
+const BASE = 'https://isoloop.dev/examples/dashboards/plant/';
 const PAGES = [
   'native/?rate=1',
   'isoloop/?rate=1&placement=one',

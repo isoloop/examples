@@ -1,9 +1,10 @@
 name: Deploy
 
-# The dashboards to GitHub Pages, at <pages url>/dashboards/markets/ (M3b task
-# 19; the old <pages url>/markets/ paths redirect there) and
-# <pages url>/dashboards/plant/ (M3d), then each one's smoke test against the
-# live URL. Pages serves one site, so every deploy builds every dashboard. Only
+# The site to GitHub Pages (isoloop.dev, ADR 0001): a placeholder at /, and the
+# dashboards at <pages url>/examples/dashboards/markets/ (M3b task 19; the old
+# <pages url>/examples/markets/ paths redirect there) and
+# <pages url>/examples/dashboards/plant/ (M3d), then each one's smoke test
+# against the live URL. Pages serves one site, so every deploy builds every app. Only
 # from a `markets-v*` or `plant-v*` tag (release.yml) or by hand: the public
 # demos change when someone decides they should.
 #
@@ -47,7 +48,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}dashboards/
+      url: ${{ steps.deployment.outputs.page_url }}examples/
     outputs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
@@ -74,4 +75,4 @@ jobs:
           browsers: chromium
       - run: pnpm --filter ./apps/dashboards/${{ matrix.app }} e2e --project=live
         env:
-          LIVE_URL: ${{ needs.deploy.outputs.url }}dashboards/${{ matrix.app }}/
+          LIVE_URL: ${{ needs.deploy.outputs.url }}examples/dashboards/${{ matrix.app }}/
