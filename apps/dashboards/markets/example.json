@@ -3,7 +3,7 @@
   "summary": "A backend-less markets dashboard on public exchange feeds: aggregates and alerts in the visitor's tab, native and on Isoloop, with React and with Preact, in Lite, Normal and Heavy sizes.",
   "order": 30,
   "result": {
-    "line": "Isoloop keeps 17–21% of the main thread busy against 42–59% for native at Normal and Heavy, and uses 1.3–1.5× the CPU across all threads, 1.6–2.7× the memory and 20–30 ms more per keystroke; neither build drops frames on the CI runner.",
+    "line": "In the React builds at Normal and Heavy, Isoloop keeps the main thread 17–21% busy against 42–59% for native, and uses 1.3–1.5× the CPU across all threads, 1.6–2.7× the memory and 20–30 ms more per keystroke; neither build drops frames on the CI runner.",
     "tag": "markets-v0.2.0"
   },
   "links": {

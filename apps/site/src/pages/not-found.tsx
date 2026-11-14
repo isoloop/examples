@@ -1,11 +1,11 @@
 /** @jsxImportSource preact */
 import type { VNode } from 'preact';
-import { COPY_STATUS, notFound } from '../copy.ts';
+import { notFound } from '../copy.ts';
 import type { Page } from './types.ts';
 
 function NotFound(): VNode {
   return (
-    <main class="ui-shell" data-copy={COPY_STATUS}>
+    <main class="ui-shell">
       <section class="ui-section" aria-labelledby="title">
         <h1 id="title">{notFound.heading}</h1>
         <p>{notFound.text}</p>
