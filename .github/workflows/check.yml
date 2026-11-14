@@ -43,8 +43,9 @@ jobs:
           # An app is a folder under apps/ with a package.json, at any depth
           # (apps/<name> or apps/<group>/<name>); its id is that path below apps/.
           # The site has no E2E of its own; its smoke test is the site job.
+          # apps/samples only holds the site's type-checked code samples.
           all=$(find apps -name package.json -not -path '*/node_modules/*' \
-            | xargs -n1 dirname | sed 's#^apps/##' | grep -vx site | sort)
+            | xargs -n1 dirname | sed 's#^apps/##' | grep -vxE 'site|samples' | sort)
           if [ -z "$BASE" ]; then
             apps="$all"
           else
@@ -71,7 +72,7 @@ jobs:
           # changes; or when there's nothing to compare against.
           if [ -z "$BASE" ] || ! git cat-file -e "$BASE" 2>/dev/null; then
             site=true
-          elif git diff --name-only "$BASE" HEAD | grep -qE '^(apps/site|packages/ui|apps/basic)/|(^|/)example\.json$|^scripts/assemble-site\.sh$|^\.github/workflows/site\.yml$'; then
+          elif git diff --name-only "$BASE" HEAD | grep -qE '^(apps/site|apps/samples|packages/ui|apps/basic)/|(^|/)example\.json$|^scripts/assemble-site\.sh$|^\.github/workflows/site\.yml$'; then
             site=true
           else
             site=false

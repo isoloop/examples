@@ -1,36 +1,80 @@
 /*
- * The shell (ADR 0003, decision 6): the ui- classes, all in @layer ui, so an
- * app's own unlayered CSS always wins without specificity fights. Colours,
- * spacing and type come only from the semantic tokens (tokens.css). Rules on
- * plain elements (body, links, focus) are in base.css, which only pages with
- * the full header get, so the dashboards' bar adds no global styles.
+ * The shell (ADR 0003, decision 6, as amended for the approved design): the
+ * ui- classes, all in @layer ui, so an app's own unlayered CSS always wins
+ * without specificity fights. Colours, spacing and type come only from the
+ * semantic tokens (tokens.css). Rules on plain elements (body, headings,
+ * links, focus) are in base.css, which only pages with the full header get,
+ * so the dashboards' bar adds no global styles.
+ *
+ * The layout is a gutter of labels: section headings sit in a left column and
+ * stay in view as their section scrolls past, the way the recording's tracks
+ * hold their names. No card grids, eyebrow labels or numbered markers.
+ * Archivo's width axis carries the hierarchy: 68% headline, 80% section
+ * headings, 87% labels, 100% body.
  */
 @layer ui {
   .ui-shell {
-    max-width: 72rem;
+    max-width: var(--ui-page);
     margin: 0 auto;
-    padding: 0 var(--ui-space-4);
+    padding: 0 var(--ui-space-5);
   }
 
-  /* The full header: wordmark, nav, theme toggle. */
+  /* The full header: sticky, full width, contents aligned with the page column. */
   .ui-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--ui-space-2) var(--ui-space-5);
     align-items: center;
-    padding: var(--ui-space-3) var(--ui-space-4);
-    border-bottom: 1px solid var(--ui-border);
+    gap: var(--ui-space-2) var(--ui-space-6);
+    padding-block: 1.1rem;
+    padding-inline: max(var(--ui-space-5), calc((100% - var(--ui-page)) / 2 + var(--ui-space-5)));
+    background: var(--ui-bg);
+    border-bottom: 1px solid var(--ui-rule);
   }
   .ui-wordmark {
+    display: inline-flex;
+    align-items: center;
     color: var(--ui-text);
-    font-size: var(--ui-text-l);
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
+    font-stretch: 75%;
+    letter-spacing: -0.01em;
     text-decoration: none;
+  }
+  .ui-wordmark {
+    gap: 0.5rem;
+    font-weight: 820;
+    font-stretch: 68%;
+  }
+  .ui-mark {
+    display: block;
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+  /* The mark for the theme: light by default, dark when the page is. */
+  .ui-mark[data-for='dark'],
+  [data-theme='dark'] .ui-mark[data-for='light'] {
+    display: none;
+  }
+  [data-theme='dark'] .ui-mark[data-for='dark'] {
+    display: block;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .ui-mark[data-for='light'] {
+      display: none;
+    }
+    :root:not([data-theme]) .ui-mark[data-for='dark'] {
+      display: block;
+    }
   }
   .ui-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--ui-space-4);
+    gap: var(--ui-space-2) 1.4rem;
+    font-stretch: 87%;
+    font-weight: 500;
   }
   .ui-nav a {
     color: var(--ui-text);
@@ -38,14 +82,62 @@
   }
   .ui-nav a:hover,
   .ui-nav a[aria-current='page'] {
-    color: var(--ui-accent);
     text-decoration: underline;
-  }
-  .ui-header .ui-toggle {
-    margin-left: auto;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.3em;
   }
 
-  /* The thin bar on the dashboards, fixed dark by its own data-theme. */
+  /* The theme switch: a sun and a moon, and a knob behind the active one. */
+  .ui-toggle {
+    margin-left: auto;
+    position: relative;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 3.75rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    background: var(--ui-surface);
+    color: var(--ui-text-muted);
+    border: 1px solid var(--ui-border);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .ui-toggle[hidden] {
+    display: none;
+  }
+  .ui-toggle svg {
+    position: relative;
+    z-index: 1;
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: color 0.2s;
+  }
+  .ui-toggle-knob {
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--ui-text);
+    transition: transform 0.2s ease;
+  }
+  .ui-toggle[aria-checked='true'] .ui-toggle-knob {
+    transform: translateX(1.75rem);
+  }
+  .ui-toggle[aria-checked='false'] .ui-toggle-sun,
+  .ui-toggle[aria-checked='true'] .ui-toggle-moon {
+    color: var(--ui-bg);
+  }
+
+  /* The thin bar on the dashboards, fixed dark by its own data-theme. Unchanged. */
   .ui-bar {
     display: flex;
     flex-wrap: wrap;
@@ -53,8 +145,10 @@
     padding: var(--ui-space-1) var(--ui-space-4);
     background: var(--ui-bg);
     color: var(--ui-text);
-    font: var(--ui-text-s) / 1.5 var(--ui-font-sans);
-    border-bottom: 1px solid var(--ui-border);
+    font:
+      var(--ui-text-s) / 1.5 system-ui,
+      sans-serif;
+    border-bottom: 1px solid var(--ui-rule);
   }
   .ui-bar a {
     color: var(--ui-text);
@@ -63,101 +157,366 @@
   .ui-footer {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--ui-space-4);
-    padding: var(--ui-space-5) var(--ui-space-4);
+    gap: var(--ui-space-2) var(--ui-space-5);
+    max-width: var(--ui-page);
+    margin: 6rem auto 0;
+    padding: var(--ui-space-5);
     color: var(--ui-text-muted);
     font-size: var(--ui-text-s);
-    border-top: 1px solid var(--ui-border);
+    font-stretch: 87%;
+    border-top: 1px solid var(--ui-rule);
   }
   .ui-footer a {
     color: var(--ui-text-muted);
   }
 
-  .ui-section {
-    padding: var(--ui-space-6) 0;
+  /* The page's opening: the headline across, the text in the body column. */
+  .ui-intro {
+    display: grid;
+    grid-template-columns: var(--ui-gutter) minmax(0, 1fr);
+    row-gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+  .ui-intro h1 {
+    grid-column: 1 / -1;
+  }
+  .ui-intro > :not(h1) {
+    grid-column: 2;
+    max-width: 44rem;
   }
 
-  /* Prose keeps a readable measure; tables, grids and frames keep the full width. */
-  .ui-hero > p,
-  .ui-hero > ul,
-  .ui-hero > ol,
-  .ui-section > p,
-  .ui-section > ul,
-  .ui-section > ol {
-    max-width: 70ch;
+  /* A section: its heading in the gutter, sticky below the header. */
+  .ui-gutter {
+    display: grid;
+    grid-template-columns: var(--ui-gutter) minmax(0, 1fr);
+    margin-top: var(--ui-space-8);
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--ui-rule);
   }
-
-  .ui-card {
-    background: var(--ui-surface);
-    border: 1px solid var(--ui-border);
-    border-radius: var(--ui-radius-m);
-    padding: var(--ui-space-4);
+  .ui-gutter > h2 {
+    margin: 0;
+    padding-right: var(--ui-space-5);
+    align-self: start;
+    position: sticky;
+    top: calc(var(--ui-bar-h) + 1rem);
   }
-
-  .ui-card-image {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin-bottom: var(--ui-space-3);
-    border-radius: var(--ui-radius-s);
-    border: 1px solid var(--ui-border);
+  .ui-gutter > h2[data-part] {
+    padding-left: 0.75rem;
+    border-left: 4px solid var(--part, var(--ui-text));
   }
-  .ui-card > h2,
-  .ui-card > h3 {
+  .ui-body {
+    min-width: 0;
+  }
+  .ui-body > p,
+  .ui-body > ul,
+  .ui-body > ol,
+  .ui-body > dl {
+    max-width: 44rem;
+  }
+  .ui-body > :first-child {
     margin-top: 0;
   }
 
-  /* A row of cards that wraps to one column on phones. */
-  .ui-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    gap: var(--ui-space-4);
+  [data-part='host'] {
+    --part: var(--ui-part-host);
+  }
+  [data-part='bus'] {
+    --part: var(--ui-part-bus);
+  }
+  [data-part='isolate'] {
+    --part: var(--ui-part-isolate);
+  }
+  [data-part='pool'] {
+    --part: var(--ui-part-pool);
+  }
+  [data-part='cost'] {
+    --part: var(--ui-text);
   }
 
-  /* The landing page's opening: one line, three points, the main action. */
-  .ui-hero {
-    padding: var(--ui-space-7) 0 var(--ui-space-6);
+  /* Lists with rules: uses, examples. */
+  .ui-uses {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 44rem;
   }
-  .ui-hero h1 {
-    font-size: var(--ui-text-3xl);
+  .ui-uses > li {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--ui-rule);
+  }
+  .ui-uses > li:first-child {
+    padding-top: 0;
+  }
+  .ui-uses b {
+    font-weight: 650;
+  }
+
+  /* The features strip: one line per feature, a bar in its part's colour. */
+  .ui-strip > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    columns: 2 22rem;
+    column-gap: 2.5rem;
+    border-top: 2px solid var(--ui-text);
+  }
+  .ui-strip li {
+    break-inside: avoid;
+    border-bottom: 1px solid var(--ui-rule);
+  }
+  .ui-strip li a {
+    display: block;
+    padding: 0.75rem 0 0.75rem 0.9rem;
+    margin: 0.5rem 0;
+    border-left: 4px solid var(--part, var(--ui-text));
+    color: var(--ui-text);
+    text-decoration: none;
+  }
+  .ui-strip li a:hover b {
+    text-decoration: underline;
+  }
+  .ui-strip b {
+    font-weight: 700;
+    font-stretch: 87%;
+  }
+  .ui-strip > a {
+    display: inline-block;
+    margin-top: 1.2rem;
+    font-weight: 650;
+    font-stretch: 87%;
+  }
+
+  /* The recording: track names in the gutter, a canvas beside them. */
+  .ui-recording {
+    margin: 2.5rem 0 0;
+  }
+  .ui-try {
+    margin: 0 0 1rem;
+    color: var(--ui-text-muted);
+    max-width: 44rem;
+  }
+  .ui-panel {
+    display: grid;
+    grid-template-columns: var(--ui-gutter) minmax(0, 1fr);
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--ui-radius-l);
+    overflow: hidden;
+  }
+  .ui-tracks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-right: 1px solid var(--ui-rule);
+  }
+  .ui-tracks::after {
+    content: '';
+    display: block;
+    height: 1.75rem;
+  }
+  .ui-track {
+    height: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--ui-rule);
+    border-left: 4px solid var(--part);
     line-height: 1.15;
-    margin: 0 0 var(--ui-space-4);
-    max-width: 22ch;
   }
-  .ui-hero ul {
-    padding-left: var(--ui-space-5);
+  .ui-track[data-rows='2'] {
+    height: 5rem;
   }
+  .ui-track b {
+    font-weight: 650;
+    font-stretch: 87%;
+  }
+  .ui-track span {
+    color: var(--ui-text-muted);
+    font-size: 0.85rem;
+    font-stretch: 87%;
+  }
+  /* The canvas fills its cell without sizing it: the tracks set the height. */
+  .ui-trace-cell {
+    position: relative;
+    min-height: 10rem;
+  }
+  .ui-trace {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .ui-legend {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 2rem;
+    color: var(--ui-text-muted);
+    font-size: 0.9rem;
+    font-stretch: 87%;
+  }
+  .ui-legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .ui-legend li::before {
+    content: '';
+    flex: none;
+    width: 1.6rem;
+    height: 0.8rem;
+    border-radius: 2px;
+  }
+  .ui-legend [data-mark='task']::before {
+    background: var(--ui-part-isolate);
+  }
+  .ui-legend [data-mark='stuck']::before {
+    background: repeating-linear-gradient(135deg, var(--ui-part-pool) 0 3px, transparent 3px 6px);
+    outline: 1px solid var(--ui-part-pool);
+  }
+  .ui-legend [data-mark='restart']::before {
+    width: 2px;
+    height: 1.1rem;
+    background: var(--ui-text);
+    margin: 0 0.8rem;
+  }
+  .ui-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 0.75rem;
+    margin-top: 1.25rem;
+  }
+  .ui-status {
+    margin: 0 0 0 0.5rem;
+    color: var(--ui-text-muted);
+    font-stretch: 87%;
+    min-height: 1.55em;
+  }
+
   .ui-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--ui-space-3);
+    gap: 1.4rem;
     align-items: center;
-    margin-top: var(--ui-space-5);
+    margin-top: 1.3rem;
+  }
+
+  .ui-button {
+    display: inline-block;
+    font: inherit;
+    font-weight: 600;
+    font-stretch: 87%;
+    padding: 0.55rem 1rem;
+    border-radius: var(--ui-radius-m);
+    border: 1px solid var(--ui-text);
+    background: transparent;
+    color: var(--ui-text);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .ui-button[data-primary] {
+    background: var(--ui-accent);
+    border-color: var(--ui-accent);
+    color: var(--ui-on-accent);
+    padding: 0.7rem 1.15rem;
+  }
+  .ui-button[data-strong] {
+    background: var(--ui-text);
+    border-color: var(--ui-text);
+    color: var(--ui-bg);
+  }
+  .ui-button:disabled {
+    opacity: 0.45;
+    cursor: default;
   }
 
   .ui-table-wrap {
     overflow-x: auto;
-    margin: var(--ui-space-4) 0;
+    margin: 0;
   }
   .ui-table {
     border-collapse: collapse;
     width: 100%;
-    font-size: var(--ui-text-s);
+    font-size: 0.97rem;
+    font-variant-numeric: tabular-nums;
   }
   .ui-table caption {
     text-align: left;
     color: var(--ui-text-muted);
-    padding-bottom: var(--ui-space-2);
+    font-size: 0.9rem;
+    padding-bottom: 0.9rem;
+    max-width: 44rem;
   }
   .ui-table th,
   .ui-table td {
     text-align: left;
     vertical-align: top;
-    padding: var(--ui-space-2) var(--ui-space-3);
-    border-bottom: 1px solid var(--ui-border);
+    padding: 0.7rem 1rem 0.7rem 0;
+    border-bottom: 1px solid var(--ui-rule);
   }
   .ui-table thead th {
-    border-bottom-width: 2px;
+    font-weight: 650;
+    font-stretch: 87%;
+    border-bottom: 2px solid var(--ui-text);
+  }
+  .ui-table tbody th {
+    font-weight: 600;
+    font-stretch: 87%;
+    width: 22%;
+  }
+  .ui-table[data-mark-last] td:last-child {
+    border-left: 4px solid var(--ui-part-pool);
+    padding-left: 0.8rem;
+  }
+
+  /* Examples as a list with rules. */
+  .ui-examples {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ui-examples > li {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--ui-rule);
+    max-width: 52rem;
+  }
+  .ui-examples > li:first-child {
+    padding-top: 0;
+  }
+  .ui-examples h3 {
+    margin: 0 0 0.3rem;
+    font-size: 1.35rem;
+    font-stretch: 75%;
+    font-weight: 750;
+  }
+  .ui-examples h3 a {
+    color: var(--ui-text);
+  }
+  .ui-examples p {
+    margin: 0.25rem 0;
+  }
+  .ui-examples .ui-result {
+    color: var(--ui-text-muted);
+    font-size: 0.95rem;
+  }
+  .ui-examples img {
+    display: block;
+    width: min(100%, 36rem);
+    height: auto;
+    margin: 0.6rem 0;
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--ui-radius-m);
+  }
+  .ui-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    font-stretch: 87%;
   }
 
   .ui-frame {
@@ -166,8 +525,8 @@
   .ui-frame iframe {
     display: block;
     width: 100%;
-    border: 1px solid var(--ui-border);
-    border-radius: var(--ui-radius-m);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--ui-radius-l);
     background: var(--ui-bg);
   }
   .ui-frame figcaption {
@@ -175,13 +534,26 @@
     font-size: var(--ui-text-s);
   }
 
+  /* Rendered and running, but out of view: not display: none, which stops its frames. */
+  .ui-offstage {
+    position: absolute;
+    left: -10000px;
+    top: 0;
+    width: 960px;
+    height: 720px;
+    border: 0;
+    pointer-events: none;
+  }
+
   .ui-code {
     display: block;
     overflow-x: auto;
     background: var(--ui-surface);
-    border: 1px solid var(--ui-border);
-    border-radius: var(--ui-radius-s);
-    padding: var(--ui-space-3);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--ui-radius-m);
+    padding: 1rem 1.2rem;
+    line-height: 1.6;
+    max-width: 52rem;
   }
 
   .ui-callout {
@@ -190,29 +562,35 @@
     padding: var(--ui-space-3) var(--ui-space-4);
   }
 
-  .ui-button,
-  .ui-toggle {
-    display: inline-block;
-    text-decoration: none;
-    font: inherit;
-    font-size: var(--ui-text-s);
-    padding: var(--ui-space-1) var(--ui-space-3);
-    border-radius: var(--ui-radius-s);
-    border: 1px solid var(--ui-border);
+  /* Kept for the specimens and older pages; the site uses lists, not card grids. */
+  .ui-card {
     background: var(--ui-surface);
-    color: var(--ui-text);
-    cursor: pointer;
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--ui-radius-m);
+    padding: var(--ui-space-4);
   }
-  .ui-button[data-primary] {
-    background: var(--ui-accent);
-    border-color: var(--ui-accent);
-    color: var(--ui-on-accent);
+  .ui-card-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: var(--ui-space-3);
+    border-radius: var(--ui-radius-s);
+    border: 1px solid var(--ui-rule);
   }
-  .ui-toggle[aria-pressed='true']::before {
-    content: '● ';
+  .ui-card > h2,
+  .ui-card > h3 {
+    margin-top: 0;
   }
-  .ui-toggle[aria-pressed='false']::before {
-    content: '○ ';
+  .ui-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--ui-space-4);
+  }
+  .ui-section {
+    padding: var(--ui-space-6) 0;
+  }
+  .ui-hero {
+    padding: var(--ui-space-7) 0 var(--ui-space-6);
   }
 
   /* Inside an iframe (?embed=1, set by theme.js): content only. */
@@ -221,10 +599,53 @@
     display: none;
   }
 
+  @media (max-width: 760px) {
+    .ui-header {
+      gap: var(--ui-space-2) var(--ui-space-4);
+      padding-block: 0.6rem;
+      row-gap: 0.45rem;
+    }
+    .ui-nav {
+      order: 3;
+      width: 100%;
+      gap: var(--ui-space-4);
+      font-size: 0.95rem;
+    }
+    .ui-intro,
+    .ui-gutter {
+      grid-template-columns: 1fr;
+    }
+    .ui-intro > :not(h1) {
+      grid-column: 1;
+    }
+    .ui-gutter {
+      margin-top: 3.5rem;
+    }
+    .ui-gutter > h2 {
+      position: static;
+      margin-bottom: var(--ui-space-4);
+    }
+    .ui-track {
+      padding: 0 0.6rem;
+    }
+    .ui-track span {
+      display: none;
+    }
+    .ui-status {
+      margin: 0;
+      width: 100%;
+    }
+    .ui-table {
+      display: block;
+      overflow-x: auto;
+    }
+  }
+
   @media (forced-colors: active) {
     .ui-header,
     .ui-bar,
     .ui-footer,
+    .ui-panel,
     .ui-card,
     .ui-table th,
     .ui-table td,
@@ -232,6 +653,9 @@
     .ui-button,
     .ui-toggle {
       border-color: CanvasText;
+    }
+    .ui-toggle-knob {
+      background: CanvasText;
     }
     :focus-visible {
       outline-color: Highlight;

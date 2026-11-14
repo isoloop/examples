@@ -7,13 +7,15 @@ export interface TableProps {
   head: string[];
   /** One cell per heading. The first, the row's heading, is text and unique: it keys the row. */
   rows: [string, ...ComponentChildren[]][];
+  /** Mark the last column, Isoloop's, with the pool colour. */
+  markLast?: boolean;
 }
 
 /**
  * A data table with a caption and headers on both axes, scrolling sideways on
  * narrow screens instead of the page (ADR 0002, decision 9).
  */
-export function Table({ caption, head, rows }: TableProps): VNode {
+export function Table({ caption, head, rows, markLast = false }: TableProps): VNode {
   return (
     <div
       class="ui-table-wrap"
@@ -21,7 +23,7 @@ export function Table({ caption, head, rows }: TableProps): VNode {
       role="region"
       aria-label={typeof caption === 'string' ? caption : undefined}
     >
-      <table class="ui-table">
+      <table class="ui-table" data-mark-last={markLast ? '' : undefined}>
         <caption>{caption}</caption>
         <thead>
           <tr>

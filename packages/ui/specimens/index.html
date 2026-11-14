@@ -9,86 +9,137 @@
   <body>
     <!-- ui:header -->
     <main class="ui-shell">
-      <section class="ui-hero" aria-labelledby="hero">
-        <h1 id="hero">A hero heading, one line on what the page is</h1>
-        <ul>
-          <li>A first point</li>
-          <li>A second point</li>
-          <li>A third point</li>
-        </ul>
+      <section class="ui-intro" aria-labelledby="hero">
+        <h1 id="hero">A headline, set narrow and heavy</h1>
+        <p>
+          Every class of <code>packages/ui</code>, in the theme the switch sets. Body text is
+          Archivo at full width. <a href="#gutter">A link</a> in running text.
+        </p>
         <div class="ui-actions">
-          <a class="ui-button" data-primary href="#cards">The main action</a>
+          <a class="ui-button" data-primary href="#gutter">The main action</a>
           <a href="#tables">A secondary link</a>
         </div>
       </section>
-      <section class="ui-section" aria-labelledby="type">
-        <h1 id="type">Specimens</h1>
-        <p>
-          Every component and class of <code>packages/ui</code>, in the theme the toggle sets.
-          <a href="#bar">A link</a> in running text.
-        </p>
-        <p class="ui-callout">A callout: one point the reader shouldn't miss.</p>
-      </section>
-      <section class="ui-section" aria-labelledby="cards">
-        <h2 id="cards">Cards and buttons</h2>
-        <div class="ui-card">
-          <h3>A card</h3>
-          <p>Cards hold an example, a figure or a section of a page.</p>
-          <button type="button" class="ui-button">Button</button>
-          <button type="button" class="ui-button" data-primary>Primary button</button>
+
+      <section class="ui-recording" aria-labelledby="rec">
+        <h2 id="rec">A recording panel</h2>
+        <p class="ui-try">Track names in the gutter, a canvas beside them (empty here).</p>
+        <div class="ui-panel">
+          <ol class="ui-tracks" aria-hidden="true">
+            <li class="ui-track" data-part="host"><b>Main thread</b> <span>host</span></li>
+            <li class="ui-track" data-part="bus"><b>Bus</b> <span>worker</span></li>
+            <li class="ui-track" data-part="isolate"><b>A, counter</b> <span>own worker</span></li>
+            <li class="ui-track" data-part="pool" data-rows="2">
+              <b>C and D</b> <span>one pool</span>
+            </li>
+          </ol>
+          <div class="ui-trace-cell">
+            <div class="ui-trace" role="img" aria-label="An empty recording"></div>
+          </div>
+        </div>
+        <ul class="ui-legend" aria-label="How to read the recording">
+          <li data-mark="task">A bar is work running on that thread.</li>
+          <li data-mark="stuck">Hatched: the thread is stuck.</li>
+          <li data-mark="restart">A line: stopped and started again.</li>
+        </ul>
+        <div class="ui-controls" role="group" aria-label="Controls">
+          <button type="button" class="ui-button" data-strong>Block C for 3 s</button>
+          <button type="button" class="ui-button">Crash A</button>
+          <button type="button" class="ui-button" disabled>Disabled</button>
+          <p class="ui-status" role="status">Everything is running.</p>
         </div>
       </section>
-      <section class="ui-section" aria-labelledby="grid">
-        <h2 id="grid">A grid of cards</h2>
-        <div class="ui-grid">
-          <article class="ui-card">
-            <h3>One</h3>
-            <p>Wraps to one column on phones.</p>
-          </article>
-          <article class="ui-card">
-            <h3>Two</h3>
-            <p>Each card keeps its own heading.</p>
-          </article>
-          <article class="ui-card">
-            <h3>Three</h3>
-            <p>Links inside: <a href="#grid">here</a>.</p>
-          </article>
+
+      <section class="ui-gutter" id="gutter" aria-labelledby="uses">
+        <h2 id="uses">A gutter section</h2>
+        <div class="ui-body">
+          <ul class="ui-uses">
+            <li><b>A use.</b> A line on what it's for.</li>
+            <li><b>Another use.</b> Lists with rules, not card grids.</li>
+          </ul>
         </div>
       </section>
-      <section class="ui-section" aria-labelledby="tables">
-        <h2 id="tables">Tables and code</h2>
-        <div class="ui-table-wrap" tabindex="0" role="region" aria-label="A table">
-          <table class="ui-table">
-            <caption>
-              A table, with headings on both axes
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">Build</th>
-                <th scope="col">Frames/s</th>
-                <th scope="col">Typing</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">First</th>
-                <td>60</td>
-                <td>15 ms</td>
-              </tr>
-              <tr>
-                <th scope="row">Second</th>
-                <td>58</td>
-                <td>19 ms</td>
-              </tr>
-            </tbody>
-          </table>
+
+      <section class="ui-gutter" aria-labelledby="strip">
+        <h2 id="strip">A features strip</h2>
+        <div class="ui-body">
+          <nav class="ui-strip" aria-labelledby="strip">
+            <ul>
+              <li data-part="isolate">
+                <a href="#strip"><b>Isolate.</b> An own-worker part.</a>
+              </li>
+              <li data-part="bus">
+                <a href="#strip"><b>Bus.</b> A bus feature.</a>
+              </li>
+              <li data-part="pool">
+                <a href="#strip"><b>Pool.</b> A pool feature.</a>
+              </li>
+              <li data-part="host">
+                <a href="#strip"><b>Host.</b> A host feature.</a>
+              </li>
+              <li data-part="cost">
+                <a href="#strip"><b>Cost.</b> What it costs.</a>
+              </li>
+            </ul>
+            <a href="#strip">All features</a>
+          </nav>
         </div>
-        <pre class="ui-code"><code>pnpm add @isoloop/host@next</code></pre>
       </section>
-      <section class="ui-section" aria-labelledby="bar">
+
+      <section class="ui-gutter" aria-labelledby="part-h">
+        <h2 id="part-h" data-part="pool">A heading in a part's colour</h2>
+        <div class="ui-body">
+          <p class="ui-callout">A callout: one point the reader shouldn't miss.</p>
+          <ul class="ui-examples">
+            <li>
+              <h3><a href="#part-h">An example</a></h3>
+              <p>A line on what it is.</p>
+              <p class="ui-result">A measured result, with its tag.</p>
+              <p class="ui-links"><a href="#part-h">Open live</a> <a href="#part-h">Source</a></p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="ui-gutter" id="tables" aria-labelledby="tables-h">
+        <h2 id="tables-h">Tables and code</h2>
+        <div class="ui-body">
+          <div class="ui-table-wrap" tabindex="0" role="region" aria-label="A table">
+            <table class="ui-table" data-mark-last>
+              <caption>
+                A table, with headings on both axes; the last column marked
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Build</th>
+                  <th scope="col">Frames/s</th>
+                  <th scope="col">Typing</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">First</th>
+                  <td>60</td>
+                  <td>15 ms</td>
+                </tr>
+                <tr>
+                  <th scope="row">Second</th>
+                  <td>58</td>
+                  <td>19 ms</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <pre class="ui-code"><code>pnpm add @isoloop/host@next</code></pre>
+        </div>
+      </section>
+
+      <section class="ui-gutter" aria-labelledby="bar">
         <h2 id="bar">The dashboards' bar</h2>
-        <p>Fixed dark, whatever the page's theme.</p>
-        <!-- ui:bar -->
+        <div class="ui-body">
+          <p>Fixed dark, whatever the page's theme; the system font.</p>
+          <!-- ui:bar -->
+        </div>
       </section>
     </main>
     <!-- ui:footer -->

@@ -1,0 +1,21 @@
+{
+  "name": "samples",
+  "private": true,
+  "type": "module",
+  "description": "The code samples on isoloop.dev/features/, type-checked against the published @isoloop packages (ADR 0002, as amended). The site reads these files at build time; nothing here runs.",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@isoloop/bus": "catalog:isoloop",
+    "@isoloop/host": "catalog:isoloop",
+    "@isoloop/preact": "catalog:isoloop",
+    "@isoloop/react": "catalog:isoloop",
+    "@isoloop/runtime": "catalog:isoloop",
+    "@types/react": "catalog:react",
+    "preact": "catalog:preact",
+    "react": "catalog:react",
+    "typescript": "catalog:",
+    "zod": "catalog:"
+  }
+}

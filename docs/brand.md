@@ -84,6 +84,6 @@ The flat everyday mark, as an SVG plus a 32 px PNG fallback. Check it at 16 px: 
 ## Status
 
 - [x] Direction and roles decided (this document)
-- [ ] SVG redraw of both marks, light and dark, flat favicon, lockups, app tile
-- [ ] Social cards rebuilt around the redrawn expressive mark
-- [ ] Wired into `packages/ui` (`Header`, favicon) and the site's link previews
+- [x] SVG redraw of both marks, light and dark, flat favicon, lockups, app tile (#90)
+- [x] Social cards rebuilt around the redrawn expressive mark (#90)
+- [x] Wired into `packages/ui` (`Header`, favicons) and the site's link previews (the approved-design build)

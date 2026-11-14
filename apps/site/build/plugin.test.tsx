@@ -21,6 +21,15 @@ const data: SiteData = {
       links: { live: '/examples/basic/', source: 'https://github.com/isoloop/web' },
     },
   ],
+  samples: {
+    contracts: 'c',
+    durable: 'd',
+    placement: 'p',
+    grants: 'g',
+    react: 'r',
+    preact: 'pr',
+    vanilla: 'v',
+  },
 };
 
 describe('renderDocument', () => {
@@ -54,12 +63,35 @@ describe('the pages', () => {
     expect(html).not.toContain('Basic <b>');
   });
 
-  it('embed basic and the topology diagram on the landing page, same-origin', () => {
+  it('put the live recording on the landing page, drawn by a same-origin module script', () => {
     const html = renderDocument(named('home'), data, { csp: CSP });
-    expect(html).toContain('<iframe src="/examples/basic/?embed=1"');
-    expect(html).toContain('src="/how-it-works/diagrams/runtime-topology.html"');
-    expect(html).toContain('href="/examples/dashboards/plant/"');
+    // basic's iframe is created by the script, out of view, once the recording is near.
+    expect(html).toContain('data-demo="recording"');
+    expect(html).toContain('<script type="module" src="/src/demos/home.ts"></script>');
+    expect(html).toContain('href="/features/"');
+    expect(html).toContain('href="/examples/basic/"');
     expect(html).not.toMatch(/(src|href)="http:\/\//);
+    expect(html).not.toMatch(/sketch/i);
+  });
+
+  it('give /features/ nine sections, three live demos and the checked samples', () => {
+    const html = renderDocument(named('features'), data, { csp: CSP });
+    for (const id of [
+      'containment',
+      'restart',
+      'bus',
+      'replay',
+      'durable',
+      'placement',
+      'frameworks',
+      'safety',
+      'cost',
+    ])
+      expect(html).toContain(`id="${id}"`);
+    for (const demo of ['recording', 'bus', 'replay'])
+      expect(html).toContain(`data-demo="${demo}"`);
+    expect(html).toContain('<code>c</code>');
+    expect(html).toContain('<script type="module" src="/src/demos/features.ts"></script>');
   });
 
   it('show the pin on "how it works"', () => {

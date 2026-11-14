@@ -18,6 +18,38 @@ describe('uiAssets', () => {
     expect(theme).toBeUndefined();
   });
 
+  it('self-hosts Archivo on full-header pages: one woff2, its @font-face first in the CSS', () => {
+    const { css, font } = uiAssets({ header: true });
+    expect(font?.fileName).toMatch(/^assets\/archivo-[0-9a-f]{8}\.woff2$/);
+    expect(font?.source).toBeInstanceOf(Uint8Array);
+    const name = font?.fileName.slice('assets/'.length) ?? '';
+    expect(typeof css.source === 'string' && css.source.startsWith('@font-face')).toBe(true);
+    expect(css.source).toContain(`url('${name}')`);
+    expect(css.source).not.toContain('data:');
+  });
+
+  it('loads no font on bar-only pages: the dashboards keep the system font', () => {
+    expect(uiAssets({ bar: true }).font).toBeUndefined();
+  });
+
+  it('carries the brand: favicons on every page, the light and dark mark on full-header pages', () => {
+    const full = uiAssets({ header: true });
+    expect(full.brand.favicon?.fileName).toMatch(/^assets\/favicon-[0-9a-f]{8}\.svg$/);
+    expect(full.brand.faviconPng?.fileName).toMatch(/^assets\/favicon-32-[0-9a-f]{8}\.png$/);
+    expect(full.brand.mark?.light.fileName).toMatch(/^assets\/mark-[0-9a-f]{8}\.svg$/);
+    expect(full.brand.mark?.dark.fileName).toMatch(/^assets\/mark-dark-[0-9a-f]{8}\.svg$/);
+    const bar = uiAssets({ bar: true });
+    expect(bar.brand.favicon).toBeDefined();
+    expect(bar.brand.mark).toBeUndefined();
+  });
+
+  it('puts the mark and "isoloop" in the header', () => {
+    const { header } = uiPartials({ header: true }, undefined, { light: '/l.svg', dark: '/d.svg' });
+    expect(header).toContain('src="/l.svg"');
+    expect(header).toContain('src="/d.svg"');
+    expect(header).toContain('isoloop</a>');
+  });
+
   it('names files by content', () => {
     expect(uiAssets({ bar: true }).css.fileName).not.toBe(uiAssets({ header: true }).css.fileName);
   });
@@ -27,7 +59,9 @@ describe('uiPartials', () => {
   it('marks the current section', () => {
     const { header } = uiPartials({ header: { current: 'examples' } });
     expect(header).toContain('<a href="/examples/" aria-current="page">Examples</a>');
+    expect(header).toContain('<a href="/features/">Features</a>');
     expect(header).toContain('data-ui-theme-toggle');
+    expect(header).toContain('role="switch"');
   });
 
   it('fixes the bar dark, with no toggle', () => {

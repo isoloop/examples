@@ -1,6 +1,9 @@
 /*
- * The site's own few rules; everything else comes from packages/ui (ADR 0003).
- * Unlayered, so it wins over @layer ui where it needs to.
+ * The site's own rules, for what only its pages have: the live demos on
+ * /features/ (the bus log, the replay tape), the stills, the placement
+ * layouts, the framework tabs and the safety facts. Everything shared comes
+ * from packages/ui (ADR 0003, as amended). Unlayered, so it wins over
+ * @layer ui where it needs to. Colours only from the tokens.
  */
 .visually-hidden {
   position: absolute;
@@ -9,4 +12,512 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+:root {
+  --again: color-mix(in oklch, var(--ui-part-pool) 16%, transparent);
+}
+
+.ui-lede {
+  margin: 0;
+  font-size: 1.08rem;
+}
+.ui-open {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  font-stretch: 87%;
+}
+.ui-limits {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+.ui-limits li {
+  margin-bottom: 0.6rem;
+}
+.ui-limits li:last-child {
+  font-weight: 600;
+}
+.ui-tag {
+  white-space: nowrap;
+}
+.ui-try-section {
+  margin-top: 2.5rem;
+}
+@media (min-width: 761px) {
+  .ui-try-section > .ui-try {
+    margin-left: var(--ui-gutter);
+  }
+}
+.ui-intro > .ui-strip {
+  grid-column: 1 / -1;
+  max-width: none;
+  margin-top: 1rem;
+}
+.ui-gutter-empty {
+  min-height: 1px;
+}
+[data-part='accent'] {
+  --part: var(--ui-accent);
+}
+
+/* Live and still figures */
+.demo,
+.still {
+  margin: 1.75rem 0 0;
+  max-width: 60rem;
+}
+.demo figcaption,
+.still figcaption,
+.ui-recording figcaption {
+  color: var(--ui-text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.85rem;
+  max-width: 44rem;
+}
+
+/* Restart, a still */
+.still-row {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.6rem;
+}
+.still-label {
+  font-weight: 650;
+  font-stretch: 87%;
+  font-size: 0.9rem;
+  color: var(--ui-text-muted);
+}
+.loop-line {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 2.6rem;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius-m);
+  padding: 0 0.9rem;
+  border-left: 4px solid var(--ui-part-pool);
+}
+.loop-line .tick {
+  width: 0.55rem;
+  height: 1.25rem;
+  background: var(--ui-part-pool);
+  flex: none;
+}
+.loop-line .stuck {
+  flex: 1 1 12rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  background: repeating-linear-gradient(135deg, var(--ui-part-pool) 0 2px, transparent 2px 6px);
+  outline: 2px solid var(--ui-part-pool);
+  outline-offset: -2px;
+  font-size: 0.82rem;
+  font-stretch: 87%;
+}
+.loop-line .stuck b {
+  background: var(--ui-surface);
+  padding: 0.05rem 0.35rem;
+  font-weight: 650;
+}
+.loop-line .again {
+  flex: none;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  border-left: 2px solid var(--ui-text);
+  padding-left: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+  font-stretch: 87%;
+}
+.cells {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.cells li {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.88rem;
+  font-stretch: 87%;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius-s);
+  background: var(--ui-surface);
+}
+.cells .commit {
+  border-bottom: 3px solid var(--ui-text);
+  font-weight: 700;
+}
+.cells .read-again {
+  background: var(--again);
+  border-color: var(--ui-part-pool);
+}
+.cells .fresh {
+  border-style: dashed;
+  border-color: var(--ui-part-pool);
+}
+.still-key {
+  list-style: none;
+  margin: 0.9rem 0 0 5.25rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.5rem;
+  font-size: 0.85rem;
+  color: var(--ui-text-muted);
+  font-stretch: 87%;
+}
+.still-key li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.still-key li::before {
+  content: '';
+  width: 1.1rem;
+  height: 0.8rem;
+  border: 1px solid var(--ui-rule);
+  border-radius: 2px;
+}
+.still-key .k-commit::before {
+  border-bottom: 3px solid var(--ui-text);
+}
+.still-key .k-again::before {
+  background: var(--again);
+  border-color: var(--ui-part-pool);
+}
+.still-key .k-fresh::before {
+  border-style: dashed;
+  border-color: var(--ui-part-pool);
+}
+
+/* The bus: topics as tracks */
+.topics {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius-l);
+  overflow: hidden;
+}
+.topic {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  border-bottom: 1px solid var(--ui-rule);
+}
+.topic:last-child {
+  border-bottom: 0;
+}
+.topic-name {
+  grid-row: 1 / 3;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-right: 1px solid var(--ui-rule);
+  border-left: 4px solid var(--ui-part-bus);
+  font-weight: 650;
+  font-stretch: 87%;
+  line-height: 1.2;
+}
+.topic-name span {
+  display: block;
+  font-weight: 400;
+  color: var(--ui-text-muted);
+  font-size: 0.85rem;
+}
+.recs {
+  list-style: none;
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.35rem;
+  overflow: hidden;
+  min-height: 4.6rem;
+}
+.rec {
+  flex: none;
+  width: 6.4rem;
+  padding: 0.25rem 0.45rem;
+  line-height: 1.2;
+  border: 1px solid var(--ui-rule);
+  border-left: 3px solid var(--ui-part-bus);
+  border-radius: var(--ui-radius-s);
+  background: var(--ui-bg);
+}
+.rec small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ui-text-muted);
+  font-variant-numeric: tabular-nums;
+  font-stretch: 87%;
+}
+.rec span {
+  display: block;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-stretch: 87%;
+}
+.rec .tags {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.3rem;
+  overflow: visible;
+}
+.rec .tags b {
+  display: inline-block;
+  min-width: 1.35rem;
+  text-align: center;
+  padding: 0.05rem 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0.2rem;
+  color: var(--ui-surface);
+  background: var(--ui-part-pool);
+}
+.rec.rejected {
+  border-color: var(--ui-bad);
+  border-style: dashed;
+  border-left-width: 1px;
+  background: transparent;
+}
+.rec.rejected span {
+  text-decoration: line-through;
+  color: var(--ui-bad);
+}
+.rec.rejected small {
+  color: var(--ui-bad);
+}
+.readers {
+  margin: 0;
+  min-height: 0;
+}
+
+/* The replay tape */
+.tape {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-rule);
+  border-left: 4px solid var(--ui-part-pool);
+  border-radius: var(--ui-radius-l);
+  padding: 0.8rem 1rem 0.9rem;
+}
+.tape-name {
+  margin: 0 0 0.6rem;
+  font-weight: 650;
+  font-stretch: 87%;
+}
+.tape-cells {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0;
+  display: flex;
+  gap: 0.3rem;
+  overflow: hidden;
+  justify-content: flex-end;
+  min-height: 3.4rem;
+}
+.tape-cells li {
+  flex: none;
+  width: 6.2rem;
+  padding: 0.3rem 0.4rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  font-stretch: 87%;
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius-s);
+  background: var(--ui-bg);
+}
+.tape-cells small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ui-text-muted);
+}
+.tape-cells span {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tape-cells li.read {
+  border-color: var(--ui-part-pool);
+}
+.tape-cells li.again {
+  background: var(--again);
+  border-color: var(--ui-part-pool);
+}
+
+/* Durable history: before and after a reload */
+.reload .r {
+  display: inline-block;
+  margin: 0 0.25rem 0.2rem 0;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--ui-rule);
+  border-left: 3px solid var(--ui-part-bus);
+  border-radius: var(--ui-radius-s);
+  background: var(--ui-surface);
+}
+.reload tbody th {
+  font-weight: 400;
+}
+.reload tbody th span {
+  color: var(--ui-text-muted);
+  font-size: 0.85rem;
+  font-stretch: 87%;
+}
+.reload .empty {
+  color: var(--ui-text-muted);
+  font-style: italic;
+}
+
+/* Placement layouts */
+.layouts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem 2rem;
+}
+.layouts figcaption {
+  grid-column: 1 / -1;
+  margin-top: 0.25rem;
+}
+.layout-name {
+  margin: 0 0 0.5rem;
+  font-weight: 650;
+  font-stretch: 87%;
+}
+.layout-name span {
+  font-weight: 400;
+  color: var(--ui-text-muted);
+  margin-left: 0.4rem;
+}
+.lanes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.lane {
+  display: flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--ui-rule);
+  border-left: 4px solid var(--ui-part-pool);
+  border-radius: var(--ui-radius-s);
+  background: var(--ui-surface);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-stretch: 87%;
+}
+.lane.hit {
+  background:
+    repeating-linear-gradient(135deg, var(--again) 0 3px, transparent 3px 7px), var(--ui-surface);
+  outline: 2px solid var(--ui-part-pool);
+  outline-offset: -2px;
+}
+
+/* The framework tabs; without JS every sample shows with its title. */
+.tabs {
+  margin-top: 1.5rem;
+  max-width: 52rem;
+}
+[role='tablist'] {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--ui-rule);
+}
+[role='tablist'][hidden] {
+  display: none;
+}
+[role='tab'] {
+  font: inherit;
+  font-weight: 600;
+  font-stretch: 87%;
+  background: none;
+  color: var(--ui-text-muted);
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+[role='tab'][aria-selected='true'] {
+  color: var(--ui-text);
+  border-bottom-color: var(--ui-text);
+}
+.tab-title {
+  margin: 1rem 0 0.4rem;
+  font-weight: 650;
+  font-stretch: 87%;
+}
+.tabs-on .tab-title {
+  display: none;
+}
+.tabs-on [role='tabpanel'] .ui-code {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
+}
+
+/* Safety facts */
+.facts {
+  margin: 0;
+  max-width: 44rem;
+}
+.facts div {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--ui-rule);
+}
+.facts div:first-child {
+  padding-top: 0;
+}
+.facts dt {
+  font-weight: 700;
+  font-stretch: 87%;
+}
+.facts dd {
+  margin: 0.2rem 0 0;
+}
+
+.ui-body > .ui-code {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 760px) {
+  .topic {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+  }
+  .topic-name {
+    padding: 0.6rem;
+    font-size: 0.92rem;
+  }
+  .rec {
+    width: 4.6rem;
+  }
+  .rec span {
+    font-size: 0.75rem;
+  }
+  .tape-cells li {
+    width: 4.4rem;
+  }
+  .layouts {
+    grid-template-columns: 1fr;
+  }
+  .still-row {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+  .still-key {
+    margin-left: 0;
+  }
+  .loop-line {
+    gap: 0.5rem;
+  }
 }

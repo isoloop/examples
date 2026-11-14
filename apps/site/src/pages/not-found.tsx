@@ -6,20 +6,25 @@ import type { Page } from './types.ts';
 function NotFound(): VNode {
   return (
     <main class="ui-shell">
-      <section class="ui-section" aria-labelledby="title">
+      <section class="ui-intro" aria-labelledby="title">
         <h1 id="title">{notFound.heading}</h1>
-        <p>{notFound.text}</p>
-        <ul>
-          <li>
-            <a href="/">Home</a>
-          </li>
-          <li>
-            <a href="/how-it-works/">How it works</a>
-          </li>
-          <li>
-            <a href="/examples/">Examples</a>
-          </li>
-        </ul>
+        <div>
+          <p>{notFound.text}</p>
+          <ul class="ui-uses">
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="/features/">Features</a>
+            </li>
+            <li>
+              <a href="/how-it-works/">How it works</a>
+            </li>
+            <li>
+              <a href="/examples/">Examples</a>
+            </li>
+          </ul>
+        </div>
       </section>
     </main>
   );
