@@ -7,7 +7,8 @@
  *   else the system setting.
  * - Follows changes live: a `storage` event (the toggle on this or any other
  *   same-origin page or frame) and the system setting, with no reload.
- * - Wires every [data-ui-theme-toggle] button, which stays hidden without JS.
+ * - Wires every [data-ui-theme-toggle] switch (checked means dark), which stays
+ *   hidden without JS.
  * - ?embed=1 sets <html data-embed>, which shell.css uses to hide the header,
  *   the footer and the outer margins inside an iframe.
  * - On a copied Archify diagram (this script tag carries data-archify), keeps
@@ -71,7 +72,7 @@
     var buttons = document.querySelectorAll('button[data-ui-theme-toggle]');
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].hidden = false;
-      buttons[i].setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      buttons[i].setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
     }
   }
   /** @param {Theme} theme */

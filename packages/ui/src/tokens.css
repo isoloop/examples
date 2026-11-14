@@ -1,43 +1,51 @@
 /*
- * Design tokens (ADR 0003, decision 3), the single source: no build step.
+ * Design tokens (ADR 0003, decision 3, as amended for the approved design),
+ * the single source: no build step.
  *
  * Two layers, all prefixed --ui- so they never meet an app's own properties:
- * - primitives: a neutral and an accent scale, 1 (lightest) to 12 (darkest);
+ * - primitives: the palette of concept A ("the recording"), named by colour;
  * - semantic tokens, the only ones components and apps use.
  * Themes switch only the semantic layer. `theme.js` sets <html data-theme>
  * before first paint; without JS, the media query below follows the system.
  *
- * These values are neutral placeholders until the design pick (plan task 7b).
+ * The --ui-part-* colours always mean the same part of the system: the main
+ * thread and host, the bus, an isolate on its own worker, a pool. --ui-rule is
+ * for decorative rules and grid lines; --ui-border is for the edges of
+ * controls and holds 3:1 (decision 8).
+ *
  * contrast.test.ts checks every declared pair against WCAG AA in both themes,
- * and that the two dark blocks match.
+ * and that the two dark blocks match. Hex equivalents are in ADR 0003.
  */
 
 :root {
-  --ui-gray-1: oklch(0.99 0.003 260);
-  --ui-gray-2: oklch(0.97 0.004 260);
-  --ui-gray-3: oklch(0.93 0.005 260);
-  --ui-gray-4: oklch(0.86 0.006 260);
-  --ui-gray-5: oklch(0.78 0.007 260);
-  --ui-gray-6: oklch(0.68 0.008 260);
-  --ui-gray-7: oklch(0.6 0.009 260);
-  --ui-gray-8: oklch(0.52 0.01 260);
-  --ui-gray-9: oklch(0.44 0.01 260);
-  --ui-gray-10: oklch(0.32 0.01 260);
-  --ui-gray-11: oklch(0.24 0.01 260);
-  --ui-gray-12: oklch(0.18 0.01 260);
+  /* neutrals, light to dark */
+  --ui-white: oklch(1 0 0);
+  --ui-paper: oklch(0.976 0.003 264.5); /* #f6f7f9 */
+  --ui-mist: oklch(0.943 0.01 267.4); /* #e9ecf3 */
+  --ui-haze: oklch(0.887 0.012 259.8); /* #d5dae2 */
+  --ui-slate-1: oklch(0.763 0.026 265.5); /* #aab2c3 */
+  --ui-slate-2: oklch(0.711 0.025 264.4); /* #9aa2b2 */
+  --ui-slate-3: oklch(0.619 0.026 264.4); /* #7e8696 */
+  --ui-slate-4: oklch(0.572 0.047 264.1); /* #6a7894 */
+  --ui-slate-5: oklch(0.502 0.024 264.3); /* #5d6472 */
+  --ui-slate-6: oklch(0.434 0.026 265.5); /* #4a5160 */
+  --ui-navy-1: oklch(0.373 0.048 265.1); /* #34405a */
+  --ui-navy-2: oklch(0.262 0.035 267.6); /* #1d2436 */
+  --ui-navy-3: oklch(0.229 0.032 268); /* #161c2c */
+  --ui-navy-4: oklch(0.186 0.034 269.8); /* #0d1222 */
+  --ui-ink: oklch(0.201 0.012 270.7); /* #14161c */
 
-  --ui-accent-1: oklch(0.98 0.015 255);
-  --ui-accent-2: oklch(0.95 0.03 255);
-  --ui-accent-3: oklch(0.9 0.05 255);
-  --ui-accent-4: oklch(0.82 0.08 255);
-  --ui-accent-5: oklch(0.75 0.11 255);
-  --ui-accent-6: oklch(0.68 0.14 255);
-  --ui-accent-7: oklch(0.6 0.16 255);
-  --ui-accent-8: oklch(0.52 0.17 255);
-  --ui-accent-9: oklch(0.46 0.16 255);
-  --ui-accent-10: oklch(0.38 0.13 255);
-  --ui-accent-11: oklch(0.3 0.1 255);
-  --ui-accent-12: oklch(0.22 0.07 255);
+  /* hues, each a light-theme and a dark-theme step */
+  --ui-blue-1: oklch(0.501 0.187 265.6); /* #2f57cc */
+  --ui-blue-2: oklch(0.739 0.134 270.2); /* #8aa5ff */
+  --ui-teal-1: oklch(0.512 0.086 207.7); /* #0b7480 */
+  --ui-teal-2: oklch(0.764 0.108 205.1); /* #4cc6d3 */
+  --ui-violet-1: oklch(0.507 0.184 293.6); /* #6e46c2 */
+  --ui-violet-2: oklch(0.747 0.132 297.6); /* #b79af6 */
+  --ui-magenta-1: oklch(0.503 0.163 355.4); /* #a62f68 */
+  --ui-magenta-2: oklch(0.741 0.121 351.3); /* #e58ab4 */
+  --ui-red-1: oklch(0.501 0.178 28.7); /* #b3261e */
+  --ui-red-2: oklch(0.768 0.137 25.6); /* #ff8f86 */
 
   --ui-space-1: 0.25rem;
   --ui-space-2: 0.5rem;
@@ -46,63 +54,94 @@
   --ui-space-5: 1.5rem;
   --ui-space-6: 2rem;
   --ui-space-7: 3rem;
-  --ui-space-8: 4rem;
+  --ui-space-8: 5rem;
 
   --ui-radius-s: 0.25rem;
-  --ui-radius-m: 0.5rem;
-  --ui-radius-l: 1rem;
+  --ui-radius-m: 0.4rem;
+  --ui-radius-l: 0.6rem;
 
-  --ui-font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Archivo, self-hosted; ui/vite adds its @font-face on the site's pages only. */
+  --ui-font-sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --ui-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /* A 1.25 scale from 1rem; the largest steps scale with the viewport. */
+  /* A 1.25 scale from 1.0625rem; the largest steps scale with the viewport. */
   --ui-text-xs: 0.8rem;
   --ui-text-s: 0.9rem;
-  --ui-text-m: 1rem;
+  --ui-text-m: 1.0625rem;
   --ui-text-l: 1.25rem;
   --ui-text-xl: clamp(1.25rem, 1.1rem + 0.6vw, 1.563rem);
-  --ui-text-2xl: clamp(1.5rem, 1.25rem + 1vw, 1.953rem);
-  --ui-text-3xl: clamp(1.75rem, 1.35rem + 1.8vw, 2.441rem);
+  --ui-text-2xl: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+  --ui-text-3xl: clamp(2.4rem, 1.4rem + 4.2vw, 4.6rem);
+
+  /* The page column, the gutter of section headings, the sticky header's height. */
+  --ui-page: 82rem;
+  --ui-gutter: 13rem;
+  --ui-bar-h: 4.75rem;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --ui-gutter: 7.5rem;
+    --ui-bar-h: 5.7rem;
+  }
 }
 
 /* light */
 :root,
 [data-theme='light'] {
   color-scheme: light;
-  --ui-bg: var(--ui-gray-1);
-  --ui-surface: var(--ui-gray-2);
-  --ui-text: var(--ui-gray-12);
-  --ui-text-muted: var(--ui-gray-9);
-  --ui-border: var(--ui-gray-7);
-  --ui-accent: var(--ui-accent-9);
-  --ui-on-accent: var(--ui-gray-1);
-  --ui-focus: var(--ui-accent-8);
+  --ui-bg: var(--ui-paper);
+  --ui-surface: var(--ui-white);
+  --ui-text: var(--ui-ink);
+  --ui-text-muted: var(--ui-slate-6);
+  --ui-rule: var(--ui-haze);
+  --ui-border: var(--ui-slate-3);
+  --ui-accent: var(--ui-blue-1);
+  --ui-on-accent: var(--ui-white);
+  --ui-focus: var(--ui-blue-1);
+  --ui-part-host: var(--ui-slate-5);
+  --ui-part-bus: var(--ui-magenta-1);
+  --ui-part-isolate: var(--ui-teal-1);
+  --ui-part-pool: var(--ui-violet-1);
+  --ui-bad: var(--ui-red-1);
 }
 
 /* dark */
 [data-theme='dark'] {
   color-scheme: dark;
-  --ui-bg: var(--ui-gray-12);
-  --ui-surface: var(--ui-gray-11);
-  --ui-text: var(--ui-gray-2);
-  --ui-text-muted: var(--ui-gray-5);
-  --ui-border: var(--ui-gray-8);
-  --ui-accent: var(--ui-accent-5);
-  --ui-on-accent: var(--ui-gray-12);
-  --ui-focus: var(--ui-accent-5);
+  --ui-bg: var(--ui-navy-3);
+  --ui-surface: var(--ui-navy-2);
+  --ui-text: var(--ui-mist);
+  --ui-text-muted: var(--ui-slate-1);
+  --ui-rule: var(--ui-navy-1);
+  --ui-border: var(--ui-slate-4);
+  --ui-accent: var(--ui-blue-2);
+  --ui-on-accent: var(--ui-navy-4);
+  --ui-focus: var(--ui-blue-2);
+  --ui-part-host: var(--ui-slate-2);
+  --ui-part-bus: var(--ui-magenta-2);
+  --ui-part-isolate: var(--ui-teal-2);
+  --ui-part-pool: var(--ui-violet-2);
+  --ui-bad: var(--ui-red-2);
 }
 
 /* dark, without JS: the same block as above (contrast.test.ts checks they match) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     color-scheme: dark;
-    --ui-bg: var(--ui-gray-12);
-    --ui-surface: var(--ui-gray-11);
-    --ui-text: var(--ui-gray-2);
-    --ui-text-muted: var(--ui-gray-5);
-    --ui-border: var(--ui-gray-8);
-    --ui-accent: var(--ui-accent-5);
-    --ui-on-accent: var(--ui-gray-12);
-    --ui-focus: var(--ui-accent-5);
+    --ui-bg: var(--ui-navy-3);
+    --ui-surface: var(--ui-navy-2);
+    --ui-text: var(--ui-mist);
+    --ui-text-muted: var(--ui-slate-1);
+    --ui-rule: var(--ui-navy-1);
+    --ui-border: var(--ui-slate-4);
+    --ui-accent: var(--ui-blue-2);
+    --ui-on-accent: var(--ui-navy-4);
+    --ui-focus: var(--ui-blue-2);
+    --ui-part-host: var(--ui-slate-2);
+    --ui-part-bus: var(--ui-magenta-2);
+    --ui-part-isolate: var(--ui-teal-2);
+    --ui-part-pool: var(--ui-violet-2);
+    --ui-bad: var(--ui-red-2);
   }
 }

@@ -9,7 +9,8 @@
 // - The diagrams: the pinned library pages, rewritten for the policy, under
 //   /how-it-works/diagrams/ (build/diagrams.ts).
 // In dev, pages are loaded fresh on each request and a change reloads the page.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { h } from 'preact';
 import { Head, type HeadProps } from 'ui/components';
 import { render } from 'ui/render';
@@ -21,6 +22,11 @@ import type { Page, SiteData } from '../src/pages/index.ts';
 /** Every page's policy (ADR 0002, decision 8). */
 export const CSP = "default-src 'self'";
 
+/** The link-preview card (docs/brand.md), served at the site's root for og:image. */
+export const PREVIEW = '/og-1200x630.png';
+const previewFile = (): string =>
+  fileURLToPath(new URL('../../../packages/ui/brand/social/og-1200x630.png', import.meta.url));
+
 const STUB = /^\s*<!--\s*page:([a-z0-9-]+)\s*-->\s*$/;
 
 /** The whole document for a page. `csp` is left out in dev, where Vite injects inline styles. */
@@ -29,6 +35,7 @@ export function renderDocument(page: Page, data: SiteData, opts: { csp?: string 
     h(Head, {
       ...page.head,
       path: page.path,
+      ...(existsSync(previewFile()) ? { image: PREVIEW } : {}),
       ...(opts.csp ? { csp: opts.csp } : {}),
     } satisfies HeadProps),
   );
@@ -40,7 +47,9 @@ export function renderDocument(page: Page, data: SiteData, opts: { csp?: string 
     marker +
     '\n' +
     render(page.render(data)) +
-    '\n<!-- ui:footer -->\n</body>\n</html>\n'
+    '\n<!-- ui:footer -->\n' +
+    (page.scripts ?? []).map((src) => `<script type="module" src="${src}"></script>\n`).join('') +
+    '</body>\n</html>\n'
   );
 }
 
@@ -98,6 +107,8 @@ export function site(opts: SiteOptions): Plugin {
           const hit = devDiagrams.get(path.slice(DIAGRAMS_PATH.length + 1));
           if (hit)
             file = { source: hit.source, type: TYPES[hit.fileName.split('.').pop() ?? ''] ?? '' };
+        } else if (path === PREVIEW && existsSync(previewFile())) {
+          file = { source: readFileSync(previewFile()), type: 'image/png' };
         } else {
           const shot = opts.data.examples.find((e) => e.image?.src === path)?.image;
           if (shot) file = { source: readFileSync(shot.file), type: 'image/webp' };
@@ -123,6 +134,12 @@ export function site(opts: SiteOptions): Plugin {
       },
     },
     generateBundle() {
+      if (existsSync(previewFile()))
+        this.emitFile({
+          type: 'asset',
+          fileName: PREVIEW.slice(1),
+          source: readFileSync(previewFile()),
+        });
       for (const e of opts.data.examples) {
         if (!e.image) continue;
         this.emitFile({

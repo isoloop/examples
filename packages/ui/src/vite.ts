@@ -6,10 +6,15 @@
 //   as one hashed file and linked from <head>.
 // - theme.js: emitted as a hashed classic script in <head>, so it runs before
 //   first paint (ADR 0002, decision 8).
+// - Archivo (ADR 0003, as amended): one self-hosted woff2 with its @font-face
+//   at the top of the CSS and one preload, on full-header pages only. The
+//   dashboards' bar keeps the system font and loads nothing.
 // - The header, bar and footer: components rendered to static HTML through
 //   render(), placed where the page has a `<!-- ui:header -->` (`ui:bar`,
 //   `ui:footer`) comment, else first in <body> (last, for the footer).
-// - The favicon, once packages/ui/brand/favicon.svg exists (plan task 7a).
+// - The brand (docs/brand.md): favicon.svg with its 32 px PNG fallback and the
+//   Apple touch icon on every page; on full-header pages the everyday mark,
+//   light and dark, which the header shows by theme.
 // Every file is same-origin and nothing is inline, so pages work under
 // `default-src 'self'`. The dev server serves the same files.
 import { createHash } from 'node:crypto';
@@ -28,24 +33,71 @@ export interface UiOptions {
   footer?: boolean;
 }
 
-interface Asset {
+export interface Asset {
   fileName: string;
-  source: string;
+  source: string | Uint8Array;
   type: string;
 }
 
 const file = (name: string): URL => new URL(name, import.meta.url);
 const read = (name: string): string => readFileSync(file(name), 'utf8');
-const hash = (s: string): string => createHash('sha256').update(s).digest('hex').slice(0, 8);
+const hash = (s: string | Uint8Array): string =>
+  createHash('sha256').update(s).digest('hex').slice(0, 8);
+
+/** The font file, and the @font-face that points at it from the CSS (both in assets/). */
+function fontAsset(): { asset: Asset; face: string } {
+  const source = readFileSync(file('fonts/archivo.woff2'));
+  const fileName = `assets/archivo-${hash(source)}.woff2`;
+  const face =
+    "@font-face { font-family: 'Archivo'; src: url('" +
+    fileName.slice('assets/'.length) +
+    "') format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; }";
+  return { asset: { fileName, source, type: 'font/woff2' }, face };
+}
+
+/** The files this page set needs, with content-hashed names under assets/. */
+/** A brand file under packages/ui/brand, as a hashed asset; undefined if it's missing. */
+function brandAsset(name: string, type: string): Asset | undefined {
+  const url = file(`../brand/${name}`);
+  if (!existsSync(url)) return undefined;
+  const source = readFileSync(url);
+  const dot = name.lastIndexOf('.');
+  const fileName = `assets/${name.slice(0, dot)}-${hash(source)}${name.slice(dot)}`;
+  return { fileName, source, type };
+}
+
+export interface Brand {
+  favicon: Asset | undefined;
+  faviconPng: Asset | undefined;
+  appleTouch: Asset | undefined;
+  /** The everyday mark, light and dark; full-header pages only. */
+  mark: { light: Asset; dark: Asset } | undefined;
+}
+
+export function brandAssets(full: boolean): Brand {
+  const light = full ? brandAsset('mark.svg', 'image/svg+xml') : undefined;
+  const dark = full ? brandAsset('mark-dark.svg', 'image/svg+xml') : undefined;
+  return {
+    favicon: brandAsset('favicon.svg', 'image/svg+xml'),
+    faviconPng: brandAsset('favicon-32.png', 'image/png'),
+    appleTouch: brandAsset('apple-touch-icon-180.png', 'image/png'),
+    mark: light && dark ? { light, dark } : undefined,
+  };
+}
 
 /** The files this page set needs, with content-hashed names under assets/. */
 export function uiAssets(opts: UiOptions): {
   css: Asset;
   theme: Asset | undefined;
-  favicon: Asset | undefined;
+  font: Asset | undefined;
+  brand: Brand;
+  /** Every file to emit or serve. */
+  all: Asset[];
 } {
   const full = Boolean(opts.header);
+  const font = full ? fontAsset() : undefined;
   const cssSource = [
+    ...(font ? [font.face] : []),
     read('tokens.css'),
     ...(full ? [read('base.css')] : []),
     read('shell.css'),
@@ -60,23 +112,31 @@ export function uiAssets(opts: UiOptions): {
     const source = read('theme.js');
     theme = { fileName: `assets/ui-theme-${hash(source)}.js`, source, type: 'text/javascript' };
   }
-  const iconUrl = file('../brand/favicon.svg');
-  let favicon: Asset | undefined;
-  if (existsSync(iconUrl)) {
-    const source = readFileSync(iconUrl, 'utf8');
-    favicon = { fileName: `assets/favicon-${hash(source)}.svg`, source, type: 'image/svg+xml' };
-  }
-  return { css, theme, favicon };
+  const brand = brandAssets(full);
+  const all = [
+    css,
+    theme,
+    font?.asset,
+    brand.favicon,
+    brand.faviconPng,
+    brand.appleTouch,
+    brand.mark?.light,
+    brand.mark?.dark,
+  ].filter((a): a is Asset => a !== undefined);
+  return { css, theme, font: font?.asset, brand, all };
 }
 
 /** The partials, rendered. `current` (from a page's marker) wins over the option's. */
 export function uiPartials(
   opts: UiOptions,
   section?: Current,
+  mark?: { light: string; dark: string },
 ): Record<'header' | 'bar' | 'footer', string | null> {
   const current = section ?? (typeof opts.header === 'object' ? opts.header.current : undefined);
   return {
-    header: opts.header ? render(h(Header, current ? { current } : {})) : null,
+    header: opts.header
+      ? render(h(Header, { ...(current ? { current } : {}), ...(mark ? { mark } : {}) }))
+      : null,
     bar: opts.bar ? render(h(Bar, {})) : null,
     footer: opts.footer ? render(h(Footer, {})) : null,
   };
@@ -90,7 +150,12 @@ export function assetPrefix(base: string, pagePath: string): string {
   return depth > 0 ? '../'.repeat(depth) : './';
 }
 
-const CURRENTS: ReadonlySet<string> = new Set<Current>(['home', 'how-it-works', 'examples']);
+const CURRENTS: ReadonlySet<string> = new Set<Current>([
+  'home',
+  'features',
+  'how-it-works',
+  'examples',
+]);
 const isCurrent = (s: string): s is Current => CURRENTS.has(s);
 
 /**
@@ -136,11 +201,24 @@ export function ui(opts: UiOptions = {}): Plugin {
       base = config.base;
     },
     transformIndexHtml(html, ctx) {
-      const { css, theme, favicon } = uiAssets(opts);
+      const { css, theme, font, brand } = uiAssets(opts);
       const prefix = assetPrefix(base, ctx.path);
       const page = pageCurrent(html);
+      const mark = brand.mark
+        ? { light: prefix + brand.mark.light.fileName, dark: prefix + brand.mark.dark.fileName }
+        : undefined;
+      const icon = (rel: string, a: Asset | undefined, extra: Record<string, string> = {}) =>
+        a
+          ? [
+              {
+                tag: 'link',
+                attrs: { rel, href: prefix + a.fileName, ...extra },
+                injectTo: 'head' as const,
+              },
+            ]
+          : [];
       return {
-        html: placePartials(page.html, uiPartials(opts, page.current)),
+        html: placePartials(page.html, uiPartials(opts, page.current, mark)),
         tags: [
           ...(theme
             ? [
@@ -151,38 +229,48 @@ export function ui(opts: UiOptions = {}): Plugin {
                 },
               ]
             : []),
+          ...(font
+            ? [
+                {
+                  tag: 'link',
+                  attrs: {
+                    rel: 'preload',
+                    href: prefix + font.fileName,
+                    as: 'font',
+                    type: 'font/woff2',
+                    crossorigin: '',
+                  },
+                  injectTo: 'head' as const,
+                },
+              ]
+            : []),
           {
             tag: 'link',
             attrs: { rel: 'stylesheet', href: prefix + css.fileName },
             injectTo: 'head',
           },
-          ...(favicon
-            ? [
-                {
-                  tag: 'link',
-                  attrs: { rel: 'icon', type: 'image/svg+xml', href: prefix + favicon.fileName },
-                  injectTo: 'head' as const,
-                },
-              ]
-            : []),
+          ...icon('icon', brand.favicon, { type: 'image/svg+xml' }),
+          ...icon('icon', brand.faviconPng, { type: 'image/png', sizes: '32x32' }),
+          ...icon('apple-touch-icon', brand.appleTouch),
         ],
       };
     },
     generateBundle() {
-      const { css, theme, favicon } = uiAssets(opts);
-      for (const a of [css, theme, favicon])
-        if (a) this.emitFile({ type: 'asset', fileName: a.fileName, source: a.source });
+      for (const a of uiAssets(opts).all)
+        this.emitFile({ type: 'asset', fileName: a.fileName, source: a.source });
     },
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const path = req.url?.split('?')[0] ?? '';
-        const { css, theme, favicon } = uiAssets(opts);
-        const hit = [css, theme, favicon].find((a) => a && path.endsWith(`/${a.fileName}`));
+        const hit = uiAssets(opts).all.find((a) => path.endsWith(`/${a.fileName}`));
         if (!hit) {
           next();
           return;
         }
-        res.setHeader('Content-Type', `${hit.type}; charset=utf-8`);
+        res.setHeader(
+          'Content-Type',
+          typeof hit.source === 'string' ? `${hit.type}; charset=utf-8` : hit.type,
+        );
         res.end(hit.source);
       });
     },

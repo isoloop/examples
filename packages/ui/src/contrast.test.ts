@@ -26,7 +26,7 @@ const themes = {
   dark: declarations(blockAfter('dark */')),
 };
 
-/** [foreground, background, minimum]: 4.5 for text, 3 for borders and focus. */
+/** [foreground, background, minimum]: 4.5 for text, 3 for control borders, focus and part colours. */
 const PAIRS: [string, string, number][] = [
   ['ui-text', 'ui-bg', 4.5],
   ['ui-text', 'ui-surface', 4.5],
@@ -34,7 +34,20 @@ const PAIRS: [string, string, number][] = [
   ['ui-accent', 'ui-bg', 4.5],
   ['ui-on-accent', 'ui-accent', 4.5],
   ['ui-border', 'ui-bg', 3],
+  ['ui-border', 'ui-surface', 3],
   ['ui-focus', 'ui-bg', 3],
+  ['ui-bad', 'ui-bg', 4.5],
+  ['ui-bad', 'ui-surface', 4.5],
+  // The part colours mark tracks, bars and headings, always next to a name in text.
+  ['ui-part-host', 'ui-bg', 3],
+  ['ui-part-host', 'ui-surface', 3],
+  ['ui-part-bus', 'ui-bg', 3],
+  ['ui-part-bus', 'ui-surface', 3],
+  ['ui-part-isolate', 'ui-bg', 3],
+  ['ui-part-isolate', 'ui-surface', 3],
+  ['ui-part-pool', 'ui-bg', 3],
+  ['ui-part-pool', 'ui-surface', 3],
+  // --ui-rule is decorative (rules, grid lines) and has no minimum.
 ];
 
 function colour(semantic: Map<string, string>, n: string): string {

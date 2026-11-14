@@ -26,6 +26,8 @@ export const exampleSchema = z.strictObject({
         .regex(/^[a-z]+-v\d+\.\d+\.\d+(-[0-9a-z.]+)?$/, 'a release tag, e.g. plant-v0.1.0'),
     })
     .optional(),
+  /** Shown in place of a result while none is published yet, e.g. markets until M3f. */
+  note: z.string().min(1).optional(),
   links: z.strictObject({
     live: rootPath,
     source: https,
@@ -81,12 +83,12 @@ function appDirs(appsDir: string, prefix = ''): string[] {
   return out;
 }
 
-/** The hub's examples, validated, in hub order. The site itself isn't one. */
+/** The hub's examples, validated, in hub order. The site and its code samples aren't examples. */
 export function loadExamples(repoRoot: string): Example[] {
   const appsDir = join(repoRoot, 'apps');
   const examples: Example[] = [];
   for (const id of appDirs(appsDir)) {
-    if (id === 'site') continue;
+    if (id === 'site' || id === 'samples') continue;
     const file = join(appsDir, id, 'example.json');
     const where = relative(repoRoot, file);
     if (!existsSync(file)) throw new Error(`${where} is missing: every app needs one for the hub`);
