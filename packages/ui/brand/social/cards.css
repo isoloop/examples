@@ -1,0 +1,135 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+@font-face {
+  font-family: 'Archivo';
+  src: url(archivo.woff2) format('woff2');
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+}
+body {
+  background: #0b0f1c;
+  font-family: 'Archivo', system-ui, sans-serif;
+  color: #e9ecf3;
+}
+.card {
+  position: relative;
+  overflow: hidden;
+  background: #161c2c;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--gx, 74%) 50%,
+    rgba(76, 198, 211, 0.22),
+    rgba(138, 165, 255, 0.12) 22%,
+    transparent 48%
+  );
+}
+.mark {
+  position: absolute;
+  filter: drop-shadow(0 0 28px rgba(76, 198, 211, 0.35))
+    drop-shadow(0 0 60px rgba(183, 154, 246, 0.25));
+}
+.txt {
+  position: absolute;
+}
+.wm {
+  font-weight: 820;
+  font-stretch: 68%;
+  font-size: 64px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: #fff;
+}
+.h {
+  font-weight: 800;
+  font-stretch: 72%;
+  font-size: 58px;
+  line-height: 1.02;
+  color: #fff;
+}
+.sub {
+  font-size: 22px;
+  line-height: 1.4;
+  color: #aab2c3;
+  max-width: 30ch;
+}
+.url {
+  font-weight: 650;
+  font-stretch: 87%;
+  font-size: 22px;
+  color: #4cc6d3;
+}
+.og,
+.gh {
+  --gx: 76%;
+}
+.og {
+  width: 1200px;
+  height: 630px;
+}
+.gh {
+  width: 1280px;
+  height: 640px;
+}
+.og .mark,
+.gh .mark {
+  width: 470px;
+  right: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.og .txt,
+.gh .txt {
+  left: 72px;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 560px;
+  display: grid;
+  gap: 24px;
+}
+.x {
+  width: 1500px;
+  height: 500px;
+  --gx: 86%;
+}
+.x .mark {
+  width: 330px;
+  right: 90px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.x .tracks {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1080px;
+  height: 220px;
+}
+.x .txt {
+  right: 470px;
+  bottom: 44px;
+  text-align: right;
+}
+.x .h {
+  font-size: 40px;
+}
+.x .url {
+  margin-top: 8px;
+  font-size: 20px;
+}
+.av {
+  width: 400px;
+  height: 400px;
+  --gx: 50%;
+}
+.av .mark {
+  width: 330px;
+  left: 35px;
+  top: 35px;
+}
