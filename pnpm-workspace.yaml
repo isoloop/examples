@@ -8,13 +8,13 @@ packages:
 # Every version lives here, pinned exactly, as in isoloop/isoloop (ADR 0009,
 # rule 8). Apps reference them with "catalog:".
 catalog:
-  '@playwright/test': 1.64.1
+  '@playwright/test': 1.65.0
   '@types/node': 26.6.6
-  oxfmt: 0.76.0
-  oxlint: 1.91.0
-  oxlint-tsgolint: 7.0.2005
+  oxfmt: 0.78.0
+  oxlint: 1.93.0
+  oxlint-tsgolint: 7.0.2006
   typescript: 7.0.2
-  vite: 8.3.5
+  vite: 8.3.8
   vitest: 5.0.5
   zod: 4.6.7
   # packages/ui renders Preact components to static HTML at build time (ADR 0003).
@@ -43,7 +43,7 @@ catalogs:
     '@types/react-dom': 19.3.0
   # The Preact builds (M3b task 16b): the same widgets through preact/compat.
   preact:
-    preact: 11.1.1
+    preact: 11.2.0
 
 # Supply chain, as in isoloop/isoloop (ADR 0009, rule 9), except for our own
 # packages: a prerelease is used the day it's published.
