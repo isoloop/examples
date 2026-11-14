@@ -21,6 +21,8 @@ import { ui } from 'ui/vite';
 export default defineConfig({ plugins: [ui({ header: { current: 'examples' }, footer: true })] });
 ```
 
+An app that imports `ui/vite` runs Vite with `--configLoader runner` (in its `dev`, `build` and `preview` scripts). Vite's default config loader hands a linked workspace package to Node, and Node can't load the components' `.tsx`. The runner transforms them as it loads them. Its `tsconfig.json` also needs `"jsx": "react-jsx"` and `"jsxImportSource": "preact"`, so `tsc` can follow the import.
+
 Put `<!-- ui:header -->`, `<!-- ui:bar -->` or `<!-- ui:footer -->` in a page to choose where a partial goes. Otherwise the header and bar go first in `<body>` and the footer last.
 
 ## Checks

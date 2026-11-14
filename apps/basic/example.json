@@ -1,0 +1,8 @@
+{
+  "title": "Basic",
+  "summary": "Four isolates on three event loops: two on their own workers, two sharing a pool. Block or crash any of them and watch what keeps running.",
+  "links": {
+    "live": "/examples/basic/",
+    "source": "https://github.com/isoloop/web/tree/main/apps/basic"
+  }
+}

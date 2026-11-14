@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Basic · Isoloop examples</title>
+    <meta
+      name="description"
+      content="Four Isoloop isolates on three event loops: two on their own workers, two sharing a pool."
+    />
+  </head>
+  <body>
+    <!-- ui:header -->
+    <main class="ui-shell basic">
+      <section class="intro">
+        <h1>Basic</h1>
+        <p>
+          Four isolates, each with its own surface, on three event loops. A and B have a worker
+          each. C and D share one, a pool. They talk only through topics on the bus, which runs in a
+          worker of its own.
+        </p>
+        <ul class="rules">
+          <li>
+            <strong>Block</strong> keeps an isolate's loop busy for 3 s. The kernel kills a loop
+            that stays busy for 2 s and restarts it, and the isolate reads the bus again from where
+            it was.
+          </li>
+          <li>
+            <strong>Crash</strong> reports an error as the isolate's own. Only that isolate
+            restarts, even in a pool.
+          </li>
+          <li>
+            <strong>Block the main thread</strong> freezes every surface on screen, while the loops
+            behind them keep running.
+          </li>
+        </ul>
+        <div class="main-thread">
+          <span class="chip mono" id="fps">main thread: -- fps</span>
+          <button type="button" class="ui-button" id="block-main">Block the main thread 1 s</button>
+        </div>
+      </section>
+      <div class="loops">
+        <section class="group" aria-labelledby="own-title">
+          <h2 id="own-title">Own workers: one event loop each</h2>
+          <div class="panes" id="own"></div>
+        </section>
+        <section class="group pool" aria-labelledby="pool-title">
+          <h2 id="pool-title">Pool "shared": one worker, one event loop</h2>
+          <p class="caption">
+            A pool is a unit of failure: block C and D stalls with it, and both restart together.
+          </p>
+          <div class="panes" id="pooled"></div>
+        </section>
+      </div>
+    </main>
+    <!-- ui:footer -->
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

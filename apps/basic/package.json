@@ -1,0 +1,27 @@
+{
+  "name": "basic",
+  "private": true,
+  "type": "module",
+  "description": "The smallest Isoloop example: four isolates, two on their own workers and two sharing a pool.",
+  "scripts": {
+    "dev": "vite --configLoader runner",
+    "build": "vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
+    "typecheck": "tsc --noEmit",
+    "e2e": "playwright test"
+  },
+  "dependencies": {
+    "@isoloop/bus": "catalog:isoloop",
+    "@isoloop/host": "catalog:isoloop",
+    "@isoloop/runtime": "catalog:isoloop",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@isoloop/vite": "catalog:isoloop",
+    "@playwright/test": "catalog:",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "ui": "workspace:*",
+    "vite": "catalog:"
+  }
+}
