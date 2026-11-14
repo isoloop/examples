@@ -15,13 +15,17 @@
     "dev": "vite specimens",
     "build:specimens": "vite build specimens --outDir ../dist/specimens --emptyOutDir",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "brand:marks": "node brand/build/marks.ts",
+    "brand:render": "node brand/build/render.ts",
+    "brand:social": "node brand/build/marks.ts && node brand/build/render.ts"
   },
   "dependencies": {
     "preact": "catalog:preact",
     "preact-render-to-string": "catalog:"
   },
   "devDependencies": {
+    "@playwright/test": "catalog:",
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
