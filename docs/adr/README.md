@@ -11,5 +11,6 @@ Each has a status:
 | ADR | Decision | Status |
 | --- | --- | --- |
 | [0001](0001-what-this-repo-is.md) | `isoloop/examples` renamed to `isoloop/web`: the site, examples and design system, built on the published packages; the library repo keeps the library and its docs; served at `isoloop.dev` with sections as paths; one Pages build per tag (`markets-v*`, `plant-v*`, `basic-v*`, `site-v*`); ADR 0009's toolchain by reference | Accepted |
+| [0002](0002-site-build.md) | `apps/site`: Vite multi-page, plain HTML and CSS, no UI, CSS or template framework; meta CSP `default-src 'self'`, every request same-origin, JS only as enhancement; only basic runs live (iframe), plant and markets as cards; hub from each app's `example.json`; diagrams fetched from `isoloop/isoloop` at a pinned sha; figures copied with their tag; M4 docs behind an interface we own; the theme in `localStorage`, switched live across same-origin frames | Accepted |
 
 Template: **Context** (the forces at play), **Decision**, **Consequences** (good and bad), **Alternatives considered**.
