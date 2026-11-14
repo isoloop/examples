@@ -4,6 +4,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { z } from 'zod';
+import { stoppedLabel } from '../src/comparison/stopped.ts';
 
 const DIR = process.env['COMPARE_OUT'] ?? 'comparison-results';
 const Result = z.object({
@@ -13,6 +14,7 @@ const Result = z.object({
   rate: z.number(),
   stopped: z.boolean(),
   error: z.string().optional(),
+  stage: z.string().optional(),
   workers: z.number().optional(),
   firstDataMs: z.number().optional(),
   allWidgetsMs: z.number().nullable().optional(),
@@ -81,10 +83,8 @@ for (const engine of engines) {
   for (const r of rows) {
     const label = LABEL[keyOf(r)] ?? keyOf(r);
     if (r.stopped) {
-      // eslint-disable-next-line no-control-regex -- strips the terminal colours Playwright puts in messages
-      const why = (r.error ?? '').replace(/\u001b\[[0-9;]*m/g, '');
       out.push(
-        `| ${r.rate} kHz | ${label} | – | page stopped (${why}) | – | – | – | – | – | – | – | – | – | – | – |`,
+        `| ${r.rate} kHz | ${label} | – | ${stoppedLabel(r)} | – | – | – | – | – | – | – | – | – | – | – |`,
       );
       continue;
     }

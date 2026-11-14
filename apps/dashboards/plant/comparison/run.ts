@@ -25,6 +25,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { z } from 'zod';
+import { cellOr, stoppedLabel } from '../src/comparison/stopped.ts';
 
 const { values: args } = parseArgs({
   options: {
@@ -105,6 +106,8 @@ const Result = z.object({
   placement: z.string().nullable(),
   rate: z.number(),
   stopped: z.boolean(),
+  stage: z.string().optional(),
+  error: z.string().optional(),
   workers: N,
   framesLate: N,
   fps: N,
@@ -199,13 +202,17 @@ for (const engine of [...new Set(results.map((r) => r.engine))].toSorted()) {
         '',
         `Rounds: A ${okA.length}/${A.length} ran, B ${okB.length}/${B.length} ran.`,
         '',
+        ...[...A, ...B]
+          .filter((r) => r.stopped)
+          .map((r) => `- Round ${r.run}, ${r.key}: ${stoppedLabel(r)}.`),
+        ...([...A, ...B].some((r) => r.stopped) ? [''] : []),
         '| Figure | A | B | Gap (B − A) | Gap % | Gap spread |',
         '| --- | --- | --- | --- | --- | --- |',
       );
       for (const m of METRICS) {
         const ma = median(okA.flatMap((r) => num(r, m.key) ?? []));
         const mb = median(okB.flatMap((r) => num(r, m.key) ?? []));
-        if (ma === null && mb === null) continue;
+        if (ma === null && mb === null && okA.length + okB.length > 0) continue;
         const gaps: number[] = [];
         for (const ra of okA) {
           const rb = okB.find((r) => r.run === ra.run);
@@ -220,7 +227,7 @@ for (const engine of [...new Set(results.map((r) => r.engine))].toSorted()) {
             ? `${fmt(Math.min(...gaps), m, true)} to ${fmt(Math.max(...gaps), m, true)}`
             : '–';
         out.push(
-          `| ${m.label} | ${fmt(ma, m)} | ${fmt(mb, m)} | ${fmt(g, m, true)} | ${pct} | ${spread} |`,
+          `| ${m.label} | ${cellOr(fmt(ma, m), A)} | ${cellOr(fmt(mb, m), B)} | ${fmt(g, m, true)} | ${pct} | ${spread} |`,
         );
       }
       out.push('');
@@ -235,11 +242,14 @@ for (const engine of [...new Set(results.map((r) => r.engine))].toSorted()) {
       );
       for (const m of METRICS) {
         const cells = extras.map((c) =>
-          fmt(
-            median(
-              here.filter((r) => r.key === c && !r.stopped).flatMap((r) => num(r, m.key) ?? []),
+          cellOr(
+            fmt(
+              median(
+                here.filter((r) => r.key === c && !r.stopped).flatMap((r) => num(r, m.key) ?? []),
+              ),
+              m,
             ),
-            m,
+            here.filter((r) => r.key === c),
           ),
         );
         if (cells.every((c) => c === '–')) continue;

@@ -58,6 +58,18 @@ const WINDOW_MS = Number(process.env['COMPARE_WINDOW_MS'] ?? 10_000);
 const SAMPLES = 5;
 const LATE_FRAME_MS = 25;
 const VIEWPORT = { width: 1400, height: 900 };
+// The watchdog. A run that hasn't finished within RUN_CAP_MS (beyond its hold)
+// is stopped and recorded as "stopped". On WebKit, whose Isoloop page can stop
+// answering (engine constraint 2), the page is also probed every PROBE_EVERY_MS
+// and stopped once a probe gets no reply in PROBE_MS: a stopped WebKit page
+// keeps its processes busy, and on a 4-core CI runner that starved the runner
+// until GitHub lost contact with it. Not scaled by PERF_BUDGET_SCALE: these are
+// limits on a run, not performance budgets.
+const RUN_CAP_MS = 180_000;
+const PROBE_EVERY_MS = 5_000;
+const PROBE_MS = 10_000;
+const CLOSE_MS = 15_000;
+const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
 declare global {
   interface Window {
@@ -247,11 +259,12 @@ for (const rate of RATES) {
       const [build = 'native', placement] = config.split(':');
       const name = `${placement ? `${build}-${placement}` : build}-${rate}khz${RUNS > 1 ? `-run${run}` : ''}`;
       test(`compare: ${config} at ${rate} kHz${RUNS > 1 ? `, run ${run}` : ''}`, async ({
-        browser,
+        browser: shared,
+        playwright,
         baseURL,
         browserName,
-      }) => {
-        test.setTimeout(240_000 + HOLD_MS);
+      }, info) => {
+        test.setTimeout(RUN_CAP_MS + HOLD_MS + 60_000);
         const engine = browserName;
         const dir = `${OUT}/${engine}`;
         mkdirSync(dir, { recursive: true });
@@ -261,6 +274,13 @@ for (const rate of RATES) {
             `${JSON.stringify({ engine, build, placement: placement ?? null, rate, ...result }, null, 2)}\n`,
           );
         };
+        // WebKit gets a browser of its own per run, so a stopped page can be
+        // ended by closing that browser without taking later runs with it.
+        const own =
+          engine === 'webkit'
+            ? await playwright.webkit.launch(info.project.use.launchOptions)
+            : null;
+        const browser = own ?? shared;
         const context = await browser.newContext({
           ...(baseURL === undefined ? {} : { baseURL }),
           viewport: VIEWPORT,
@@ -271,8 +291,37 @@ for (const rate of RATES) {
         await cdp?.send('Performance.enable', { timeDomain: 'timeTicks' });
         const isoloop = build === 'isoloop';
         const url = `/${build}/?rate=${rate}&seed=7${placement ? `&placement=${placement}` : ''}`;
+        let stage = 'load';
+        let stoppedWhy: string | null = null;
+        const t0 = Date.now();
+        // Ending a run closes its browser (WebKit) or context, so whatever the
+        // test is waiting on fails and the catch below writes "stopped".
+        const end = async (why: string): Promise<void> => {
+          if (stoppedWhy !== null) return;
+          stoppedWhy = why;
+          await Promise.race([(own ?? context).close(), sleep(CLOSE_MS)]).catch(() => {});
+        };
+        const cap = setTimeout(() => {
+          void end(`no result within ${Math.round((RUN_CAP_MS + HOLD_MS) / 1000)} s`);
+        }, RUN_CAP_MS + HOLD_MS);
+        let probing = false;
+        const probe =
+          engine === 'webkit'
+            ? setInterval(() => {
+                if (probing || stoppedWhy !== null) return;
+                probing = true;
+                void Promise.race([
+                  page.evaluate(() => 1).then(() => true),
+                  sleep(PROBE_MS).then(() => false),
+                ])
+                  .then((ok) => (ok ? undefined : end(`no reply in ${PROBE_MS / 1000} s`)))
+                  .catch(() => {})
+                  .finally(() => {
+                    probing = false;
+                  });
+              }, PROBE_EVERY_MS)
+            : null;
         try {
-          const t0 = Date.now();
           await page.goto(url);
           await expect(page.locator('[data-metric="first-data"] dd')).toHaveText(/ms$/, {
             timeout: 30_000,
@@ -288,8 +337,10 @@ for (const rate of RATES) {
             // oxlint-disable-next-line no-await-in-loop -- polling
             await page.waitForTimeout(100);
           }
+          stage = 'warm-up';
           await page.waitForTimeout(WARM_MS);
 
+          stage = 'window';
           const m0 = cdp ? await pageMetrics(cdp) : {};
           const p0 = chromium ? await processes(browser) : [];
           const frames0 = await page.evaluate(() => window.tape.frames);
@@ -310,6 +361,7 @@ for (const rate of RATES) {
           const delta = (k: string): number => (m1[k] ?? 0) - (m0[k] ?? 0);
           const frameGaps = tape.gaps.slice(-(tape.frames - frames0));
 
+          stage = 'typing';
           await latency(page, 'x');
           const typing: number[] = [];
           for (let i = 0; i < SAMPLES; i++) {
@@ -321,11 +373,13 @@ for (const rate of RATES) {
           // The hold: memory once the page has run for HOLD_MS.
           let held: { pss: number | null; pssGc: number | null } | null = null;
           if (HOLD_MS > 0) {
+            stage = 'hold';
             await page.waitForTimeout(Math.max(0, t0 + HOLD_MS - Date.now()));
             held = chromium ? await memory(browser) : null;
           }
 
           // The fault: block T3's gauges for 3 s.
+          stage = 'fault';
           await recordSpectra(page, isoloop);
           await page.waitForTimeout(2_000);
           await page.locator('[data-slot="T3-gauges"]').hover();
@@ -372,15 +426,21 @@ for (const rate of RATES) {
           write({
             stopped: true,
             url,
-            error: (e instanceof Error ? (e.message.split('\n')[0] ?? '') : String(e)).replace(
-              // oxlint-disable-next-line no-control-regex -- Playwright's terminal colours
-              /\u001b\[[0-9;]*m/g,
-              '',
-            ),
+            stage,
+            stoppedAtMs: Date.now() - t0,
+            error:
+              stoppedWhy ??
+              (e instanceof Error ? (e.message.split('\n')[0] ?? '') : String(e)).replace(
+                // oxlint-disable-next-line no-control-regex -- Playwright's terminal colours
+                /\u001b\[[0-9;]*m/g,
+                '',
+              ),
           });
         } finally {
+          clearTimeout(cap);
+          if (probe) clearInterval(probe);
           await cdp?.detach().catch(() => {});
-          await context.close();
+          await Promise.race([(own ?? context).close(), sleep(CLOSE_MS)]).catch(() => {});
         }
       });
     }
