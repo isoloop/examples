@@ -8,6 +8,7 @@ import counter from './isolates/counter?isolate';
 import messages from './isolates/messages?isolate';
 import primes from './isolates/primes?isolate';
 import ticker from './isolates/ticker?isolate';
+import { embedded, startDemo } from './demo';
 import { blockMain, createPane, startFps } from './panes';
 import surfaceCss from './surface.css?inline';
 
@@ -48,7 +49,7 @@ const isolates = [
     where: 'own worker',
     parent: 'own',
     src: counter,
-    grants: { publish: ['count.v1'], subscribe: ['count.v1'] },
+    grants: { publish: ['count.v1', 'activity.v1'], subscribe: ['count.v1', 'control.v1'] },
   },
   {
     id: 'B',
@@ -56,7 +57,7 @@ const isolates = [
     where: 'own worker',
     parent: 'own',
     src: ticker,
-    grants: { publish: [], subscribe: [] },
+    grants: { publish: ['activity.v1'], subscribe: ['control.v1'] },
   },
   {
     id: 'C',
@@ -65,7 +66,7 @@ const isolates = [
     parent: 'pooled',
     pool: POOL,
     src: primes,
-    grants: { publish: ['primes.v1'], subscribe: ['count.v1'] },
+    grants: { publish: ['primes.v1', 'activity.v1'], subscribe: ['count.v1', 'control.v1'] },
   },
   {
     id: 'D',
@@ -74,15 +75,29 @@ const isolates = [
     parent: 'pooled',
     pool: POOL,
     src: messages,
-    grants: { publish: ['note.v1'], subscribe: ['count.v1', 'note.v1', 'primes.v1'] },
+    grants: {
+      publish: ['note.v1', 'activity.v1'],
+      subscribe: ['count.v1', 'note.v1', 'primes.v1', 'control.v1'],
+    },
   },
 ];
 
+// Embedded in the site's demo, the isolates report their work and run on their
+// own (src/demo.ts, isoloop-demo@1); standalone, they wait for clicks.
+const config = embedded() ? { report: true } : undefined;
 const panes = isolates.map(({ id, name, where, parent, pool, src, grants }) => {
   const pane = createPane($(parent), { id, name, where }, kernel);
-  kernel.spawn({ id, src, surface: pane.body, grants, ...(pool ? { pool } : {}) });
+  kernel.spawn({
+    id,
+    src,
+    surface: pane.body,
+    grants,
+    ...(pool ? { pool } : {}),
+    ...(config ? { config } : {}),
+  });
   return pane;
 });
+startDemo(kernel, isolates);
 
 setInterval(() => {
   const byId = new Map(kernel.isolates().map((s) => [s.id, s]));
