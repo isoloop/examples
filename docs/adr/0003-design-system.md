@@ -191,6 +191,13 @@ The first round of directions changed only colours on one layout, and read as ge
 - **The nav reads** Home, Features, How it works, Examples, GitHub.
 - **`Bar` on the dashboards is unchanged:** thin, fixed dark, not sticky. The dashboards manage their own scrolling.
 
+**The logo (decision 10).** It's chosen and documented in [`docs/brand.md`](../brand.md):
+- **Two marks:**
+  - the **everyday mark**: an isometric cube with a woven ribbon, for the header, favicon and anything small
+  - the **expressive mark**: the same inside a cycle arrow, for social cards and large uses
+- **Gradients** (indigo → violet → teal, from the palette) are allowed in the logo only. The rest of the design system stays flat.
+- **The wordmark** is "isoloop" in lowercase Archivo, set in type. The "Isol∞p" wordmark of decision 10 is dropped.
+
 **The theme switch (decision 4).**
 - **`ThemeToggle` becomes a switch:** `role="switch"`, named "Dark theme", with `aria-checked` true in dark mode.
 - **The look:** a sun and a moon inside a pill, and a knob that slides behind the active one.
