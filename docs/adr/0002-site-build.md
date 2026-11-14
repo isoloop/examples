@@ -32,6 +32,17 @@ The forces:
   Together they should come to about 100–200 lines, each with unit tests. When the M4 docs engine arrives, the partials plugin may become part of it.
 - **The `base` path is set in config,** so moving the site is a one-line change.
 
+#### Amended by ADR 0003 (2026-11-14)
+
+The markup is reused (header, bar, footer, cards, tables, head tags) and much of it comes from data (`example.json`, the device table). So decision 1 now reads:
+
+- **No framework code in the browser.** No page ships Preact, React or any UI framework's JS.
+- **Preact at build time only.** Components and site pages are Preact `.tsx`, rendered to static HTML by our Vite plugins through one function of ours, `render(node): string` (`ui/render`), the only file that imports `preact-render-to-string`.
+  - Each page (`apps/site/pages/home.tsx`, `how-it-works.tsx`, `examples.tsx`, `404.tsx`) has a one-line `index.html` stub, so Vite's multi-page build, CSS bundling and asset hashing stay as they are.
+  - Data comes in as typed props, and Preact's escaping covers all content.
+- **Our plugins stay,** now calling `render()`: pages and components (from `ui/vite`, [ADR 0003](0003-design-system.md)), the hub, the diagrams.
+- **Still no CSS framework and no template library.**
+
 ### 2. Pages
 
 | Path | Page |
