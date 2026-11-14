@@ -2,6 +2,8 @@ packages:
   - apps/*
   # Apps grouped by kind, e.g. apps/dashboards/markets.
   - apps/dashboards/*
+  # Shared workspace packages, e.g. packages/ui (ADR 0003).
+  - packages/*
 
 # Every version lives here, pinned exactly, as in isoloop/isoloop (ADR 0009,
 # rule 8). Apps reference them with "catalog:".
@@ -15,6 +17,8 @@ catalog:
   vite: 8.3.5
   vitest: 5.0.5
   zod: 4.6.7
+  # packages/ui renders Preact components to static HTML at build time (ADR 0003).
+  preact-render-to-string: 6.8.2
 
 # Isoloop itself, installed from npm like any app would. One version for every
 # package (they release as one fixed group, ADR 0012), so all apps move to a

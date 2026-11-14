@@ -1,0 +1,30 @@
+{
+  "name": "ui",
+  "private": true,
+  "type": "module",
+  "description": "The design system shared by the site and the examples (ADR 0003): build-time Preact components, tokens, shell CSS, the theme script and a Vite plugin.",
+  "exports": {
+    "./components": "./src/components/index.ts",
+    "./render": "./src/render.ts",
+    "./tokens.css": "./src/tokens.css",
+    "./shell.css": "./src/shell.css",
+    "./theme.js": "./src/theme.js",
+    "./vite": "./src/vite.ts"
+  },
+  "scripts": {
+    "dev": "vite specimens",
+    "build:specimens": "vite build specimens --outDir ../dist/specimens --emptyOutDir",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "preact": "catalog:preact",
+    "preact-render-to-string": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
